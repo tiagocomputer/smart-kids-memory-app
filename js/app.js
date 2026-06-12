@@ -18,6 +18,8 @@ const I18N = {
     howToPlay2: 'Como jogar em 2?', sameDevice: 'Mesmo aparelho', viaQR: 'Outro celular (QR)',
     inviteTitle: 'Convide o Jogador 2 📱',
     inviteHint: 'Peça para o jogador 2 escanear este código com a câmera do celular',
+    shareLink: 'Ou envie o link', linkCopied: 'Link copiado! 📋',
+    startQR: 'Gerar QR Code 📱',
     waitingPlayer: 'Esperando o jogador 2…', connecting: 'Conectando…',
     joinTitle: 'Entrar no jogo 🎮', joinBtn: 'Entrar!',
     connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
@@ -65,6 +67,8 @@ const I18N = {
     howToPlay2: 'How to play with 2?', sameDevice: 'Same device', viaQR: 'Another phone (QR)',
     inviteTitle: 'Invite Player 2 📱',
     inviteHint: 'Ask player 2 to scan this code with their phone camera',
+    shareLink: 'Or send the link', linkCopied: 'Link copied! 📋',
+    startQR: 'Generate QR Code 📱',
     waitingPlayer: 'Waiting for player 2…', connecting: 'Connecting…',
     joinTitle: 'Join the game 🎮', joinBtn: 'Join!',
     connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
@@ -112,6 +116,8 @@ const I18N = {
     howToPlay2: 'Comment jouer à 2?', sameDevice: 'Même appareil', viaQR: 'Autre téléphone (QR)',
     inviteTitle: 'Invite le Joueur 2 📱',
     inviteHint: 'Demande au joueur 2 de scanner ce code avec son téléphone',
+    shareLink: 'Ou envoie le lien', linkCopied: 'Lien copié! 📋',
+    startQR: 'Générer le QR Code 📱',
     waitingPlayer: 'En attente du joueur 2…', connecting: 'Connexion…',
     joinTitle: 'Rejoindre le jeu 🎮', joinBtn: 'Entrer!',
     connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
@@ -391,6 +397,7 @@ function setLang(next) {
   localStorage.setItem('mm_lang', lang);
   applyI18n();
   renderThemeOptions();
+  updateStartButton();
   const cur = currentScreen();
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
   if (cur === 'album') renderAlbum();
@@ -472,7 +479,7 @@ function goSetup() {
 
 // ---------- Configuração escolhida ----------
 
-const config = { players: 1, theme: 'animais', level: 'facil', mode: 'local' };
+const config = { players: 1, theme: 'animais', level: 'facil' };
 
 function bindOptionRow(rowId, dataKey, onPick) {
   const row = document.getElementById(rowId);
@@ -487,10 +494,14 @@ function bindOptionRow(rowId, dataKey, onPick) {
 }
 bindOptionRow('player-options', 'players', (v) => {
   config.players = parseInt(v, 10);
-  $('#mode-block').hidden = config.players !== 2;
+  updateStartButton();
 });
-bindOptionRow('mode-options', 'mode', (v) => (config.mode = v));
 bindOptionRow('level-options', 'level', (v) => (config.level = v));
+
+// 2 jogadores = partida em dois celulares via QR code
+function updateStartButton() {
+  $('#start-label').textContent = config.players === 2 ? t('startQR') : `${t('start')} 🎉`;
+}
 
 // ---------- Fases (temas) com cadeado ----------
 
@@ -589,19 +600,41 @@ function sanitizeProfile(p) {
   return { name, avatar };
 }
 
+let inviteUrl = '';
+let inviteTimeout = null;
+
+function makeRoomId() {
+  if (window.crypto && crypto.randomUUID) return 'mm-' + crypto.randomUUID();
+  return 'mm-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+}
+
+function inviteFailed() {
+  clearTimeout(inviteTimeout);
+  if (currentScreen() !== 'invite') { handleDisconnect(); return; }
+  $('#invite-status').textContent = t('connLost');
+  $('#btn-invite-retry').hidden = false;
+}
+
 function hostInvite() {
   netDestroy();
+  clearTimeout(inviteTimeout);
   showScreen('invite');
-  $('#qr-box').innerHTML = '';
+  $('#btn-invite-retry').hidden = true;
+
+  // Escolhemos o id da sala, então o QR pode ser desenhado na hora,
+  // sem esperar o servidor de sinalização responder
+  const roomId = makeRoomId();
+  inviteUrl = `${location.origin}${location.pathname}?join=${encodeURIComponent(roomId)}`;
+  const qr = qrcode(0, 'M');
+  qr.addData(inviteUrl);
+  qr.make();
+  $('#qr-box').innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2 });
   $('#invite-status').textContent = t('connecting');
-  peer = new Peer();
-  peer.on('open', (id) => {
-    const url = `${location.origin}${location.pathname}?join=${encodeURIComponent(id)}`;
-    const qr = qrcode(0, 'M');
-    qr.addData(url);
-    qr.make();
-    $('#qr-box').innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2 });
-    $('#invite-status').textContent = t('waitingPlayer');
+
+  peer = new Peer(roomId);
+  peer.on('open', () => {
+    clearTimeout(inviteTimeout);
+    if (currentScreen() === 'invite') $('#invite-status').textContent = t('waitingPlayer');
   });
   peer.on('connection', (c) => {
     if (conn) { try { c.close(); } catch { /* lotado */ } return; }
@@ -610,15 +643,26 @@ function hostInvite() {
     conn.on('close', handleDisconnect);
     conn.on('error', handleDisconnect);
   });
-  peer.on('error', () => {
-    if (currentScreen() === 'invite') {
-      showToast(t('connLost'));
-      netDestroy();
-      showScreen('setup');
-    } else {
-      handleDisconnect();
+  peer.on('error', inviteFailed);
+
+  // Sem resposta do servidor em 12s: oferece tentar de novo
+  inviteTimeout = setTimeout(() => {
+    if (currentScreen() === 'invite' && (!peer || !peer.open)) inviteFailed();
+  }, 12000);
+}
+
+async function shareInviteLink() {
+  if (!inviteUrl) return;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'Memória Mágica', url: inviteUrl });
+      return;
     }
-  });
+  } catch { /* cancelado — tenta copiar */ }
+  try {
+    await navigator.clipboard.writeText(inviteUrl);
+    showToast(t('linkCopied'));
+  } catch { /* sem permissão de clipboard */ }
 }
 
 let joinHostId = null;
@@ -1178,7 +1222,7 @@ $('#btn-edit-profile').addEventListener('click', () => { sound.play('click'); sh
 $('#btn-go-album').addEventListener('click', () => { sound.play('click'); renderAlbum(); showScreen('album'); });
 $('#btn-start').addEventListener('click', () => {
   sound.play('click');
-  if (config.players === 2 && config.mode === 'online') hostInvite();
+  if (config.players === 2) hostInvite();
   else startGame();
 });
 $('#btn-restart').addEventListener('click', () => {
@@ -1188,7 +1232,14 @@ $('#btn-restart').addEventListener('click', () => {
 });
 $('#btn-try-again').addEventListener('click', () => { sound.play('click'); startGame(); });
 $('#btn-timeup-home').addEventListener('click', () => { sound.play('click'); showScreen('home'); });
-$('#btn-invite-cancel').addEventListener('click', () => { sound.play('click'); netDestroy(); showScreen('setup'); });
+$('#btn-invite-cancel').addEventListener('click', () => {
+  sound.play('click');
+  clearTimeout(inviteTimeout);
+  netDestroy();
+  showScreen('setup');
+});
+$('#btn-invite-retry').addEventListener('click', () => { sound.play('click'); hostInvite(); });
+$('#btn-share-link').addEventListener('click', () => { sound.play('click'); shareInviteLink(); });
 $('#btn-join').addEventListener('click', () => { sound.play('click'); joinGame(); });
 $('#btn-play-again').addEventListener('click', () => {
   sound.play('click');
@@ -1250,6 +1301,7 @@ applyTheme();
 applyI18n();
 setupProfileControls();
 renderThemeOptions();
+updateStartButton();
 updateCoinChip();
 updateSoundButton();
 

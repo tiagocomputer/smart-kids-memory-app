@@ -17,7 +17,7 @@ e acesse `http://localhost:8000`.
 ## ✨ O que tem no jogo
 
 - **1 ou 2 jogadores** — no modo de 2, quem acerta um par continua jogando; quem erra passa a vez. No final, vence quem encontrou mais pares!
-- **2 jogadores em 2 celulares via QR code** 📱 — escolha "Outro celular (QR)", mostre o código para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC, sem servidor). Quem vencer leva as moedas e a figurinha!
+- **2 jogadores = 2 celulares via QR code** 📱 — escolha "2", toque em "Gerar QR Code", mostre o código (ou envie o link) para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC). Quem vencer leva as moedas e a figurinha!
 - **Perfil do jogador** 🧑‍🎨 — antes de jogar, a criança escreve seu nome e escolhe um avatar (8 opções), que aparecem no placar e na tela de vitória; dá para editar depois tocando no chip de perfil
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com 2 jogadores, o tempo aumenta)
 - **8 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 4 **trancadas com cadeado** 🔒: Dinossauros 🦖 (30 🪙), Comida 🍕 (50 🪙), Brinquedos 🧸 (80 🪙) e Heróis 🦸 (120 🪙). Jogue, junte moedas e **compre a chave** 🗝️ para destrancar!

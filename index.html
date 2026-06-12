@@ -115,14 +115,6 @@
       </div>
     </section>
 
-    <section class="setup-block" id="mode-block" hidden>
-      <h3 data-i18n="howToPlay2">Como jogar em 2?</h3>
-      <div class="option-row" id="mode-options">
-        <button class="opt selected" data-mode="local"><span class="opt-emoji">👥</span><span data-i18n="sameDevice">Mesmo aparelho</span></button>
-        <button class="opt" data-mode="online"><span class="opt-emoji">📱</span><span data-i18n="viaQR">Outro celular (QR)</span></button>
-      </div>
-    </section>
-
     <section class="setup-block">
       <h3 data-i18n="qTheme">Escolha a fase</h3>
       <!-- preenchido pelo JS (fases livres e bloqueadas) -->
@@ -138,7 +130,7 @@
       </div>
     </section>
 
-    <button class="btn btn-big btn-play" id="btn-start"><span data-i18n="start">Começar!</span> 🎉</button>
+    <button class="btn btn-big btn-play" id="btn-start"><span id="start-label">Começar! 🎉</span></button>
   </main>
 
   <!-- TELA: CONVIDAR JOGADOR 2 (QR CODE) -->
@@ -146,7 +138,9 @@
     <h2 class="screen-title" data-i18n="inviteTitle">Convide o Jogador 2 📱</h2>
     <div class="qr-card"><div id="qr-box"></div></div>
     <p class="invite-hint" data-i18n="inviteHint">Peça para o jogador 2 escanear este código com a câmera do celular</p>
+    <button class="btn btn-small" id="btn-share-link">🔗 <span data-i18n="shareLink">Ou envie o link</span></button>
     <p class="waiting" id="invite-status"></p>
+    <button class="btn btn-big btn-play" id="btn-invite-retry" hidden><span data-i18n="tryAgain">Tentar de novo</span> 🔄</button>
     <button class="btn btn-small" id="btn-invite-cancel"><span data-i18n="cancel">Cancelar</span></button>
   </main>
 

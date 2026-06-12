@@ -457,8 +457,20 @@ body {
 }
 .name-input:focus { border-color: var(--yellow); }
 .name-input::placeholder { color: #a78bfa; opacity: 0.8; }
+.name-input.shake { animation: shake 0.4s; border-color: #ef4444; }
 .avatar-row { margin-top: 12px; }
 .avatar-opt { min-width: 0; font-size: 1.6rem; padding: 8px 12px; border-radius: 16px; }
+
+/* Chip do perfil na preparação do jogo (toque para editar) */
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  font-size: 1.05rem;
+  margin-bottom: 16px;
+}
+.profile-chip span:first-child { font-size: 1.3rem; }
 
 /* Fases bloqueadas (cadeado + preço da chave) */
 .opt.locked {

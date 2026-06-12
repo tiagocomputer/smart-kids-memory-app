@@ -11,6 +11,8 @@ const I18N = {
     owlGreeting: 'Olá! Vamos brincar?',
     play: 'Jogar', album: 'Álbum de Figurinhas',
     setupTitle: 'Preparar Jogo 🎮',
+    profileTitle: 'Quem é você? 🙋', continueBtn: 'Continuar',
+    nameNeeded: 'Escreva seu nome! ✏️',
     yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar',
     qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
     howToPlay2: 'Como jogar em 2?', sameDevice: 'Mesmo aparelho', viaQR: 'Outro celular (QR)',
@@ -56,6 +58,8 @@ const I18N = {
     owlGreeting: "Hi! Let's play?",
     play: 'Play', album: 'Sticker Album',
     setupTitle: 'Set Up Game 🎮',
+    profileTitle: 'Who are you? 🙋', continueBtn: 'Continue',
+    nameNeeded: 'Write your name! ✏️',
     yourName: 'Your name', chooseAvatar: 'Choose your avatar',
     qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
     howToPlay2: 'How to play with 2?', sameDevice: 'Same device', viaQR: 'Another phone (QR)',
@@ -101,6 +105,8 @@ const I18N = {
     owlGreeting: 'Salut! On joue?',
     play: 'Jouer', album: "Album d'autocollants",
     setupTitle: 'Préparer le jeu 🎮',
+    profileTitle: 'Qui es-tu? 🙋', continueBtn: 'Continuer',
+    nameNeeded: 'Écris ton prénom! ✏️',
     yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar',
     qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
     howToPlay2: 'Comment jouer à 2?', sameDevice: 'Même appareil', viaQR: 'Autre téléphone (QR)',
@@ -344,16 +350,17 @@ const music = (() => {
 
 const $ = (sel) => document.querySelector(sel);
 const screens = {
-  home: $('#screen-home'), setup: $('#screen-setup'), invite: $('#screen-invite'),
-  join: $('#screen-join'), game: $('#screen-game'), timeup: $('#screen-timeup'),
-  win: $('#screen-win'), album: $('#screen-album'),
+  home: $('#screen-home'), profile: $('#screen-profile'), setup: $('#screen-setup'),
+  invite: $('#screen-invite'), join: $('#screen-join'), game: $('#screen-game'),
+  timeup: $('#screen-timeup'), win: $('#screen-win'), album: $('#screen-album'),
 };
-const MENU_SCREENS = new Set(['home', 'setup', 'album', 'invite', 'join']);
+const MENU_SCREENS = new Set(['home', 'profile', 'setup', 'album', 'invite', 'join']);
 
 function showScreen(name) {
   Object.values(screens).forEach((s) => s.classList.remove('active'));
   screens[name].classList.add('active');
   window.scrollTo(0, 0);
+  if (name === 'setup') renderProfileChip();
   if (MENU_SCREENS.has(name)) music.play('home');
 }
 function currentScreen() {
@@ -412,18 +419,18 @@ function renderAvatarPicker(id) {
 }
 
 function setupProfileControls() {
-  ['avatar-options', 'join-avatar-options'].forEach((id) => {
+  const pickers = ['profile-avatar-options', 'join-avatar-options'];
+  pickers.forEach((id) => {
     renderAvatarPicker(id);
     document.getElementById(id).addEventListener('click', (e) => {
       const b = e.target.closest('[data-avatar]');
       if (!b) return;
       storage.avatar = b.dataset.avatar;
       sound.play('click');
-      renderAvatarPicker('avatar-options');
-      renderAvatarPicker('join-avatar-options');
+      pickers.forEach(renderAvatarPicker);
     });
   });
-  const inputs = ['name-input', 'join-name-input'].map((id) => document.getElementById(id));
+  const inputs = ['profile-name-input', 'join-name-input'].map((id) => document.getElementById(id));
   inputs.forEach((el) => {
     el.value = storage.name;
     el.addEventListener('input', () => {
@@ -435,6 +442,32 @@ function setupProfileControls() {
 
 function myProfile() {
   return { name: storage.name, avatar: storage.avatar };
+}
+
+// Pede o nome antes de deixar continuar; devolve true se está preenchido
+function requireName(inputId) {
+  if (storage.name.trim()) return true;
+  const el = document.getElementById(inputId);
+  el.classList.remove('shake');
+  void el.offsetWidth;
+  el.classList.add('shake');
+  el.focus();
+  showToast(t('nameNeeded'));
+  sound.play('miss');
+  return false;
+}
+
+function renderProfileChip() {
+  $('#profile-chip-avatar').textContent = storage.avatar;
+  $('#profile-chip-name').textContent = storage.name;
+}
+
+// Vai para a preparação do jogo, passando pelo perfil se o nome estiver vazio
+function goSetup() {
+  if (!storage.name.trim()) { showScreen('profile'); return; }
+  renderProfileChip();
+  renderThemeOptions();
+  showScreen('setup');
 }
 
 // ---------- Configuração escolhida ----------
@@ -592,6 +625,7 @@ let joinHostId = null;
 
 function joinGame() {
   if (!joinHostId) return;
+  if (!requireName('join-name-input')) return;
   const btn = $('#btn-join');
   btn.disabled = true;
   $('#join-status').textContent = t('connecting');
@@ -1132,7 +1166,15 @@ function leaveGame() {
 
 // ---------- Navegação ----------
 
-$('#btn-go-setup').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
+$('#btn-go-setup').addEventListener('click', () => { sound.play('click'); showScreen('profile'); });
+$('#btn-profile-continue').addEventListener('click', () => {
+  if (!requireName('profile-name-input')) return;
+  sound.play('click');
+  renderProfileChip();
+  renderThemeOptions();
+  showScreen('setup');
+});
+$('#btn-edit-profile').addEventListener('click', () => { sound.play('click'); showScreen('profile'); });
 $('#btn-go-album').addEventListener('click', () => { sound.play('click'); renderAlbum(); showScreen('album'); });
 $('#btn-start').addEventListener('click', () => {
   sound.play('click');
@@ -1151,15 +1193,14 @@ $('#btn-join').addEventListener('click', () => { sound.play('click'); joinGame()
 $('#btn-play-again').addEventListener('click', () => {
   sound.play('click');
   if (game.online) leaveGame();
-  renderThemeOptions();
-  showScreen('setup');
+  goSetup();
 });
 $('#btn-win-album').addEventListener('click', () => {
   sound.play('click');
   renderAlbum(lastWin && lastWin.stickerId);
   showScreen('album');
 });
-$('#btn-album-play').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
+$('#btn-album-play').addEventListener('click', () => { sound.play('click'); goSetup(); });
 $('#btn-home').addEventListener('click', () => {
   sound.play('click');
   if (currentScreen() === 'game') leaveGame();

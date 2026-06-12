@@ -80,23 +80,38 @@
     </div>
   </main>
 
+  <!-- TELA: PERFIL (nome + avatar, antes de jogar) -->
+  <main id="screen-profile" class="screen">
+    <h2 class="screen-title" data-i18n="profileTitle">Quem é você? 🙋</h2>
+
+    <section class="setup-block">
+      <h3 data-i18n="yourName">Seu nome</h3>
+      <input type="text" id="profile-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
+    </section>
+
+    <section class="setup-block">
+      <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>
+      <div class="option-row avatar-row" id="profile-avatar-options"></div>
+    </section>
+
+    <button class="btn btn-big btn-play" id="btn-profile-continue"><span data-i18n="continueBtn">Continuar</span> ➡️</button>
+  </main>
+
   <!-- TELA: PREPARAR JOGO -->
   <main id="screen-setup" class="screen">
     <h2 class="screen-title" data-i18n="setupTitle">Preparar Jogo 🎮</h2>
 
-    <section class="setup-block">
-      <h3 data-i18n="yourName">Seu nome</h3>
-      <input type="text" id="name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
-      <div class="option-row avatar-row" id="avatar-options"></div>
-    </section>
+    <button class="chip profile-chip" id="btn-edit-profile">
+      <span id="profile-chip-avatar">🦁</span>
+      <span id="profile-chip-name"></span>
+      ✏️
+    </button>
 
     <section class="setup-block">
       <h3 data-i18n="qPlayers">Quantos jogadores?</h3>
       <div class="option-row" id="player-options">
-        <button class="opt selected" data-players="1"><span class="opt-emoji">🦁</span>1</button>
-        <button class="opt" data-players="2"><span class="opt-emoji">🦁🐸</span>2</button>
-        <button class="opt" data-players="3"><span class="opt-emoji">🦁🐸🐙</span>3</button>
-        <button class="opt" data-players="4"><span class="opt-emoji">🦁🐸🐙🦄</span>4</button>
+        <button class="opt selected" data-players="1"><span class="opt-emoji">🙋</span>1</button>
+        <button class="opt" data-players="2"><span class="opt-emoji">🙋👭</span>2</button>
       </div>
     </section>
 

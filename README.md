@@ -17,31 +17,32 @@ e acesse `http://localhost:8000`.
 ## ✨ O que tem no jogo
 
 - **1 a 4 jogadores** — no modo multijogador, quem acerta um par continua jogando; quem erra passa a vez. No final, vence quem encontrou mais pares!
-- **3 níveis de dificuldade**
-  - 🌱 Fácil — 6 pares (12 cartas)
-  - 🌟 Médio — 8 pares (16 cartas)
-  - 🔥 Difícil — 10 pares (20 cartas)
+- **3 níveis de dificuldade** — 🌱 Fácil (6 pares), 🌟 Médio (8 pares) e 🔥 Difícil (10 pares)
 - **4 temas de cartas** — Animais 🐶, Frutas 🍎, Espaço 🚀 e Oceano 🐠
+- **3 idiomas** 🌐 — Português 🇧🇷, Inglês 🇺🇸 e Francês 🇫🇷 (troca na hora)
+- **Tema claro ☀️ e escuro 🌙** — alterna com um toque
 - **Recompensas no final de cada partida** 🎁
-  - 🪙 **Moedas** — 2 por par encontrado + bônus do nível (quanto mais difícil, mais moedas)
-  - 📒 **Figurinha surpresa** — uma figurinha nova para o álbum a cada partida concluída
+  - 🪙 **Moedas** — 2 por par + bônus do nível (quanto mais difícil, mais moedas)
+  - 🎁 **Presente surpresa** — a criança **toca no presente** e a figurinha é revelada com animação e confete
   - ⭐ **Estrelas** no modo solo, conforme a eficiência (menos jogadas = mais estrelas)
-- **Álbum de figurinhas** com 24 figurinhas colecionáveis — complete o álbum e ganhe bônus de moedas!
-- **Sons e animações** — efeitos sonoros, cartas que viram em 3D, confete na vitória
-- Progresso (moedas e figurinhas) salvo no dispositivo automaticamente
+- **Álbum com 40 figurinhas** organizadas por categorias — Animais 🐾, Animais Marinhos 🌊, Comida 🍔, Fantasia 🦄 e Diversão 🎉 — com barra de progresso. Complete o álbum e ganhe bônus de moedas!
+- **Coruja mascote em CSS** 🦉 — pisca, flutua, fala e comemora a vitória jogando confete
+- **Fundo animado** com bolhas e estrelinhas, **figuras grandes e de tamanho uniforme** nas cartas
+- **Totalmente responsivo** — celular, tablet e computador, retrato ou paisagem
+- Progresso (moedas, figurinhas, idioma e tema) salvo no dispositivo automaticamente
 
 ## 🧒 Pensado para crianças
 
 - Botões grandes, cores vivas e emojis em vez de texto sempre que possível
 - Sem anúncios, sem compras, sem internet necessária depois de carregado
-- Botão de som 🔊/🔇 sempre visível
+- Controles de som 🔊, tema 🌙/☀️ e idioma 🌐 sempre à mão no topo
 
 ## 🛠️ Tecnologia
 
-HTML, CSS e JavaScript puros — sem dependências, sem build. Os sons são gerados com Web Audio API e o confete com Canvas, então não há nenhum arquivo de mídia para baixar.
+HTML, CSS e JavaScript puros — sem dependências, sem build. Os sons são gerados com Web Audio API, o confete com Canvas e a coruja é desenhada em CSS, então não há nenhum arquivo de mídia para baixar.
 
 ```
 index.html      → estrutura das telas
-css/style.css   → visual e animações
-js/app.js       → lógica do jogo, sons, confete e recompensas
+css/style.css   → visual, temas, coruja e animações
+js/app.js       → lógica do jogo, idiomas, sons, confete e recompensas
 ```

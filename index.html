@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Memória Mágica 🧠✨ — Jogo da Memória para Crianças</title>
-  <meta name="description" content="Jogo da memória divertido para crianças, com vários jogadores, níveis e recompensas!" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#4c1d95" />
+  <title>Memória Mágica 🧠✨</title>
+  <meta name="description" content="Jogo da memória divertido para crianças, com vários jogadores, níveis, idiomas e recompensas!" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,32 +13,79 @@
 </head>
 <body>
 
-  <!-- Barra superior: moedas + som -->
+  <!-- Fundo decorado e animado -->
+  <div class="bg-decor" aria-hidden="true">
+    <span class="blob b1"></span>
+    <span class="blob b2"></span>
+    <span class="blob b3"></span>
+    <span class="twinkle t1">⭐</span>
+    <span class="twinkle t2">✨</span>
+    <span class="twinkle t3">⭐</span>
+    <span class="twinkle t4">✨</span>
+    <span class="twinkle t5">💫</span>
+  </div>
+
+  <!-- Barra superior -->
   <header class="topbar">
-    <button id="btn-home" class="chip" title="Início" aria-label="Voltar ao início">🏠</button>
-    <div class="chip coins" id="coin-chip" title="Suas moedas">
+    <button id="btn-home" class="chip icon-chip" data-i18n-aria="home" aria-label="Início">🏠</button>
+
+    <div class="chip coins" id="coin-chip" data-i18n-aria="coins" aria-label="Moedas">
       <span class="coin-icon">🪙</span><span id="coin-count">0</span>
     </div>
-    <button id="btn-sound" class="chip" title="Ligar/desligar som" aria-label="Ligar ou desligar som">🔊</button>
+
+    <div class="topbar-right">
+      <div class="lang-wrap">
+        <button id="btn-lang" class="chip icon-chip" data-i18n-aria="language" aria-label="Idioma">🌐</button>
+        <div class="lang-menu" id="lang-menu" hidden>
+          <button data-lang="pt">🇧🇷 Português</button>
+          <button data-lang="en">🇺🇸 English</button>
+          <button data-lang="fr">🇫🇷 Français</button>
+        </div>
+      </div>
+      <button id="btn-theme" class="chip icon-chip" data-i18n-aria="theme" aria-label="Tema">🌙</button>
+      <button id="btn-sound" class="chip icon-chip" data-i18n-aria="sound" aria-label="Som">🔊</button>
+    </div>
   </header>
 
   <!-- TELA: INÍCIO -->
   <main id="screen-home" class="screen active">
-    <div class="mascot bounce">🦉</div>
-    <h1 class="title">Memória<br/><span>Mágica</span></h1>
-    <p class="subtitle">Encontre os pares, ganhe moedas e colecione figurinhas!</p>
+    <div class="owl-stage home-owl">
+      <span class="sparkle s1">✨</span>
+      <span class="sparkle s2">⭐</span>
+      <span class="sparkle s3">💫</span>
+      <div class="owl floating">
+        <div class="owl-ear left"></div>
+        <div class="owl-ear right"></div>
+        <div class="owl-body">
+          <div class="owl-wing left"></div>
+          <div class="owl-wing right"></div>
+          <div class="owl-belly"></div>
+          <div class="owl-eyes">
+            <div class="owl-eye"><span class="owl-pupil"></span></div>
+            <div class="owl-eye"><span class="owl-pupil"></span></div>
+          </div>
+          <div class="owl-beak"></div>
+        </div>
+        <div class="owl-foot left"></div>
+        <div class="owl-foot right"></div>
+      </div>
+      <div class="speech" id="owl-speech" data-i18n="owlGreeting">Olá! Vamos brincar?</div>
+    </div>
+
+    <h1 class="title"><span data-i18n="appName1">Memória</span><br/><span class="accent" data-i18n="appName2">Mágica</span></h1>
+    <p class="subtitle" data-i18n="subtitle">Encontre os pares, ganhe moedas e colecione figurinhas!</p>
     <div class="menu">
-      <button class="btn btn-big btn-play" id="btn-go-setup">▶️ Jogar</button>
-      <button class="btn btn-album" id="btn-go-album">📒 Álbum de Figurinhas</button>
+      <button class="btn btn-big btn-play" id="btn-go-setup">▶️ <span data-i18n="play">Jogar</span></button>
+      <button class="btn btn-album" id="btn-go-album">📒 <span data-i18n="album">Álbum de Figurinhas</span></button>
     </div>
   </main>
 
   <!-- TELA: PREPARAR JOGO -->
   <main id="screen-setup" class="screen">
-    <h2 class="screen-title">Preparar Jogo 🎮</h2>
+    <h2 class="screen-title" data-i18n="setupTitle">Preparar Jogo 🎮</h2>
 
     <section class="setup-block">
-      <h3>Quantos jogadores?</h3>
+      <h3 data-i18n="qPlayers">Quantos jogadores?</h3>
       <div class="option-row" id="player-options">
         <button class="opt selected" data-players="1"><span class="opt-emoji">🦁</span>1</button>
         <button class="opt" data-players="2"><span class="opt-emoji">🦁🐸</span>2</button>
@@ -47,25 +95,25 @@
     </section>
 
     <section class="setup-block">
-      <h3>Escolha o tema</h3>
+      <h3 data-i18n="qTheme">Escolha o tema</h3>
       <div class="option-row" id="theme-options">
-        <button class="opt selected" data-theme="animais"><span class="opt-emoji">🐶</span>Animais</button>
-        <button class="opt" data-theme="frutas"><span class="opt-emoji">🍎</span>Frutas</button>
-        <button class="opt" data-theme="espaco"><span class="opt-emoji">🚀</span>Espaço</button>
-        <button class="opt" data-theme="oceano"><span class="opt-emoji">🐠</span>Oceano</button>
+        <button class="opt selected" data-theme="animais"><span class="opt-emoji">🐶</span><span data-i18n="themeAnimais">Animais</span></button>
+        <button class="opt" data-theme="frutas"><span class="opt-emoji">🍎</span><span data-i18n="themeFrutas">Frutas</span></button>
+        <button class="opt" data-theme="espaco"><span class="opt-emoji">🚀</span><span data-i18n="themeEspaco">Espaço</span></button>
+        <button class="opt" data-theme="oceano"><span class="opt-emoji">🐠</span><span data-i18n="themeOceano">Oceano</span></button>
       </div>
     </section>
 
     <section class="setup-block">
-      <h3>Escolha o nível</h3>
+      <h3 data-i18n="qLevel">Escolha o nível</h3>
       <div class="option-row" id="level-options">
-        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span>Fácil<small>6 pares</small></button>
-        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span>Médio<small>8 pares</small></button>
-        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span>Difícil<small>10 pares</small></button>
+        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span><span data-i18n="levelFacil">Fácil</span><small>6 <span data-i18n="pairs">pares</span></small></button>
+        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span><span data-i18n="levelMedio">Médio</span><small>8 <span data-i18n="pairs">pares</span></small></button>
+        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span><span data-i18n="levelDificil">Difícil</span><small>10 <span data-i18n="pairs">pares</span></small></button>
       </div>
     </section>
 
-    <button class="btn btn-big btn-play" id="btn-start">Começar! 🎉</button>
+    <button class="btn btn-big btn-play" id="btn-start"><span data-i18n="start">Começar!</span> 🎉</button>
   </main>
 
   <!-- TELA: JOGO -->
@@ -74,7 +122,7 @@
     <div class="board" id="board"></div>
     <div class="game-footer">
       <span class="moves" id="moves-label"></span>
-      <button class="btn btn-small" id="btn-restart">🔄 Recomeçar</button>
+      <button class="btn btn-small" id="btn-restart">🔄 <span data-i18n="restart">Recomeçar</span></button>
     </div>
   </main>
 
@@ -82,36 +130,59 @@
   <main id="screen-win" class="screen">
     <canvas id="confetti"></canvas>
     <div class="win-card">
-      <div class="win-trophy bounce">🏆</div>
+      <div class="owl celebrate win-owl">
+        <div class="owl-ear left"></div>
+        <div class="owl-ear right"></div>
+        <div class="owl-body">
+          <div class="owl-wing left flap"></div>
+          <div class="owl-wing right flap"></div>
+          <div class="owl-belly"></div>
+          <div class="owl-eyes">
+            <div class="owl-eye"><span class="owl-pupil"></span></div>
+            <div class="owl-eye"><span class="owl-pupil"></span></div>
+          </div>
+          <div class="owl-beak"></div>
+        </div>
+      </div>
+
       <h2 id="win-title">Parabéns!</h2>
       <p id="win-subtitle"></p>
       <div class="stars" id="win-stars"></div>
 
-      <div class="rewards">
-        <div class="reward-box" id="reward-coins">
-          <div class="reward-emoji">🪙</div>
-          <div class="reward-label">Moedas</div>
-          <div class="reward-value" id="coins-earned">+0</div>
-        </div>
-        <div class="reward-box sticker-box" id="reward-sticker">
-          <div class="reward-emoji" id="sticker-earned">🎁</div>
-          <div class="reward-label" id="sticker-name">Figurinha nova!</div>
+      <div class="reward-box coins-box">
+        <div class="reward-emoji">🪙</div>
+        <div class="reward-label" data-i18n="coins">Moedas</div>
+        <div class="reward-value" id="coins-earned">+0</div>
+      </div>
+
+      <!-- Presente para tocar e revelar a figurinha -->
+      <div class="gift-area" id="gift-area">
+        <button class="gift" id="gift-box" aria-label="Abrir presente">
+          <span class="gift-glow"></span>
+          <span class="gift-emoji">🎁</span>
+          <span class="gift-hint" id="gift-hint" data-i18n="giftTap">Toque para abrir!</span>
+        </button>
+        <div class="sticker-reveal" id="sticker-reveal" hidden>
+          <div class="reveal-label" id="reveal-label" data-i18n="newSticker">Figurinha nova:</div>
+          <div class="reveal-emoji" id="reveal-emoji">🎁</div>
+          <div class="reveal-name" id="reveal-name"></div>
         </div>
       </div>
 
       <div class="win-buttons">
-        <button class="btn btn-big btn-play" id="btn-play-again">Jogar de novo 🔁</button>
-        <button class="btn btn-album" id="btn-win-album">Ver Álbum 📒</button>
+        <button class="btn btn-big btn-play" id="btn-play-again">🔁 <span data-i18n="playAgain">Jogar de novo</span></button>
+        <button class="btn btn-album" id="btn-win-album">📒 <span data-i18n="seeAlbum">Ver Álbum</span></button>
       </div>
     </div>
   </main>
 
   <!-- TELA: ÁLBUM DE FIGURINHAS -->
   <main id="screen-album" class="screen">
-    <h2 class="screen-title">Álbum de Figurinhas 📒</h2>
+    <h2 class="screen-title" data-i18n="albumTitle">Álbum de Figurinhas 📒</h2>
     <p class="album-progress" id="album-progress"></p>
-    <div class="album-grid" id="album-grid"></div>
-    <button class="btn btn-big btn-play" id="btn-album-play">Jogar para ganhar mais! ▶️</button>
+    <div class="album-bar"><span id="album-bar-fill"></span></div>
+    <div id="album-content"></div>
+    <button class="btn btn-big btn-play" id="btn-album-play"><span data-i18n="albumPlay">Jogar para ganhar mais!</span> ▶️</button>
   </main>
 
   <script src="js/app.js"></script>

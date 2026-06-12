@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Memória Mágica 🧠✨ — Jogo da Memória para Crianças</title>
+  <meta name="description" content="Jogo da memória divertido para crianças, com vários jogadores, níveis e recompensas!" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- Barra superior: moedas + som -->
+  <header class="topbar">
+    <button id="btn-home" class="chip" title="Início" aria-label="Voltar ao início">🏠</button>
+    <div class="chip coins" id="coin-chip" title="Suas moedas">
+      <span class="coin-icon">🪙</span><span id="coin-count">0</span>
+    </div>
+    <button id="btn-sound" class="chip" title="Ligar/desligar som" aria-label="Ligar ou desligar som">🔊</button>
+  </header>
+
+  <!-- TELA: INÍCIO -->
+  <main id="screen-home" class="screen active">
+    <div class="mascot bounce">🦉</div>
+    <h1 class="title">Memória<br/><span>Mágica</span></h1>
+    <p class="subtitle">Encontre os pares, ganhe moedas e colecione figurinhas!</p>
+    <div class="menu">
+      <button class="btn btn-big btn-play" id="btn-go-setup">▶️ Jogar</button>
+      <button class="btn btn-album" id="btn-go-album">📒 Álbum de Figurinhas</button>
+    </div>
+  </main>
+
+  <!-- TELA: PREPARAR JOGO -->
+  <main id="screen-setup" class="screen">
+    <h2 class="screen-title">Preparar Jogo 🎮</h2>
+
+    <section class="setup-block">
+      <h3>Quantos jogadores?</h3>
+      <div class="option-row" id="player-options">
+        <button class="opt selected" data-players="1"><span class="opt-emoji">🦁</span>1</button>
+        <button class="opt" data-players="2"><span class="opt-emoji">🦁🐸</span>2</button>
+        <button class="opt" data-players="3"><span class="opt-emoji">🦁🐸🐙</span>3</button>
+        <button class="opt" data-players="4"><span class="opt-emoji">🦁🐸🐙🦄</span>4</button>
+      </div>
+    </section>
+
+    <section class="setup-block">
+      <h3>Escolha o tema</h3>
+      <div class="option-row" id="theme-options">
+        <button class="opt selected" data-theme="animais"><span class="opt-emoji">🐶</span>Animais</button>
+        <button class="opt" data-theme="frutas"><span class="opt-emoji">🍎</span>Frutas</button>
+        <button class="opt" data-theme="espaco"><span class="opt-emoji">🚀</span>Espaço</button>
+        <button class="opt" data-theme="oceano"><span class="opt-emoji">🐠</span>Oceano</button>
+      </div>
+    </section>
+
+    <section class="setup-block">
+      <h3>Escolha o nível</h3>
+      <div class="option-row" id="level-options">
+        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span>Fácil<small>6 pares</small></button>
+        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span>Médio<small>8 pares</small></button>
+        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span>Difícil<small>10 pares</small></button>
+      </div>
+    </section>
+
+    <button class="btn btn-big btn-play" id="btn-start">Começar! 🎉</button>
+  </main>
+
+  <!-- TELA: JOGO -->
+  <main id="screen-game" class="screen">
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="board" id="board"></div>
+    <div class="game-footer">
+      <span class="moves" id="moves-label"></span>
+      <button class="btn btn-small" id="btn-restart">🔄 Recomeçar</button>
+    </div>
+  </main>
+
+  <!-- TELA: VITÓRIA / RECOMPENSAS -->
+  <main id="screen-win" class="screen">
+    <canvas id="confetti"></canvas>
+    <div class="win-card">
+      <div class="win-trophy bounce">🏆</div>
+      <h2 id="win-title">Parabéns!</h2>
+      <p id="win-subtitle"></p>
+      <div class="stars" id="win-stars"></div>
+
+      <div class="rewards">
+        <div class="reward-box" id="reward-coins">
+          <div class="reward-emoji">🪙</div>
+          <div class="reward-label">Moedas</div>
+          <div class="reward-value" id="coins-earned">+0</div>
+        </div>
+        <div class="reward-box sticker-box" id="reward-sticker">
+          <div class="reward-emoji" id="sticker-earned">🎁</div>
+          <div class="reward-label" id="sticker-name">Figurinha nova!</div>
+        </div>
+      </div>
+
+      <div class="win-buttons">
+        <button class="btn btn-big btn-play" id="btn-play-again">Jogar de novo 🔁</button>
+        <button class="btn btn-album" id="btn-win-album">Ver Álbum 📒</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- TELA: ÁLBUM DE FIGURINHAS -->
+  <main id="screen-album" class="screen">
+    <h2 class="screen-title">Álbum de Figurinhas 📒</h2>
+    <p class="album-progress" id="album-progress"></p>
+    <div class="album-grid" id="album-grid"></div>
+    <button class="btn btn-big btn-play" id="btn-album-play">Jogar para ganhar mais! ▶️</button>
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

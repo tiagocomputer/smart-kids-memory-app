@@ -11,7 +11,14 @@ const I18N = {
     owlGreeting: 'Olá! Vamos brincar?',
     play: 'Jogar', album: 'Álbum de Figurinhas',
     setupTitle: 'Preparar Jogo 🎮',
+    yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar',
     qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
+    howToPlay2: 'Como jogar em 2?', sameDevice: 'Mesmo aparelho', viaQR: 'Outro celular (QR)',
+    inviteTitle: 'Convide o Jogador 2 📱',
+    inviteHint: 'Peça para o jogador 2 escanear este código com a câmera do celular',
+    waitingPlayer: 'Esperando o jogador 2…', connecting: 'Conectando…',
+    joinTitle: 'Entrar no jogo 🎮', joinBtn: 'Entrar!',
+    connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
@@ -49,7 +56,14 @@ const I18N = {
     owlGreeting: "Hi! Let's play?",
     play: 'Play', album: 'Sticker Album',
     setupTitle: 'Set Up Game 🎮',
+    yourName: 'Your name', chooseAvatar: 'Choose your avatar',
     qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
+    howToPlay2: 'How to play with 2?', sameDevice: 'Same device', viaQR: 'Another phone (QR)',
+    inviteTitle: 'Invite Player 2 📱',
+    inviteHint: 'Ask player 2 to scan this code with their phone camera',
+    waitingPlayer: 'Waiting for player 2…', connecting: 'Connecting…',
+    joinTitle: 'Join the game 🎮', joinBtn: 'Join!',
+    connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
@@ -87,7 +101,14 @@ const I18N = {
     owlGreeting: 'Salut! On joue?',
     play: 'Jouer', album: "Album d'autocollants",
     setupTitle: 'Préparer le jeu 🎮',
+    yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar',
     qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
+    howToPlay2: 'Comment jouer à 2?', sameDevice: 'Même appareil', viaQR: 'Autre téléphone (QR)',
+    inviteTitle: 'Invite le Joueur 2 📱',
+    inviteHint: 'Demande au joueur 2 de scanner ce code avec son téléphone',
+    waitingPlayer: 'En attente du joueur 2…', connecting: 'Connexion…',
+    joinTitle: 'Rejoindre le jeu 🎮', joinBtn: 'Entrer!',
+    connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
@@ -135,6 +156,10 @@ function t(key, vars) {
 }
 function tSticker(id) { return (I18N[lang].sticker[id] || I18N.pt.sticker[id] || id); }
 
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 // ---------- Dados do jogo ----------
 
 const THEMES = {
@@ -166,8 +191,9 @@ const LEVELS = {
   dificil: { pairs: 12, cols: 6, bonus: 20, time: 160, key: 'levelDificil' },
 };
 const EXTRA_TIME_PER_PLAYER = 40; // segundos a mais por jogador adicional
+const CONSOLATION_COINS = 3;      // moedas de consolação para quem perde no modo online
 
-const AVATARS = ['🦁', '🐸', '🐙', '🦄'];
+const AVATAR_CHOICES = ['🦁', '🐸', '🐙', '🦄', '🐯', '🐼', '🦊', '🤖'];
 const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 
 // Figurinhas colecionáveis, organizadas por categoria
@@ -217,6 +243,13 @@ const storage = {
   set sound(on) { localStorage.setItem('mm_sound', on ? 'on' : 'off'); },
   get theme() { return localStorage.getItem('mm_theme') || 'dark'; },
   set theme(v) { localStorage.setItem('mm_theme', v); },
+  get name() { return (localStorage.getItem('mm_name') || '').slice(0, 12); },
+  set name(v) { localStorage.setItem('mm_name', String(v).slice(0, 12)); },
+  get avatar() {
+    const a = localStorage.getItem('mm_avatar');
+    return AVATAR_CHOICES.includes(a) ? a : AVATAR_CHOICES[0];
+  },
+  set avatar(v) { if (AVATAR_CHOICES.includes(v)) localStorage.setItem('mm_avatar', v); },
 };
 
 function isThemeUnlocked(id) {
@@ -267,13 +300,16 @@ const sound = (() => {
   return { play, tone };
 })();
 
-// ---------- Música de fundo (uma melodia por nível) ----------
+// ---------- Música de fundo ----------
 
 const music = (() => {
   // Frequências das notas
   const C4=261.6, D4=293.7, E4=329.6, F4=349.2, G4=392, A4=440, B4=493.9,
         C5=523.3, D5=587.3, E5=659.3, G5=784, _=0;
   const SONGS = {
+    // Tela principal: animada e convidativa
+    home:    { tempo: 210, type: 'triangle', vol: 0.045,
+               notes: [C5,_,G4,A4, B4,C5,D5,_, E5,D5,C5,B4, C5,_,G4,_] },
     // Fácil: melodia calminha e alegre
     facil:   { tempo: 300, type: 'triangle', vol: 0.045,
                notes: [C4,E4,G4,E4, F4,A4,C5,A4, G4,B4,D5,B4, C5,_,G4,_] },
@@ -284,9 +320,11 @@ const music = (() => {
     dificil: { tempo: 175, type: 'square', vol: 0.028,
                notes: [A4,A4,C5,A4, E5,_,D5,C5, A4,A4,C5,E5, G5,_,E5,_] },
   };
-  let gen = 0, timer = null;
+  let gen = 0, timer = null, current = null;
   function play(name) {
+    if (current === name && timer) return; // já está tocando essa música
     stop();
+    current = name;
     if (!storage.sound || !SONGS[name]) return;
     const song = SONGS[name];
     const myGen = ++gen;
@@ -298,25 +336,37 @@ const music = (() => {
     };
     loop();
   }
-  function stop() { gen++; if (timer) { clearTimeout(timer); timer = null; } }
+  function stop() { gen++; current = null; if (timer) { clearTimeout(timer); timer = null; } }
   return { play, stop };
 })();
 
-// ---------- Elementos ----------
+// ---------- Elementos e telas ----------
 
 const $ = (sel) => document.querySelector(sel);
 const screens = {
-  home: $('#screen-home'), setup: $('#screen-setup'), game: $('#screen-game'),
-  timeup: $('#screen-timeup'), win: $('#screen-win'), album: $('#screen-album'),
+  home: $('#screen-home'), setup: $('#screen-setup'), invite: $('#screen-invite'),
+  join: $('#screen-join'), game: $('#screen-game'), timeup: $('#screen-timeup'),
+  win: $('#screen-win'), album: $('#screen-album'),
 };
+const MENU_SCREENS = new Set(['home', 'setup', 'album', 'invite', 'join']);
 
 function showScreen(name) {
   Object.values(screens).forEach((s) => s.classList.remove('active'));
   screens[name].classList.add('active');
   window.scrollTo(0, 0);
+  if (MENU_SCREENS.has(name)) music.play('home');
 }
 function currentScreen() {
   return Object.keys(screens).find((k) => screens[k].classList.contains('active'));
+}
+
+let toastTimer = null;
+function showToast(msg) {
+  const el = $('#toast');
+  el.textContent = msg;
+  el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 3500);
 }
 
 // ---------- Idioma e tema visual ----------
@@ -325,6 +375,7 @@ function applyI18n() {
   document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => { el.placeholder = t(el.dataset.i18nPlaceholder); });
   document.querySelectorAll('#lang-menu button').forEach((b) => b.classList.toggle('active', b.dataset.lang === lang));
 }
 
@@ -351,9 +402,44 @@ function toggleTheme() {
   applyTheme();
 }
 
+// ---------- Perfil do jogador (nome + avatar) ----------
+
+function renderAvatarPicker(id) {
+  const row = document.getElementById(id);
+  row.innerHTML = AVATAR_CHOICES.map((a) =>
+    `<button class="opt avatar-opt ${a === storage.avatar ? 'selected' : ''}" data-avatar="${a}" aria-label="${a}">${a}</button>`
+  ).join('');
+}
+
+function setupProfileControls() {
+  ['avatar-options', 'join-avatar-options'].forEach((id) => {
+    renderAvatarPicker(id);
+    document.getElementById(id).addEventListener('click', (e) => {
+      const b = e.target.closest('[data-avatar]');
+      if (!b) return;
+      storage.avatar = b.dataset.avatar;
+      sound.play('click');
+      renderAvatarPicker('avatar-options');
+      renderAvatarPicker('join-avatar-options');
+    });
+  });
+  const inputs = ['name-input', 'join-name-input'].map((id) => document.getElementById(id));
+  inputs.forEach((el) => {
+    el.value = storage.name;
+    el.addEventListener('input', () => {
+      storage.name = el.value;
+      inputs.forEach((o) => { if (o !== el) o.value = storage.name; });
+    });
+  });
+}
+
+function myProfile() {
+  return { name: storage.name, avatar: storage.avatar };
+}
+
 // ---------- Configuração escolhida ----------
 
-const config = { players: 1, theme: 'animais', level: 'facil' };
+const config = { players: 1, theme: 'animais', level: 'facil', mode: 'local' };
 
 function bindOptionRow(rowId, dataKey, onPick) {
   const row = document.getElementById(rowId);
@@ -366,7 +452,11 @@ function bindOptionRow(rowId, dataKey, onPick) {
     onPick(btn.dataset[dataKey]);
   });
 }
-bindOptionRow('player-options', 'players', (v) => (config.players = parseInt(v, 10)));
+bindOptionRow('player-options', 'players', (v) => {
+  config.players = parseInt(v, 10);
+  $('#mode-block').hidden = config.players !== 2;
+});
+bindOptionRow('mode-options', 'mode', (v) => (config.mode = v));
 bindOptionRow('level-options', 'level', (v) => (config.level = v));
 
 // ---------- Fases (temas) com cadeado ----------
@@ -442,9 +532,169 @@ $('#btn-unlock-yes').addEventListener('click', () => {
 $('#btn-unlock-no').addEventListener('click', () => { sound.play('click'); closeUnlockModal(); });
 $('#unlock-modal').addEventListener('click', (e) => { if (e.target.id === 'unlock-modal') closeUnlockModal(); });
 
+// ---------- Multijogador online (QR + WebRTC via PeerJS) ----------
+
+let peer = null;
+let conn = null;
+let netGuestProfile = null;
+const remoteQueue = [];
+
+function netDestroy() {
+  try { if (conn) conn.close(); } catch { /* já fechada */ }
+  try { if (peer) peer.destroy(); } catch { /* já destruído */ }
+  peer = null;
+  conn = null;
+  netGuestProfile = null;
+}
+function netSend(msg) {
+  try { if (conn && conn.open) conn.send(msg); } catch { /* conexão caiu; o close trata */ }
+}
+
+function sanitizeProfile(p) {
+  const name = String((p && p.name) || '').replace(/[<>&"']/g, '').slice(0, 12);
+  const avatar = AVATAR_CHOICES.includes(p && p.avatar) ? p.avatar : '🐸';
+  return { name, avatar };
+}
+
+function hostInvite() {
+  netDestroy();
+  showScreen('invite');
+  $('#qr-box').innerHTML = '';
+  $('#invite-status').textContent = t('connecting');
+  peer = new Peer();
+  peer.on('open', (id) => {
+    const url = `${location.origin}${location.pathname}?join=${encodeURIComponent(id)}`;
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    $('#qr-box').innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2 });
+    $('#invite-status').textContent = t('waitingPlayer');
+  });
+  peer.on('connection', (c) => {
+    if (conn) { try { c.close(); } catch { /* lotado */ } return; }
+    conn = c;
+    conn.on('data', handleNetData);
+    conn.on('close', handleDisconnect);
+    conn.on('error', handleDisconnect);
+  });
+  peer.on('error', () => {
+    if (currentScreen() === 'invite') {
+      showToast(t('connLost'));
+      netDestroy();
+      showScreen('setup');
+    } else {
+      handleDisconnect();
+    }
+  });
+}
+
+let joinHostId = null;
+
+function joinGame() {
+  if (!joinHostId) return;
+  const btn = $('#btn-join');
+  btn.disabled = true;
+  $('#join-status').textContent = t('connecting');
+  netDestroy();
+  peer = new Peer();
+  peer.on('open', () => {
+    conn = peer.connect(joinHostId, { reliable: true });
+    conn.on('open', () => {
+      $('#join-status').textContent = t('waitingPlayer');
+      netSend({ type: 'hello', ...myProfile() });
+    });
+    conn.on('data', handleNetData);
+    conn.on('close', handleDisconnect);
+    conn.on('error', handleDisconnect);
+  });
+  peer.on('error', () => {
+    showToast(t('connLost'));
+    netDestroy();
+    btn.disabled = false;
+    if (currentScreen() === 'join') $('#join-status').textContent = '';
+  });
+}
+
+function hostStartMatch() {
+  const level = LEVELS[config.level];
+  // Baralho determinístico enviado como índices do tema (seguro e leve)
+  const idxs = shuffle([...THEMES[config.theme].keys()]).slice(0, level.pairs);
+  const deckIdx = shuffle([...idxs, ...idxs]);
+  const profiles = [sanitizeProfile(myProfile()), netGuestProfile];
+  netSend({ type: 'start', theme: config.theme, level: config.level, deck: deckIdx, profiles });
+  startGame({ online: true, myIndex: 0, deck: deckIdx, profiles });
+}
+
+function handleNetData(data) {
+  if (!data || typeof data !== 'object') return;
+  switch (data.type) {
+    case 'hello': // host recebe o perfil do convidado e começa a partida
+      if (currentScreen() !== 'invite') return;
+      netGuestProfile = sanitizeProfile(data);
+      hostStartMatch();
+      break;
+    case 'start': { // convidado recebe o baralho e os perfis
+      if (!THEMES[data.theme] || !LEVELS[data.level] || !Array.isArray(data.deck)) return;
+      const nPairs = LEVELS[data.level].pairs;
+      const deck = data.deck.map((i) => parseInt(i, 10)).filter((i) => i >= 0 && i < 12);
+      if (deck.length !== nPairs * 2) return;
+      config.theme = data.theme;
+      config.level = data.level;
+      const profiles = (Array.isArray(data.profiles) ? data.profiles : []).slice(0, 2).map(sanitizeProfile);
+      while (profiles.length < 2) profiles.push({ name: '', avatar: '🐸' });
+      startGame({ online: true, myIndex: 1, deck, profiles });
+      break;
+    }
+    case 'flip':
+      applyRemoteFlip(parseInt(data.idx, 10));
+      break;
+    case 'bye':
+      handleDisconnect();
+      break;
+  }
+}
+
+function handleDisconnect() {
+  const cur = currentScreen();
+  if (cur === 'game' && game.online && !game.over) {
+    showToast(t('connLost'));
+    leaveGame();
+    showScreen('home');
+  } else if (cur === 'invite') {
+    showToast(t('connLost'));
+    netDestroy();
+    showScreen('setup');
+  } else if (cur === 'join') {
+    showToast(t('connLost'));
+    netDestroy();
+    $('#btn-join').disabled = false;
+    $('#join-status').textContent = '';
+  } else {
+    netDestroy();
+  }
+}
+
+function applyRemoteFlip(idx) {
+  if (!game.online || game.over || !Number.isInteger(idx)) return;
+  if (game.lock) { remoteQueue.push(idx); return; }
+  const el = $('#board').children[idx];
+  if (el) flipCard(idx, el, true);
+}
+
+function drainRemoteQueue() {
+  while (!game.lock && !game.over && remoteQueue.length) {
+    const idx = remoteQueue.shift();
+    const el = $('#board').children[idx];
+    if (el) flipCard(idx, el, true);
+  }
+}
+
 // ---------- Estado da partida ----------
 
-const game = { players: [], current: 0, deck: [], flipped: [], lock: false, over: false, moves: 0, matchedPairs: 0, totalPairs: 0 };
+const game = {
+  players: [], current: 0, deck: [], flipped: [], lock: false, over: false,
+  moves: 0, matchedPairs: 0, totalPairs: 0, online: false, myIndex: 0,
+};
 let lastWin = null;
 
 function shuffle(arr) {
@@ -456,23 +706,55 @@ function shuffle(arr) {
   return a;
 }
 
-function startGame() {
+function startGame(opts = {}) {
   const level = LEVELS[config.level];
-  const emojis = shuffle(THEMES[config.theme]).slice(0, level.pairs);
-  game.players = Array.from({ length: config.players }, (_, i) => ({ key: PLAYER_KEYS[i], avatar: AVATARS[i], pairs: 0 }));
+  game.online = !!opts.online;
+  game.myIndex = opts.myIndex ?? 0;
+  remoteQueue.length = 0;
+
+  let deckEmojis;
+  if (opts.deck) {
+    deckEmojis = opts.deck.map((i) => THEMES[config.theme][i]);
+  } else {
+    const emojis = shuffle(THEMES[config.theme]).slice(0, level.pairs);
+    deckEmojis = shuffle([...emojis, ...emojis]);
+  }
+
+  if (game.online) {
+    game.players = opts.profiles.map((p, i) => ({
+      key: PLAYER_KEYS[i], avatar: p.avatar, name: p.name || null, pairs: 0,
+    }));
+  } else {
+    // Jogador 1 usa o perfil salvo; os demais recebem avatares diferentes
+    const mine = storage.avatar;
+    const others = AVATAR_CHOICES.filter((a) => a !== mine);
+    game.players = Array.from({ length: config.players }, (_, i) => ({
+      key: PLAYER_KEYS[i],
+      avatar: i === 0 ? mine : others[i - 1],
+      name: i === 0 ? (storage.name || null) : null,
+      pairs: 0,
+    }));
+  }
+
   game.current = 0;
-  game.deck = shuffle([...emojis, ...emojis]).map((emoji) => ({ emoji, matched: false }));
+  game.deck = deckEmojis.map((emoji) => ({ emoji, matched: false }));
   game.flipped = [];
   game.lock = false;
   game.over = false;
   game.moves = 0;
   game.matchedPairs = 0;
   game.totalPairs = level.pairs;
+
   renderBoard(level);
   renderScoreboard();
   updateMoves();
   showScreen('game');
-  startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
+
+  // Sem cronômetro no modo online (os dois aparelhos jogam no mesmo ritmo)
+  $('#timer-wrap').hidden = game.online;
+  if (game.online) stopTimer();
+  else startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
+
   music.play(config.level);
 }
 
@@ -496,6 +778,8 @@ function renderBoard(level) {
   });
 }
 
+function playerLabel(p) { return p.name ? esc(p.name) : t(p.key); }
+
 function renderScoreboard() {
   const sb = $('#scoreboard');
   if (game.players.length === 1) {
@@ -507,8 +791,8 @@ function renderScoreboard() {
     return;
   }
   sb.innerHTML = game.players.map((p, i) => `
-      <div class="player-tag ${i === game.current ? 'turn' : ''}">
-        <span class="avatar">${p.avatar}</span>${t(p.key)}
+      <div class="player-tag ${i === game.current ? 'turn' : ''} ${game.online && i === game.myIndex ? 'me' : ''}">
+        <span class="avatar">${p.avatar}</span>${playerLabel(p)}
         <span class="score">${p.pairs}</span>
       </div>`).join('');
 }
@@ -555,20 +839,28 @@ function timeUp() {
   showScreen('timeup');
 }
 
-// Pausa o cronômetro e a música quando a aba fica em segundo plano
+// Pausa cronômetro/música quando a aba fica em segundo plano
 document.addEventListener('visibilitychange', () => {
+  const cur = currentScreen();
   if (document.hidden) {
-    if (currentScreen() === 'game') { stopTimer(); music.stop(); }
-  } else if (currentScreen() === 'game' && !game.over && timeLeft > 0) {
-    timerInt = setInterval(timerTick, 1000);
+    music.stop();
+    if (cur === 'game') stopTimer();
+  } else if (cur === 'game' && !game.over) {
+    if (!game.online && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
     music.play(config.level);
+  } else if (MENU_SCREENS.has(cur)) {
+    music.play('home');
   }
 });
 
 // ---------- Virar cartas ----------
 
-function flipCard(idx, el) {
+function flipCard(idx, el, remote = false) {
   if (game.lock || game.over || game.deck[idx].matched || game.flipped.includes(idx)) return;
+  // No modo online, cada um só joga na sua vez
+  if (game.online && !remote && game.current !== game.myIndex) return;
+  if (game.online && !remote) netSend({ type: 'flip', idx });
+
   sound.play('flip');
   el.classList.add('flipped');
   game.flipped.push(idx);
@@ -596,6 +888,7 @@ function flipCard(idx, el) {
       game.lock = false;
       renderScoreboard();
       if (game.matchedPairs === game.totalPairs) setTimeout(endGame, 700);
+      else drainRemoteQueue();
     }, 450);
   } else {
     setTimeout(() => {
@@ -609,6 +902,7 @@ function flipCard(idx, el) {
         game.lock = false;
         game.current = (game.current + 1) % game.players.length;
         renderScoreboard();
+        drainRemoteQueue();
       }, 600);
     }, 700);
   }
@@ -623,49 +917,59 @@ function endGame() {
   music.stop();
 
   const level = LEVELS[config.level];
-  const timeBonus = Math.max(0, Math.floor(timeLeft / 5));
-  const coinsEarned = game.totalPairs * 2 + level.bonus + timeBonus;
-  storage.coins += coinsEarned;
-
-  // Sorteia uma figurinha que ainda não foi coletada
-  const owned = storage.stickers;
-  const missing = STICKERS.filter((s) => !owned.includes(s.id));
-  let newSticker = null;
-  let bonusCoins = 0;
-  if (missing.length > 0) {
-    newSticker = missing[Math.floor(Math.random() * missing.length)];
-    storage.stickers = [...owned, newSticker.id];
-  } else {
-    bonusCoins = ALL_STICKERS_BONUS;
-    storage.coins += bonusCoins;
-  }
-  updateCoinChip();
 
   let result = null;
   if (game.players.length > 1) {
     const best = Math.max(...game.players.map((p) => p.pairs));
-    const winners = game.players.filter((p) => p.pairs === best);
+    const winners = game.players
+      .map((p, i) => ({ ...p, index: i }))
+      .filter((p) => p.pairs === best);
     result = {
       tie: winners.length > 1,
+      winnerIndex: winners[0].index,
       winnerKey: winners[0].key,
+      winnerName: winners[0].name,
       winnerAvatar: winners[0].avatar,
       scores: game.players.map((p) => ({ avatar: p.avatar, pairs: p.pairs })),
     };
   }
 
+  // No modo online, as moedas vão para quem venceu (empate: os dois ganham)
+  const iWin = !(game.online && result) || result.tie || result.winnerIndex === game.myIndex;
+  const timeBonus = (!game.online && timeLeft > 0) ? Math.floor(timeLeft / 5) : 0;
+  const coinsEarned = iWin ? game.totalPairs * 2 + level.bonus + timeBonus : CONSOLATION_COINS;
+  storage.coins += coinsEarned;
+
+  // Figurinha surpresa só para quem venceu
+  let newSticker = null;
+  let bonusCoins = 0;
+  if (iWin) {
+    const owned = storage.stickers;
+    const missing = STICKERS.filter((s) => !owned.includes(s.id));
+    if (missing.length > 0) {
+      newSticker = missing[Math.floor(Math.random() * missing.length)];
+      storage.stickers = [...owned, newSticker.id];
+    } else {
+      bonusCoins = ALL_STICKERS_BONUS;
+      storage.coins += bonusCoins;
+    }
+  }
+  updateCoinChip();
+
   lastWin = {
     coinsEarned, timeBonus, moves: game.moves, totalPairs: game.totalPairs,
     stickerId: newSticker ? newSticker.id : null,
     stickerEmoji: newSticker ? newSticker.emoji : null,
-    bonusCoins, result, revealed: false,
+    bonusCoins, result, iWin, revealed: false,
   };
 
+  $('#gift-area').hidden = !iWin;
   preparePack();
   renderWinTexts();
   showScreen('win');
-  sound.play('win');
-  setTimeout(() => sound.play('coin'), 700);
-  launchConfetti(4500);
+  sound.play(iWin ? 'win' : 'miss');
+  if (iWin) setTimeout(() => sound.play('coin'), 700);
+  launchConfetti(iWin ? 4500 : 1500);
 }
 
 function renderWinTexts() {
@@ -676,7 +980,8 @@ function renderWinTexts() {
   const starsEl = $('#win-stars');
 
   if (w.result) {
-    title.textContent = w.result.tie ? t('tie') : t('winnerWon', { name: w.result.winnerAvatar + ' ' + t(w.result.winnerKey) });
+    const winnerLabel = w.result.winnerName ? esc(w.result.winnerName) : t(w.result.winnerKey);
+    title.textContent = w.result.tie ? t('tie') : t('winnerWon', { name: w.result.winnerAvatar + ' ' + winnerLabel });
     subtitle.textContent = w.result.scores.map((s) => `${s.avatar} ${s.pairs}`).join('  ·  ');
     starsEl.innerHTML = '';
   } else {
@@ -687,6 +992,7 @@ function renderWinTexts() {
     starsEl.innerHTML = [1, 2, 3].map((n) => `<span class="${n <= stars ? '' : 'dim'}">⭐</span>`).join('');
   }
 
+  $('#coins-label').textContent = w.iWin ? t('coins') : t('wellPlayed');
   $('#coins-earned').textContent = `+${w.coinsEarned}`;
   const tb = $('#time-bonus');
   if (w.timeBonus > 0) {
@@ -817,17 +1123,37 @@ function leaveGame() {
   stopTimer();
   music.stop();
   game.over = true;
+  if (game.online) {
+    netSend({ type: 'bye' });
+    netDestroy();
+    game.online = false;
+  }
 }
 
 // ---------- Navegação ----------
 
 $('#btn-go-setup').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
 $('#btn-go-album').addEventListener('click', () => { sound.play('click'); renderAlbum(); showScreen('album'); });
-$('#btn-start').addEventListener('click', () => { sound.play('click'); startGame(); });
-$('#btn-restart').addEventListener('click', () => { sound.play('click'); startGame(); });
+$('#btn-start').addEventListener('click', () => {
+  sound.play('click');
+  if (config.players === 2 && config.mode === 'online') hostInvite();
+  else startGame();
+});
+$('#btn-restart').addEventListener('click', () => {
+  sound.play('click');
+  if (game.online) { leaveGame(); showScreen('setup'); }
+  else startGame();
+});
 $('#btn-try-again').addEventListener('click', () => { sound.play('click'); startGame(); });
 $('#btn-timeup-home').addEventListener('click', () => { sound.play('click'); showScreen('home'); });
-$('#btn-play-again').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
+$('#btn-invite-cancel').addEventListener('click', () => { sound.play('click'); netDestroy(); showScreen('setup'); });
+$('#btn-join').addEventListener('click', () => { sound.play('click'); joinGame(); });
+$('#btn-play-again').addEventListener('click', () => {
+  sound.play('click');
+  if (game.online) leaveGame();
+  renderThemeOptions();
+  showScreen('setup');
+});
 $('#btn-win-album').addEventListener('click', () => {
   sound.play('click');
   renderAlbum(lastWin && lastWin.stickerId);
@@ -837,6 +1163,7 @@ $('#btn-album-play').addEventListener('click', () => { sound.play('click'); rend
 $('#btn-home').addEventListener('click', () => {
   sound.play('click');
   if (currentScreen() === 'game') leaveGame();
+  netDestroy();
   showScreen('home');
 });
 
@@ -846,8 +1173,12 @@ $('#btn-sound').addEventListener('click', () => {
   storage.sound = !storage.sound;
   updateSoundButton();
   sound.play('click');
-  if (storage.sound && currentScreen() === 'game' && !game.over) music.play(config.level);
-  else music.stop();
+  music.stop();
+  const cur = currentScreen();
+  if (storage.sound) {
+    if (cur === 'game' && !game.over) music.play(config.level);
+    else if (MENU_SCREENS.has(cur)) music.play('home');
+  }
 });
 $('#btn-theme').addEventListener('click', () => { sound.play('click'); toggleTheme(); });
 
@@ -863,10 +1194,27 @@ langMenu.addEventListener('click', (e) => {
 });
 document.addEventListener('click', () => { langMenu.hidden = true; });
 
+// O navegador só libera o áudio depois do primeiro toque:
+// começa a música da tela inicial nesse momento
+document.addEventListener('pointerdown', () => {
+  if (storage.sound && MENU_SCREENS.has(currentScreen())) {
+    music.stop();
+    music.play('home');
+  }
+}, { once: true, capture: true });
+
 // ---------- Início ----------
 
 applyTheme();
 applyI18n();
+setupProfileControls();
 renderThemeOptions();
 updateCoinChip();
 updateSoundButton();
+
+// Convidado chegando por QR code (?join=ID)
+joinHostId = new URLSearchParams(location.search).get('join');
+if (joinHostId) {
+  history.replaceState({}, '', location.pathname);
+  showScreen('join');
+}

@@ -438,6 +438,28 @@ body {
 .opt-emoji { font-size: 1.5rem; }
 .opt small { font-size: 0.72rem; font-weight: 500; opacity: 0.7; }
 
+/* Nome e avatar do jogador */
+.name-input {
+  width: 100%;
+  max-width: 280px;
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-dark);
+  background: var(--card-surface);
+  border: 4px solid transparent;
+  border-radius: 999px;
+  padding: 12px 18px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.name-input:focus { border-color: var(--yellow); }
+.name-input::placeholder { color: #a78bfa; opacity: 0.8; }
+.avatar-row { margin-top: 12px; }
+.avatar-opt { min-width: 0; font-size: 1.6rem; padding: 8px 12px; border-radius: 16px; }
+
 /* Fases bloqueadas (cadeado + preço da chave) */
 .opt.locked {
   background: rgba(255, 255, 255, 0.45);
@@ -477,6 +499,53 @@ body {
 .player-tag .avatar { font-size: 1.35rem; }
 .player-tag .score { background: var(--yellow); border-radius: 999px; min-width: 26px; text-align: center; padding: 2px 7px; }
 .player-tag.turn { opacity: 1; border-color: var(--yellow); transform: scale(1.07); box-shadow: 0 0 16px rgba(251, 191, 36, 0.8); }
+.player-tag.me::after { content: '⭐'; font-size: 0.85rem; }
+
+/* ---------- Convite por QR code ---------- */
+.qr-card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.2);
+  margin-bottom: 14px;
+  min-width: 180px;
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+}
+#qr-box svg { display: block; width: min(62vw, 240px); height: auto; }
+.invite-hint {
+  text-align: center;
+  max-width: 320px;
+  color: var(--on-bg-soft);
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.waiting {
+  font-weight: 600;
+  color: var(--on-bg-soft);
+  min-height: 1.4em;
+  margin: 10px 0 16px;
+  animation: waiting-pulse 1.2s ease-in-out infinite;
+}
+@keyframes waiting-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1f2937;
+  color: #fff;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  z-index: 99;
+  animation: drop-in 0.25s ease;
+}
+.toast[hidden] { display: none; }
 
 /* ============================================================
    Tabuleiro e cartas (figuras grandes e uniformes)

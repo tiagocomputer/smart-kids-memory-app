@@ -17,9 +17,11 @@ e acesse `http://localhost:8000`.
 ## ✨ O que tem no jogo
 
 - **1 a 4 jogadores** — no modo multijogador, quem acerta um par continua jogando; quem erra passa a vez. No final, vence quem encontrou mais pares!
+- **2 jogadores em 2 celulares via QR code** 📱 — escolha "Outro celular (QR)", mostre o código para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC, sem servidor). Quem vencer leva as moedas e a figurinha!
+- **Perfil do jogador** 🧑‍🎨 — campo de nome e escolha de avatar (8 opções), que aparecem no placar e na tela de vitória
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com mais jogadores, o tempo aumenta)
 - **8 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 4 **trancadas com cadeado** 🔒: Dinossauros 🦖 (30 🪙), Comida 🍕 (50 🪙), Brinquedos 🧸 (80 🪙) e Heróis 🦸 (120 🪙). Jogue, junte moedas e **compre a chave** 🗝️ para destrancar!
-- **Música de fundo diferente em cada nível** 🎵 — calminha no fácil, animada no médio e acelerada no difícil (gerada por código, sem arquivos de áudio)
+- **Música de fundo diferente em cada nível** 🎵 — calminha no fácil, animada no médio e acelerada no difícil, e uma **melodia empolgante na tela principal** (tudo gerado por código, sem arquivos de áudio)
 - **3 idiomas** 🌐 — Português 🇧🇷, Inglês 🇺🇸 e Francês 🇫🇷 (troca na hora)
 - **Tema claro ☀️ e escuro 🌙** — alterna com um toque
 - **Recompensas no final de cada partida** 🎁
@@ -43,7 +45,10 @@ e acesse `http://localhost:8000`.
 HTML, CSS e JavaScript puros — sem dependências, sem build. Sons e músicas são gerados com Web Audio API, o confete com Canvas e a coruja é desenhada em CSS, então não há nenhum arquivo de mídia para baixar.
 
 ```
-index.html      → estrutura das telas
-css/style.css   → visual, temas, coruja e animações
-js/app.js       → lógica do jogo, idiomas, cronômetro, músicas e recompensas
+index.html         → estrutura das telas
+css/style.css      → visual, temas, coruja e animações
+js/app.js          → lógica do jogo, idiomas, cronômetro, músicas, multiplayer e recompensas
+js/vendor/         → PeerJS (WebRTC) e gerador de QR code, embutidos no projeto
 ```
+
+> O modo de 2 celulares usa WebRTC (PeerJS): os aparelhos se conectam diretamente um ao outro; o servidor público gratuito do PeerJS é usado apenas para o "aperto de mão" inicial.

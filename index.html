@@ -95,21 +95,17 @@
     </section>
 
     <section class="setup-block">
-      <h3 data-i18n="qTheme">Escolha o tema</h3>
-      <div class="option-row" id="theme-options">
-        <button class="opt selected" data-theme="animais"><span class="opt-emoji">🐶</span><span data-i18n="themeAnimais">Animais</span></button>
-        <button class="opt" data-theme="frutas"><span class="opt-emoji">🍎</span><span data-i18n="themeFrutas">Frutas</span></button>
-        <button class="opt" data-theme="espaco"><span class="opt-emoji">🚀</span><span data-i18n="themeEspaco">Espaço</span></button>
-        <button class="opt" data-theme="oceano"><span class="opt-emoji">🐠</span><span data-i18n="themeOceano">Oceano</span></button>
-      </div>
+      <h3 data-i18n="qTheme">Escolha a fase</h3>
+      <!-- preenchido pelo JS (fases livres e bloqueadas) -->
+      <div class="option-row" id="theme-options"></div>
     </section>
 
     <section class="setup-block">
       <h3 data-i18n="qLevel">Escolha o nível</h3>
       <div class="option-row" id="level-options">
-        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span><span data-i18n="levelFacil">Fácil</span><small>6 <span data-i18n="pairs">pares</span></small></button>
-        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span><span data-i18n="levelMedio">Médio</span><small>8 <span data-i18n="pairs">pares</span></small></button>
-        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span><span data-i18n="levelDificil">Difícil</span><small>10 <span data-i18n="pairs">pares</span></small></button>
+        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span><span data-i18n="levelFacil">Fácil</span><small>8 <span data-i18n="pairs">pares</span> · ⏱️ 1:40</small></button>
+        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span><span data-i18n="levelMedio">Médio</span><small>10 <span data-i18n="pairs">pares</span> · ⏱️ 2:10</small></button>
+        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span><span data-i18n="levelDificil">Difícil</span><small>12 <span data-i18n="pairs">pares</span> · ⏱️ 2:40</small></button>
       </div>
     </section>
 
@@ -119,10 +115,24 @@
   <!-- TELA: JOGO -->
   <main id="screen-game" class="screen">
     <div class="scoreboard" id="scoreboard"></div>
+    <div class="timer-wrap"><div class="timer" id="timer">⏱️ 0:00</div></div>
     <div class="board" id="board"></div>
     <div class="game-footer">
       <span class="moves" id="moves-label"></span>
       <button class="btn btn-small" id="btn-restart">🔄 <span data-i18n="restart">Recomeçar</span></button>
+    </div>
+  </main>
+
+  <!-- TELA: TEMPO ESGOTADO -->
+  <main id="screen-timeup" class="screen">
+    <div class="timeup-card">
+      <div class="timeup-clock">⏰</div>
+      <h2 data-i18n="timeUpTitle">Tempo esgotado! ⏰</h2>
+      <p data-i18n="timeUpMsg">Quase lá! Respire fundo e tente de novo!</p>
+      <div class="win-buttons">
+        <button class="btn btn-big btn-play" id="btn-try-again">🔄 <span data-i18n="tryAgain">Tentar de novo</span></button>
+        <button class="btn btn-small" id="btn-timeup-home">🏠</button>
+      </div>
     </div>
   </main>
 
@@ -153,14 +163,20 @@
         <div class="reward-emoji">🪙</div>
         <div class="reward-label" data-i18n="coins">Moedas</div>
         <div class="reward-value" id="coins-earned">+0</div>
+        <div class="reward-sub" id="time-bonus" hidden></div>
       </div>
 
-      <!-- Presente para tocar e revelar a figurinha -->
+      <!-- Pacotinho de figurinhas para tocar e revelar -->
       <div class="gift-area" id="gift-area">
-        <button class="gift" id="gift-box" aria-label="Abrir presente">
-          <span class="gift-glow"></span>
-          <span class="gift-emoji">🎁</span>
-          <span class="gift-hint" id="gift-hint" data-i18n="giftTap">Toque para abrir!</span>
+        <button class="pack" id="pack-box" aria-label="Abrir pacotinho">
+          <span class="pack-glow"></span>
+          <span class="pack-body">
+            <span class="pack-tear"></span>
+            <span class="pack-star">✨</span>
+            <span class="pack-q">?</span>
+            <span class="pack-label">⭐⭐⭐</span>
+          </span>
+          <span class="pack-hint" id="gift-hint" data-i18n="giftTap">Toque para abrir o pacotinho!</span>
         </button>
         <div class="sticker-reveal" id="sticker-reveal" hidden>
           <div class="reveal-label" id="reveal-label" data-i18n="newSticker">Figurinha nova:</div>
@@ -184,6 +200,20 @@
     <div id="album-content"></div>
     <button class="btn btn-big btn-play" id="btn-album-play"><span data-i18n="albumPlay">Jogar para ganhar mais!</span> ▶️</button>
   </main>
+
+  <!-- MODAL: DESBLOQUEAR FASE -->
+  <div class="modal" id="unlock-modal" hidden>
+    <div class="modal-card" id="unlock-card">
+      <div class="modal-emoji">🗝️</div>
+      <h3 id="unlock-title"></h3>
+      <p id="unlock-msg"></p>
+      <p class="modal-error" id="unlock-error" hidden></p>
+      <div class="win-buttons">
+        <button class="btn btn-big btn-play" id="btn-unlock-yes"></button>
+        <button class="btn btn-small" id="btn-unlock-no"></button>
+      </div>
+    </div>
+  </div>
 
   <script src="js/app.js"></script>
 </body>

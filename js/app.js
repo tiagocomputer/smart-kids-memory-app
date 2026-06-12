@@ -11,18 +11,25 @@ const I18N = {
     owlGreeting: 'Olá! Vamos brincar?',
     play: 'Jogar', album: 'Álbum de Figurinhas',
     setupTitle: 'Preparar Jogo 🎮',
-    qPlayers: 'Quantos jogadores?', qTheme: 'Escolha o tema', qLevel: 'Escolha o nível',
+    qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
+    themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
     moves: 'Jogadas: {n}', pairsLabel: 'Pares:',
     congrats: 'Parabéns! 🎉',
     completedMsg: 'Você completou o nível e ganhou uma figurinha nova!',
     soloDone: 'Você encontrou todos os pares em {n} jogadas!',
-    coins: 'Moedas', giftTap: 'Toque para abrir!', newSticker: 'Figurinha nova:',
+    coins: 'Moedas', giftTap: 'Toque para abrir o pacotinho!', newSticker: 'Figurinha nova:',
+    timeBonus: 'Bônus de tempo ⏱️ +{n}',
     bonusLabel: 'Bônus do álbum!', albumCompleteMsg: 'Álbum completo! +{n} moedas',
     playAgain: 'Jogar de novo', seeAlbum: 'Ver Álbum',
     winnerWon: '{name} venceu!', tie: 'Empate!',
+    timeUpTitle: 'Tempo esgotado! ⏰', timeUpMsg: 'Quase lá! Respire fundo e tente de novo!',
+    tryAgain: 'Tentar de novo',
+    unlockMsg: 'Comprar a chave desta fase por {n} moedas?',
+    unlockYes: 'Comprar a chave 🗝️', unlockNo: 'Agora não',
+    needCoins: 'Faltam {n} moedas! Jogue mais para ganhar.',
     albumTitle: 'Álbum de Figurinhas 📒',
     albumProgress: '{a} de {b} figurinhas coletadas', albumPlay: 'Jogar para ganhar mais!',
     catAnimais: 'Animais', catMar: 'Animais Marinhos', catComida: 'Comida', catFantasia: 'Fantasia', catDiversao: 'Diversão',
@@ -42,18 +49,25 @@ const I18N = {
     owlGreeting: "Hi! Let's play?",
     play: 'Play', album: 'Sticker Album',
     setupTitle: 'Set Up Game 🎮',
-    qPlayers: 'How many players?', qTheme: 'Choose the theme', qLevel: 'Choose the level',
+    qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
+    themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     moves: 'Moves: {n}', pairsLabel: 'Pairs:',
     congrats: 'Congratulations! 🎉',
     completedMsg: 'You completed the level and won a brand new sticker!',
     soloDone: 'You matched all pairs in {n} moves!',
-    coins: 'Coins', giftTap: 'Tap to open!', newSticker: 'New sticker:',
+    coins: 'Coins', giftTap: 'Tap to open the pack!', newSticker: 'New sticker:',
+    timeBonus: 'Time bonus ⏱️ +{n}',
     bonusLabel: 'Album bonus!', albumCompleteMsg: 'Album complete! +{n} coins',
     playAgain: 'Play again', seeAlbum: 'See Album',
-    winnerWon: '{name} wins!', tie: 'It\'s a tie!',
+    winnerWon: '{name} wins!', tie: "It's a tie!",
+    timeUpTitle: "Time's up! ⏰", timeUpMsg: 'So close! Take a breath and try again!',
+    tryAgain: 'Try again',
+    unlockMsg: 'Buy the key to this stage for {n} coins?',
+    unlockYes: 'Buy the key 🗝️', unlockNo: 'Not now',
+    needCoins: 'You need {n} more coins! Play to earn more.',
     albumTitle: 'Sticker Album 📒',
     albumProgress: '{a} of {b} stickers collected', albumPlay: 'Play to win more!',
     catAnimais: 'Animals', catMar: 'Sea Animals', catComida: 'Food', catFantasia: 'Fantasy', catDiversao: 'Fun',
@@ -73,18 +87,25 @@ const I18N = {
     owlGreeting: 'Salut! On joue?',
     play: 'Jouer', album: "Album d'autocollants",
     setupTitle: 'Préparer le jeu 🎮',
-    qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le thème', qLevel: 'Choisis le niveau',
+    qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
+    themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
     moves: 'Coups: {n}', pairsLabel: 'Paires:',
     congrats: 'Bravo! 🎉',
     completedMsg: 'Tu as terminé le niveau et gagné un nouvel autocollant!',
     soloDone: 'Tu as trouvé toutes les paires en {n} coups!',
-    coins: 'Pièces', giftTap: 'Touche pour ouvrir!', newSticker: 'Nouvel autocollant:',
+    coins: 'Pièces', giftTap: 'Touche pour ouvrir le paquet!', newSticker: 'Nouvel autocollant:',
+    timeBonus: 'Bonus de temps ⏱️ +{n}',
     bonusLabel: "Bonus d'album!", albumCompleteMsg: 'Album complet! +{n} pièces',
     playAgain: 'Rejouer', seeAlbum: "Voir l'album",
     winnerWon: '{name} gagne!', tie: 'Égalité!',
+    timeUpTitle: 'Temps écoulé! ⏰', timeUpMsg: 'Presque! Respire et réessaie!',
+    tryAgain: 'Réessayer',
+    unlockMsg: 'Acheter la clé de ce niveau pour {n} pièces?',
+    unlockYes: 'Acheter la clé 🗝️', unlockNo: 'Pas maintenant',
+    needCoins: 'Il te manque {n} pièces! Joue pour en gagner plus.',
     albumTitle: "Album d'autocollants 📒",
     albumProgress: '{a} sur {b} autocollants collectés', albumPlay: 'Joue pour en gagner plus!',
     catAnimais: 'Animaux', catMar: 'Animaux Marins', catComida: 'Nourriture', catFantasia: 'Fantaisie', catDiversao: 'Amusement',
@@ -117,44 +138,56 @@ function tSticker(id) { return (I18N[lang].sticker[id] || I18N.pt.sticker[id] ||
 // ---------- Dados do jogo ----------
 
 const THEMES = {
-  animais: ['🐶', '🐱', '🦁', '🐼', '🦊', '🐸', '🐵', '🐰', '🐯', '🦒', '🐘', '🐷'],
-  frutas:  ['🍎', '🍌', '🍇', '🍓', '🍉', '🍍', '🥝', '🍑', '🍒', '🥭', '🍋', '🍊'],
-  espaco:  ['🚀', '🌟', '🪐', '👽', '🛸', '🌙', '☀️', '🛰️', '🌍', '🌈', '☄️', '🔭'],
-  oceano:  ['🐠', '🐳', '🦈', '🐙', '🦀', '🐬', '🐢', '🦞', '🐡', '🦑', '⛵', '🐚'],
+  animais:    ['🐶', '🐱', '🦁', '🐼', '🦊', '🐸', '🐵', '🐰', '🐯', '🦒', '🐘', '🐷'],
+  frutas:     ['🍎', '🍌', '🍇', '🍓', '🍉', '🍍', '🥝', '🍑', '🍒', '🥭', '🍋', '🍊'],
+  espaco:     ['🚀', '🌟', '🪐', '👽', '🛸', '🌙', '☀️', '🛰️', '🌍', '🌈', '☄️', '🔭'],
+  oceano:     ['🐠', '🐳', '🦈', '🐙', '🦀', '🐬', '🐢', '🦞', '🐡', '🦑', '⛵', '🐚'],
+  dinos:      ['🦕', '🦖', '🦴', '🥚', '🌋', '🌿', '🦎', '🐊', '🐉', '⛰️', '🐾', '🌴'],
+  comida:     ['🍕', '🍔', '🍟', '🌭', '🍦', '🍩', '🎂', '🍪', '🥨', '🌮', '🍿', '🧁'],
+  brinquedos: ['🧸', '🪀', '🎲', '🪁', '🚂', '🎠', '🤖', '🎯', '🪆', '🛴', '🎪', '🎨'],
+  herois:     ['🦸‍♂️', '🦸‍♀️', '🦹‍♂️', '🕸️', '🦇', '⚡', '🛡️', '💥', '👊', '🧪', '🚨', '💪'],
 };
 
+// Fases: cost 0 = sempre aberta; cost > 0 = precisa comprar a chave com moedas
+const THEME_LIST = [
+  { id: 'animais',    icon: '🐶', key: 'themeAnimais',    cost: 0 },
+  { id: 'frutas',     icon: '🍎', key: 'themeFrutas',     cost: 0 },
+  { id: 'espaco',     icon: '🚀', key: 'themeEspaco',     cost: 0 },
+  { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 0 },
+  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 30 },
+  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 50 },
+  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 80 },
+  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 120 },
+];
+
 const LEVELS = {
-  facil:   { pairs: 6,  cols: 3, bonus: 5,  key: 'levelFacil' },
-  medio:   { pairs: 8,  cols: 4, bonus: 10, key: 'levelMedio' },
-  dificil: { pairs: 10, cols: 5, bonus: 20, key: 'levelDificil' },
+  facil:   { pairs: 8,  cols: 4, bonus: 5,  time: 100, key: 'levelFacil' },
+  medio:   { pairs: 10, cols: 5, bonus: 10, time: 130, key: 'levelMedio' },
+  dificil: { pairs: 12, cols: 6, bonus: 20, time: 160, key: 'levelDificil' },
 };
+const EXTRA_TIME_PER_PLAYER = 40; // segundos a mais por jogador adicional
 
 const AVATARS = ['🦁', '🐸', '🐙', '🦄'];
 const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 
 // Figurinhas colecionáveis, organizadas por categoria
 const STICKERS = [
-  // Animais
   { id:'dino', emoji:'🦕', cat:'animais' }, { id:'panda', emoji:'🐼', cat:'animais' },
   { id:'gato', emoji:'😺', cat:'animais' }, { id:'pinguim', emoji:'🐧', cat:'animais' },
   { id:'tartaruga', emoji:'🐢', cat:'animais' }, { id:'leao', emoji:'🦁', cat:'animais' },
   { id:'raposa', emoji:'🦊', cat:'animais' }, { id:'coala', emoji:'🐨', cat:'animais' },
-  // Animais marinhos
   { id:'polvo', emoji:'🐙', cat:'mar' }, { id:'baleia', emoji:'🐳', cat:'mar' },
   { id:'tubarao', emoji:'🦈', cat:'mar' }, { id:'golfinho', emoji:'🐬', cat:'mar' },
   { id:'peixe', emoji:'🐠', cat:'mar' }, { id:'caranguejo', emoji:'🦀', cat:'mar' },
   { id:'baiacu', emoji:'🐡', cat:'mar' }, { id:'concha', emoji:'🐚', cat:'mar' },
-  // Comida
   { id:'sorvete', emoji:'🍦', cat:'comida' }, { id:'bolo', emoji:'🎂', cat:'comida' },
   { id:'pizza', emoji:'🍕', cat:'comida' }, { id:'hamburguer', emoji:'🍔', cat:'comida' },
   { id:'pirulito', emoji:'🍭', cat:'comida' }, { id:'donut', emoji:'🍩', cat:'comida' },
   { id:'morango', emoji:'🍓', cat:'comida' }, { id:'cupcake', emoji:'🧁', cat:'comida' },
-  // Fantasia
   { id:'unicornio', emoji:'🦄', cat:'fantasia' }, { id:'dragao', emoji:'🐉', cat:'fantasia' },
   { id:'sereia', emoji:'🧜‍♀️', cat:'fantasia' }, { id:'fada', emoji:'🧚', cat:'fantasia' },
   { id:'robo', emoji:'🤖', cat:'fantasia' }, { id:'mago', emoji:'🎩', cat:'fantasia' },
   { id:'castelo', emoji:'🏰', cat:'fantasia' }, { id:'arcoiris', emoji:'🌈', cat:'fantasia' },
-  // Diversão
   { id:'bola', emoji:'⚽', cat:'diversao' }, { id:'guitarra', emoji:'🎸', cat:'diversao' },
   { id:'balao', emoji:'🎈', cat:'diversao' }, { id:'pipa', emoji:'🪁', cat:'diversao' },
   { id:'jogo', emoji:'🎮', cat:'diversao' }, { id:'circo', emoji:'🎪', cat:'diversao' },
@@ -178,11 +211,18 @@ const storage = {
   set coins(v) { localStorage.setItem('mm_coins', String(v)); },
   get stickers() { try { return JSON.parse(localStorage.getItem('mm_stickers') || '[]'); } catch { return []; } },
   set stickers(list) { localStorage.setItem('mm_stickers', JSON.stringify(list)); },
+  get unlocked() { try { return JSON.parse(localStorage.getItem('mm_unlocked') || '[]'); } catch { return []; } },
+  set unlocked(list) { localStorage.setItem('mm_unlocked', JSON.stringify(list)); },
   get sound() { return localStorage.getItem('mm_sound') !== 'off'; },
   set sound(on) { localStorage.setItem('mm_sound', on ? 'on' : 'off'); },
   get theme() { return localStorage.getItem('mm_theme') || 'dark'; },
   set theme(v) { localStorage.setItem('mm_theme', v); },
 };
+
+function isThemeUnlocked(id) {
+  const th = THEME_LIST.find((x) => x.id === id);
+  return !th || th.cost === 0 || storage.unlocked.includes(id);
+}
 
 // ---------- Sons (Web Audio, sem arquivos) ----------
 
@@ -194,34 +234,72 @@ const sound = (() => {
     return ctx;
   }
   function tone(freq, start, duration, type = 'sine', volume = 0.18) {
-    const c = ensureCtx();
-    const osc = c.createOscillator();
-    const gain = c.createGain();
-    osc.type = type;
-    osc.frequency.value = freq;
-    const t0 = c.currentTime + start;
-    gain.gain.setValueAtTime(0, t0);
-    gain.gain.linearRampToValueAtTime(volume, t0 + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
-    osc.connect(gain).connect(c.destination);
-    osc.start(t0);
-    osc.stop(t0 + duration + 0.05);
+    try {
+      const c = ensureCtx();
+      const osc = c.createOscillator();
+      const gain = c.createGain();
+      osc.type = type;
+      osc.frequency.value = freq;
+      const t0 = c.currentTime + start;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(volume, t0 + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
+      osc.connect(gain).connect(c.destination);
+      osc.start(t0);
+      osc.stop(t0 + duration + 0.05);
+    } catch { /* áudio bloqueado — segue sem som */ }
   }
   function play(name) {
     if (!storage.sound) return;
-    try {
-      switch (name) {
-        case 'flip':  tone(420, 0, 0.1, 'triangle'); break;
-        case 'match': tone(523, 0, 0.12); tone(659, 0.1, 0.12); tone(784, 0.2, 0.2); break;
-        case 'miss':  tone(220, 0, 0.18, 'sawtooth', 0.08); tone(180, 0.12, 0.22, 'sawtooth', 0.08); break;
-        case 'click': tone(600, 0, 0.06, 'triangle', 0.1); break;
-        case 'coin':  tone(880, 0, 0.08, 'square', 0.08); tone(1320, 0.07, 0.14, 'square', 0.08); break;
-        case 'reveal': [659, 880, 1047, 1319].forEach((f, i) => tone(f, i * 0.09, 0.16)); break;
-        case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
-      }
-    } catch { /* áudio bloqueado — segue sem som */ }
+    switch (name) {
+      case 'flip':  tone(420, 0, 0.1, 'triangle'); break;
+      case 'match': tone(523, 0, 0.12); tone(659, 0.1, 0.12); tone(784, 0.2, 0.2); break;
+      case 'miss':  tone(220, 0, 0.18, 'sawtooth', 0.08); tone(180, 0.12, 0.22, 'sawtooth', 0.08); break;
+      case 'click': tone(600, 0, 0.06, 'triangle', 0.1); break;
+      case 'coin':  tone(880, 0, 0.08, 'square', 0.08); tone(1320, 0.07, 0.14, 'square', 0.08); break;
+      case 'tick':  tone(1000, 0, 0.05, 'square', 0.06); break;
+      case 'timeup': [392, 330, 262, 196].forEach((f, i) => tone(f, i * 0.18, 0.22, 'sawtooth', 0.09)); break;
+      case 'unlock': [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * 0.08, 0.15)); break;
+      case 'reveal': [659, 880, 1047, 1319].forEach((f, i) => tone(f, i * 0.09, 0.16)); break;
+      case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
+    }
   }
-  return { play };
+  return { play, tone };
+})();
+
+// ---------- Música de fundo (uma melodia por nível) ----------
+
+const music = (() => {
+  // Frequências das notas
+  const C4=261.6, D4=293.7, E4=329.6, F4=349.2, G4=392, A4=440, B4=493.9,
+        C5=523.3, D5=587.3, E5=659.3, G5=784, _=0;
+  const SONGS = {
+    // Fácil: melodia calminha e alegre
+    facil:   { tempo: 300, type: 'triangle', vol: 0.045,
+               notes: [C4,E4,G4,E4, F4,A4,C5,A4, G4,B4,D5,B4, C5,_,G4,_] },
+    // Médio: mais animada
+    medio:   { tempo: 230, type: 'triangle', vol: 0.045,
+               notes: [E4,G4,A4,_, A4,C5,B4,_, G4,A4,B4,D5, C5,B4,A4,G4] },
+    // Difícil: rápida e empolgante
+    dificil: { tempo: 175, type: 'square', vol: 0.028,
+               notes: [A4,A4,C5,A4, E5,_,D5,C5, A4,A4,C5,E5, G5,_,E5,_] },
+  };
+  let gen = 0, timer = null;
+  function play(name) {
+    stop();
+    if (!storage.sound || !SONGS[name]) return;
+    const song = SONGS[name];
+    const myGen = ++gen;
+    const step = song.tempo / 1000;
+    const loop = () => {
+      if (myGen !== gen || !storage.sound) return;
+      song.notes.forEach((f, i) => { if (f) sound.tone(f, i * step, step * 0.85, song.type, song.vol); });
+      timer = setTimeout(loop, song.notes.length * song.tempo);
+    };
+    loop();
+  }
+  function stop() { gen++; if (timer) { clearTimeout(timer); timer = null; } }
+  return { play, stop };
 })();
 
 // ---------- Elementos ----------
@@ -229,7 +307,7 @@ const sound = (() => {
 const $ = (sel) => document.querySelector(sel);
 const screens = {
   home: $('#screen-home'), setup: $('#screen-setup'), game: $('#screen-game'),
-  win: $('#screen-win'), album: $('#screen-album'),
+  timeup: $('#screen-timeup'), win: $('#screen-win'), album: $('#screen-album'),
 };
 
 function showScreen(name) {
@@ -241,7 +319,7 @@ function currentScreen() {
   return Object.keys(screens).find((k) => screens[k].classList.contains('active'));
 }
 
-// ---------- Idioma e tema ----------
+// ---------- Idioma e tema visual ----------
 
 function applyI18n() {
   document.documentElement.lang = lang === 'pt' ? 'pt-BR' : lang;
@@ -254,7 +332,7 @@ function setLang(next) {
   lang = next;
   localStorage.setItem('mm_lang', lang);
   applyI18n();
-  // Atualiza conteúdos gerados por JS na tela atual
+  renderThemeOptions();
   const cur = currentScreen();
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
   if (cur === 'album') renderAlbum();
@@ -289,13 +367,85 @@ function bindOptionRow(rowId, dataKey, onPick) {
   });
 }
 bindOptionRow('player-options', 'players', (v) => (config.players = parseInt(v, 10)));
-bindOptionRow('theme-options', 'theme', (v) => (config.theme = v));
 bindOptionRow('level-options', 'level', (v) => (config.level = v));
+
+// ---------- Fases (temas) com cadeado ----------
+
+function renderThemeOptions() {
+  const row = $('#theme-options');
+  row.innerHTML = THEME_LIST.map((th) => {
+    const locked = !isThemeUnlocked(th.id);
+    return `
+      <button class="opt ${config.theme === th.id ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}">
+        <span class="opt-emoji">${locked ? '🔒' : th.icon}</span>
+        <span>${t(th.key)}</span>
+        ${locked ? `<small class="cost">🗝️ ${th.cost} 🪙</small>` : ''}
+      </button>`;
+  }).join('');
+}
+
+$('#theme-options').addEventListener('click', (e) => {
+  const btn = e.target.closest('.opt');
+  if (!btn) return;
+  const id = btn.dataset.theme;
+  if (!isThemeUnlocked(id)) {
+    sound.play('click');
+    openUnlockModal(id);
+    return;
+  }
+  config.theme = id;
+  sound.play('click');
+  renderThemeOptions();
+});
+
+// Modal de desbloqueio
+let pendingUnlock = null;
+
+function openUnlockModal(id) {
+  pendingUnlock = THEME_LIST.find((x) => x.id === id);
+  if (!pendingUnlock) return;
+  $('#unlock-title').textContent = `${pendingUnlock.icon} ${t(pendingUnlock.key)}`;
+  $('#unlock-msg').textContent = t('unlockMsg', { n: pendingUnlock.cost });
+  $('#btn-unlock-yes').textContent = t('unlockYes');
+  $('#btn-unlock-no').textContent = t('unlockNo');
+  $('#unlock-error').hidden = true;
+  $('#unlock-modal').hidden = false;
+}
+
+function closeUnlockModal() {
+  $('#unlock-modal').hidden = true;
+  pendingUnlock = null;
+}
+
+$('#btn-unlock-yes').addEventListener('click', () => {
+  if (!pendingUnlock) return;
+  const cost = pendingUnlock.cost;
+  if (storage.coins >= cost) {
+    storage.coins -= cost;
+    storage.unlocked = [...storage.unlocked, pendingUnlock.id];
+    config.theme = pendingUnlock.id;
+    updateCoinChip();
+    sound.play('unlock');
+    closeUnlockModal();
+    renderThemeOptions();
+  } else {
+    const err = $('#unlock-error');
+    err.textContent = t('needCoins', { n: cost - storage.coins });
+    err.hidden = false;
+    sound.play('miss');
+    const card = $('#unlock-card');
+    card.classList.remove('shake');
+    void card.offsetWidth;
+    card.classList.add('shake');
+  }
+});
+$('#btn-unlock-no').addEventListener('click', () => { sound.play('click'); closeUnlockModal(); });
+$('#unlock-modal').addEventListener('click', (e) => { if (e.target.id === 'unlock-modal') closeUnlockModal(); });
 
 // ---------- Estado da partida ----------
 
-const game = { players: [], current: 0, deck: [], flipped: [], lock: false, moves: 0, matchedPairs: 0, totalPairs: 0 };
-let lastWin = null; // guarda dados da vitória para re-render ao trocar idioma
+const game = { players: [], current: 0, deck: [], flipped: [], lock: false, over: false, moves: 0, matchedPairs: 0, totalPairs: 0 };
+let lastWin = null;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -314,6 +464,7 @@ function startGame() {
   game.deck = shuffle([...emojis, ...emojis]).map((emoji) => ({ emoji, matched: false }));
   game.flipped = [];
   game.lock = false;
+  game.over = false;
   game.moves = 0;
   game.matchedPairs = 0;
   game.totalPairs = level.pairs;
@@ -321,6 +472,8 @@ function startGame() {
   renderScoreboard();
   updateMoves();
   showScreen('game');
+  startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
+  music.play(config.level);
 }
 
 function renderBoard(level) {
@@ -331,6 +484,7 @@ function renderBoard(level) {
     const el = document.createElement('button');
     el.className = 'card';
     el.dataset.index = idx;
+    el.style.animationDelay = `${idx * 35}ms`;
     el.setAttribute('aria-label', '?');
     el.innerHTML = `
       <div class="card-inner">
@@ -361,8 +515,60 @@ function renderScoreboard() {
 
 function updateMoves() { $('#moves-label').textContent = t('moves', { n: game.moves }); }
 
+// ---------- Cronômetro ----------
+
+let timeLeft = 0;
+let timerInt = null;
+
+function startTimer(seconds) {
+  stopTimer();
+  timeLeft = seconds;
+  renderTimer();
+  timerInt = setInterval(timerTick, 1000);
+}
+function stopTimer() {
+  if (timerInt) { clearInterval(timerInt); timerInt = null; }
+}
+function timerTick() {
+  timeLeft--;
+  renderTimer();
+  if (timeLeft <= 5 && timeLeft > 0) sound.play('tick');
+  if (timeLeft <= 0) {
+    stopTimer();
+    if (game.matchedPairs < game.totalPairs) timeUp();
+  }
+}
+function renderTimer() {
+  const el = $('#timer');
+  const m = Math.max(0, Math.floor(timeLeft / 60));
+  const s = Math.max(0, timeLeft % 60);
+  el.textContent = `⏱️ ${m}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('urgent', timeLeft <= 10);
+}
+
+function timeUp() {
+  if (game.over) return;
+  game.over = true;
+  game.lock = true;
+  music.stop();
+  sound.play('timeup');
+  showScreen('timeup');
+}
+
+// Pausa o cronômetro e a música quando a aba fica em segundo plano
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (currentScreen() === 'game') { stopTimer(); music.stop(); }
+  } else if (currentScreen() === 'game' && !game.over && timeLeft > 0) {
+    timerInt = setInterval(timerTick, 1000);
+    music.play(config.level);
+  }
+});
+
+// ---------- Virar cartas ----------
+
 function flipCard(idx, el) {
-  if (game.lock || game.deck[idx].matched || game.flipped.includes(idx)) return;
+  if (game.lock || game.over || game.deck[idx].matched || game.flipped.includes(idx)) return;
   sound.play('flip');
   el.classList.add('flipped');
   game.flipped.push(idx);
@@ -380,6 +586,8 @@ function flipCard(idx, el) {
     game.deck[b].matched = true;
     game.matchedPairs++;
     game.players[game.current].pairs++;
+    if (game.matchedPairs === game.totalPairs) stopTimer(); // garante a vitória antes do tempo acabar
+    if (navigator.vibrate) navigator.vibrate(60);
     setTimeout(() => {
       sound.play('match');
       cards[a].classList.add('matched');
@@ -409,8 +617,14 @@ function flipCard(idx, el) {
 // ---------- Fim de jogo e recompensas ----------
 
 function endGame() {
+  if (game.over) return;
+  game.over = true;
+  stopTimer();
+  music.stop();
+
   const level = LEVELS[config.level];
-  const coinsEarned = game.totalPairs * 2 + level.bonus;
+  const timeBonus = Math.max(0, Math.floor(timeLeft / 5));
+  const coinsEarned = game.totalPairs * 2 + level.bonus + timeBonus;
   storage.coins += coinsEarned;
 
   // Sorteia uma figurinha que ainda não foi coletada
@@ -427,7 +641,6 @@ function endGame() {
   }
   updateCoinChip();
 
-  // Resultado para multiplayer
   let result = null;
   if (game.players.length > 1) {
     const best = Math.max(...game.players.map((p) => p.pairs));
@@ -441,13 +654,13 @@ function endGame() {
   }
 
   lastWin = {
-    coinsEarned, moves: game.moves, totalPairs: game.totalPairs,
+    coinsEarned, timeBonus, moves: game.moves, totalPairs: game.totalPairs,
     stickerId: newSticker ? newSticker.id : null,
     stickerEmoji: newSticker ? newSticker.emoji : null,
     bonusCoins, result, revealed: false,
   };
 
-  prepareGift();
+  preparePack();
   renderWinTexts();
   showScreen('win');
   sound.play('win');
@@ -475,54 +688,55 @@ function renderWinTexts() {
   }
 
   $('#coins-earned').textContent = `+${w.coinsEarned}`;
+  const tb = $('#time-bonus');
+  if (w.timeBonus > 0) {
+    tb.textContent = t('timeBonus', { n: w.timeBonus });
+    tb.hidden = false;
+  } else {
+    tb.hidden = true;
+  }
 
-  // Texto dentro da revelação (se já aberta, mantém)
   if (w.revealed) fillReveal();
 }
 
-function prepareGift() {
-  const gift = $('#gift-box');
-  const reveal = $('#sticker-reveal');
-  gift.classList.remove('opening');
-  gift.style.display = '';
-  reveal.hidden = true;
+function preparePack() {
+  const pack = $('#pack-box');
+  pack.classList.remove('opening');
+  pack.style.display = '';
+  $('#sticker-reveal').hidden = true;
   lastWin.revealed = false;
 }
 
 function fillReveal() {
   const w = lastWin;
-  const label = $('#reveal-label');
-  const emoji = $('#reveal-emoji');
-  const name = $('#reveal-name');
   if (w.stickerId) {
-    label.textContent = t('newSticker');
-    emoji.textContent = w.stickerEmoji;
-    name.textContent = tSticker(w.stickerId);
+    $('#reveal-label').textContent = t('newSticker');
+    $('#reveal-emoji').textContent = w.stickerEmoji;
+    $('#reveal-name').textContent = tSticker(w.stickerId);
   } else {
-    label.textContent = t('bonusLabel');
-    emoji.textContent = '🪙';
-    name.textContent = t('albumCompleteMsg', { n: w.bonusCoins });
+    $('#reveal-label').textContent = t('bonusLabel');
+    $('#reveal-emoji').textContent = '🪙';
+    $('#reveal-name').textContent = t('albumCompleteMsg', { n: w.bonusCoins });
   }
 }
 
-function openGift() {
+function openPack() {
   if (!lastWin || lastWin.revealed) return;
   lastWin.revealed = true;
-  const gift = $('#gift-box');
-  const reveal = $('#sticker-reveal');
-  gift.classList.add('opening');
+  const pack = $('#pack-box');
+  pack.classList.add('opening');
   sound.play('reveal');
   launchConfetti(2500);
   setTimeout(() => {
-    gift.style.display = 'none';
+    pack.style.display = 'none';
     fillReveal();
+    const reveal = $('#sticker-reveal');
     reveal.hidden = false;
-    // reinicia a animação de entrada
     const em = $('#reveal-emoji');
     em.style.animation = 'none';
     void em.offsetWidth;
     em.style.animation = '';
-  }, 360);
+  }, 380);
 }
 
 // ---------- Álbum ----------
@@ -599,24 +813,42 @@ function launchConfetti(durationMs = 4000) {
 function updateCoinChip() { $('#coin-count').textContent = storage.coins; }
 function updateSoundButton() { $('#btn-sound').textContent = storage.sound ? '🔊' : '🔇'; }
 
+function leaveGame() {
+  stopTimer();
+  music.stop();
+  game.over = true;
+}
+
 // ---------- Navegação ----------
 
-$('#btn-go-setup').addEventListener('click', () => { sound.play('click'); showScreen('setup'); });
+$('#btn-go-setup').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
 $('#btn-go-album').addEventListener('click', () => { sound.play('click'); renderAlbum(); showScreen('album'); });
 $('#btn-start').addEventListener('click', () => { sound.play('click'); startGame(); });
 $('#btn-restart').addEventListener('click', () => { sound.play('click'); startGame(); });
-$('#btn-play-again').addEventListener('click', () => { sound.play('click'); showScreen('setup'); });
+$('#btn-try-again').addEventListener('click', () => { sound.play('click'); startGame(); });
+$('#btn-timeup-home').addEventListener('click', () => { sound.play('click'); showScreen('home'); });
+$('#btn-play-again').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
 $('#btn-win-album').addEventListener('click', () => {
   sound.play('click');
   renderAlbum(lastWin && lastWin.stickerId);
   showScreen('album');
 });
-$('#btn-album-play').addEventListener('click', () => { sound.play('click'); showScreen('setup'); });
-$('#btn-home').addEventListener('click', () => { sound.play('click'); showScreen('home'); });
+$('#btn-album-play').addEventListener('click', () => { sound.play('click'); renderThemeOptions(); showScreen('setup'); });
+$('#btn-home').addEventListener('click', () => {
+  sound.play('click');
+  if (currentScreen() === 'game') leaveGame();
+  showScreen('home');
+});
 
-$('#gift-box').addEventListener('click', openGift);
+$('#pack-box').addEventListener('click', openPack);
 
-$('#btn-sound').addEventListener('click', () => { storage.sound = !storage.sound; updateSoundButton(); sound.play('click'); });
+$('#btn-sound').addEventListener('click', () => {
+  storage.sound = !storage.sound;
+  updateSoundButton();
+  sound.play('click');
+  if (storage.sound && currentScreen() === 'game' && !game.over) music.play(config.level);
+  else music.stop();
+});
 $('#btn-theme').addEventListener('click', () => { sound.play('click'); toggleTheme(); });
 
 // Menu de idiomas
@@ -635,5 +867,6 @@ document.addEventListener('click', () => { langMenu.hidden = true; });
 
 applyTheme();
 applyI18n();
+renderThemeOptions();
 updateCoinChip();
 updateSoundButton();

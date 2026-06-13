@@ -17,7 +17,7 @@ e acesse `http://localhost:8000`.
 ## ✨ O que tem no jogo
 
 - **1 ou 2 jogadores** — no modo de 2, quem acerta um par continua jogando; quem erra passa a vez. No final, vence quem encontrou mais pares!
-- **2 jogadores = 2 celulares via QR code** 📱 — escolha "2", toque em "Gerar QR Code", mostre o código (ou envie o link) para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC). Quem vencer leva as moedas e a figurinha!
+- **2 jogadores = 2 celulares via QR code** 📱 — escolha "2", toque em "Gerar QR Code", mostre o código (ou envie o link) para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC). Quem vencer leva as moedas e a figurinha! Ao fim, um **popup de revanche** pergunta "Continuar o duelo?" e começa outra partida na hora, sem precisar de novo QR.
 - **Perfil do jogador** 🧑‍🎨 — antes de jogar, a criança escreve seu nome e escolhe um avatar (44 opções: animais, bichos do mar, heróis, princesas, fantasia e mais), que aparecem no placar e na tela de vitória
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com 2 jogadores, o tempo aumenta)
 - **14 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 10 **trancadas com cadeado** 🔒 que se compram com a chave 🗝️: Dinossauros 🦖, Comida 🍕, Brinquedos 🧸, Heróis 🦸, Bandeiras 🚩, Fantasia 🐉, Mundo dos Brinquedos 🤠, Mundo do Mario 🍄, Monstrinhos ⚡ e Reino Encantado 🏰 (custos de 30 a 500 moedas)

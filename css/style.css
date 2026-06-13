@@ -851,6 +851,13 @@ body {
 
 .win-buttons { display: flex; flex-direction: column; gap: 10px; align-items: center; }
 
+/* Popup de revanche no duelo */
+.rematch-box { margin-top: 6px; padding-top: 12px; border-top: 2px dashed rgba(124, 58, 237, 0.25); }
+.rematch-box[hidden] { display: none; }
+.rematch-q { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; }
+.rematch-box .waiting { color: #6d28d9; margin: 8px 0 0; }
+#btn-rematch-yes:disabled { opacity: 0.55; filter: grayscale(0.3); }
+
 /* ============================================================
    Álbum (por categorias)
    ============================================================ */

@@ -234,9 +234,19 @@
         </div>
       </div>
 
-      <div class="win-buttons">
+      <div class="win-buttons" id="win-buttons-default">
         <button class="btn btn-big btn-play" id="btn-play-again">🔁 <span data-i18n="playAgain">Jogar de novo</span></button>
         <button class="btn btn-album" id="btn-win-album">📒 <span data-i18n="seeAlbum">Ver Álbum</span></button>
+      </div>
+
+      <!-- Duelo (2 jogadores): continuar ou sair, sem precisar de novo QR -->
+      <div class="rematch-box" id="rematch-box" hidden>
+        <p class="rematch-q" id="rematch-q" data-i18n="rematchQ">Continuar o duelo?</p>
+        <div class="win-buttons">
+          <button class="btn btn-big btn-play" id="btn-rematch-yes">🔁 <span data-i18n="rematchYes">Continuar duelo</span></button>
+          <button class="btn btn-small" id="btn-rematch-no">🚪 <span data-i18n="rematchNo">Sair</span></button>
+        </div>
+        <p class="waiting" id="rematch-status"></p>
       </div>
     </div>
   </main>

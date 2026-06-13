@@ -22,6 +22,9 @@ const I18N = {
     waitingPlayer: 'Esperando o jogador 2…', connecting: 'Conectando…',
     joinTitle: 'Entrar no jogo 🎮', joinBtn: 'Entrar!',
     connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
+    rematchQ: 'Continuar o duelo?', rematchYes: 'Continuar duelo', rematchNo: 'Sair',
+    waitingRematch: 'Esperando o outro jogador…', peerWantsRematch: 'O outro quer jogar de novo! 🔁',
+    peerLeft: 'O outro jogador saiu 👋',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo dos Cogumelos',
@@ -81,6 +84,9 @@ const I18N = {
     waitingPlayer: 'Waiting for player 2…', connecting: 'Connecting…',
     joinTitle: 'Join the game 🎮', joinBtn: 'Join!',
     connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
+    rematchQ: 'Continue the duel?', rematchYes: 'Keep dueling', rematchNo: 'Leave',
+    waitingRematch: 'Waiting for the other player…', peerWantsRematch: 'The other wants a rematch! 🔁',
+    peerLeft: 'The other player left 👋',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: 'Mushroom World',
@@ -140,6 +146,9 @@ const I18N = {
     waitingPlayer: 'En attente du joueur 2…', connecting: 'Connexion…',
     joinTitle: 'Rejoindre le jeu 🎮', joinBtn: 'Entrer!',
     connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
+    rematchQ: 'Continuer le duel?', rematchYes: 'Continuer le duel', rematchNo: 'Sortir',
+    waitingRematch: "En attente de l'autre joueur…", peerWantsRematch: "L'autre veut rejouer! 🔁",
+    peerLeft: "L'autre joueur est parti 👋",
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde des Champignons',
@@ -513,7 +522,7 @@ function setLang(next) {
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
   if (cur === 'album') renderAlbum();
   if (cur === 'records') renderRecords();
-  if (cur === 'win') renderWinTexts();
+  if (cur === 'win') { renderWinTexts(); if (game.online) updateRematchUI(); }
 }
 
 function applyTheme() {
@@ -797,6 +806,49 @@ function hostStartMatch() {
   startGame({ online: true, myIndex: 0, deck: deckIdx, profiles });
 }
 
+// ---------- Revanche (duelo) ----------
+
+let rematchMe = false, rematchPeer = false, peerLeft = false;
+
+function resetRematch() { rematchMe = false; rematchPeer = false; peerLeft = false; }
+
+function updateRematchUI() {
+  const status = $('#rematch-status');
+  const yes = $('#btn-rematch-yes');
+  const q = $('#rematch-q');
+  if (peerLeft) {
+    yes.disabled = true;
+    q.textContent = '';
+    status.textContent = t('peerLeft');
+    return;
+  }
+  q.textContent = t('rematchQ');
+  if (rematchMe) {
+    yes.disabled = true;
+    status.textContent = rematchPeer ? '' : t('waitingRematch');
+  } else {
+    yes.disabled = false;
+    status.textContent = rematchPeer ? t('peerWantsRematch') : '';
+  }
+}
+
+function tryStartRematch() {
+  if (rematchMe && rematchPeer && !peerLeft) {
+    resetRematch();
+    // Só o anfitrião monta o novo baralho; o convidado espera o 'start'
+    if (game.myIndex === 0) hostStartMatch();
+  }
+}
+
+function requestRematch() {
+  if (rematchMe || peerLeft) return;
+  sound.play('click');
+  rematchMe = true;
+  netSend({ type: 'rematch' });
+  updateRematchUI();
+  tryStartRematch();
+}
+
 function handleNetData(data) {
   if (!data || typeof data !== 'object') return;
   switch (data.type) {
@@ -804,6 +856,11 @@ function handleNetData(data) {
       if (currentScreen() !== 'invite') return;
       netGuestProfile = sanitizeProfile(data);
       hostStartMatch();
+      break;
+    case 'rematch':
+      rematchPeer = true;
+      if (currentScreen() === 'win') updateRematchUI();
+      tryStartRematch();
       break;
     case 'start': {
       if (!THEME_IDS.has(data.theme) || !LEVELS[data.level] || !Array.isArray(data.deck)) return;
@@ -831,6 +888,11 @@ function handleDisconnect() {
   const cur = currentScreen();
   if (cur === 'game' && game.online && !game.over) {
     showToast(t('connLost')); leaveGame(); showScreen('home');
+  } else if (cur === 'win' && game.online) {
+    // Partida acabou e o outro saiu: oferece só sair, sem travar
+    peerLeft = true; rematchPeer = false;
+    updateRematchUI();
+    netDestroy();
   } else if (cur === 'invite') {
     showToast(t('connLost')); netDestroy(); showScreen('setup');
   } else if (cur === 'join') {
@@ -878,6 +940,7 @@ function startGame(opts = {}) {
   game.online = !!opts.online;
   game.myIndex = opts.myIndex ?? 0;
   remoteQueue.length = 0;
+  resetRematch();
 
   let deckFaces;
   if (opts.deck) {
@@ -1152,6 +1215,10 @@ function endGame() {
   };
 
   $('#gift-area').hidden = !iWin;
+  // No duelo (online) mostra o popup de revanche; senão, os botões normais
+  $('#win-buttons-default').hidden = game.online;
+  $('#rematch-box').hidden = !game.online;
+  if (game.online) { resetRematch(); updateRematchUI(); }
   preparePack();
   renderWinTexts();
   showScreen('win');
@@ -1422,6 +1489,9 @@ $('#btn-home').addEventListener('click', () => {
 });
 
 $('#pack-box').addEventListener('click', openPack);
+
+$('#btn-rematch-yes').addEventListener('click', requestRematch);
+$('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); leaveGame(); showScreen('home'); });
 
 $('#btn-sound').addEventListener('click', () => {
   storage.sound = !storage.sound;

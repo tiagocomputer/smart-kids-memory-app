@@ -18,17 +18,21 @@ e acesse `http://localhost:8000`.
 
 - **1 ou 2 jogadores** — no modo de 2, quem acerta um par continua jogando; quem erra passa a vez. No final, vence quem encontrou mais pares!
 - **2 jogadores = 2 celulares via QR code** 📱 — escolha "2", toque em "Gerar QR Code", mostre o código (ou envie o link) para o amigo escanear e os dois jogam **a mesma partida ao mesmo tempo, cada um no seu aparelho** (conexão direta WebRTC). Quem vencer leva as moedas e a figurinha!
-- **Perfil do jogador** 🧑‍🎨 — antes de jogar, a criança escreve seu nome e escolhe um avatar (8 opções), que aparecem no placar e na tela de vitória; dá para editar depois tocando no chip de perfil
+- **Perfil do jogador** 🧑‍🎨 — antes de jogar, a criança escreve seu nome e escolhe um avatar (44 opções: animais, bichos do mar, heróis, princesas, fantasia e mais), que aparecem no placar e na tela de vitória
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com 2 jogadores, o tempo aumenta)
-- **8 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 4 **trancadas com cadeado** 🔒: Dinossauros 🦖 (30 🪙), Comida 🍕 (50 🪙), Brinquedos 🧸 (80 🪙) e Heróis 🦸 (120 🪙). Jogue, junte moedas e **compre a chave** 🗝️ para destrancar!
-- **Música de fundo diferente em cada nível** 🎵 — calminha no fácil, animada no médio e acelerada no difícil, e uma **melodia empolgante na tela principal** (tudo gerado por código, sem arquivos de áudio)
+- **14 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 10 **trancadas com cadeado** 🔒 que se compram com a chave 🗝️: Dinossauros 🦖, Comida 🍕, Brinquedos 🧸, Heróis 🦸, Bandeiras 🚩, Fantasia 🐉, Mundo dos Brinquedos 🤠, Mundo do Mario 🍄, Monstrinhos ⚡ e Reino Encantado 🏰 (custos de 30 a 500 moedas)
+- **Fase dos dinossauros** 🦖 — todas as cartas são dinossauros, cada um de uma cor e espécie diferente
+- **Cartas variadas a cada rodada** — cada fase tem 16 figuras e sorteia um conjunto diferente toda partida
+- **Música escolhível** 🎵 — botão de música no topo com 5 trilhas para o menu (Alegre, Aventura, Calminha, Espacial, Herói) e melodias próprias para cada nível durante a partida (tudo gerado por código)
 - **3 idiomas** 🌐 — Português 🇧🇷, Inglês 🇺🇸 e Francês 🇫🇷 (troca na hora)
 - **Tema claro ☀️ e escuro 🌙** — alterna com um toque
 - **Recompensas no final de cada partida** 🎁
-  - 🪙 **Moedas** — 2 por par + bônus do nível + bônus de tempo
+  - 🪙 **Moedas** — 2 por par + bônus do nível + bônus de tempo (ícone de moeda desenhado em CSS, nítido em qualquer aparelho)
   - ✨ **Pacotinho de figurinhas** — a criança **toca no pacotinho** e a figurinha surpresa é revelada com animação e confete
+  - 🌟 **Figurinhas lendárias douradas** — raras, saem na sorte do pacotinho, com revelação dourada especial
   - ⭐ **Estrelas** no modo solo, conforme a eficiência
-- **Álbum com 40 figurinhas** em 5 categorias — Animais 🐾, Animais Marinhos 🌊, Comida 🍔, Fantasia 🦄 e Diversão 🎉 — com barra de progresso. Complete o álbum e ganhe bônus!
+- **Álbum com 58 figurinhas** em 6 seções — Animais 🐾, Animais Marinhos 🌊, Comida 🍔, Fantasia 🦄, Diversão 🎉 e uma seção especial de **Lendárias Douradas ✨** — com barra de progresso. Complete o álbum e ganhe bônus!
+- **Recordes e ranking** 🏆 — nível do jogador (Bronze → Mestre) que sobe conforme os pares encontrados, melhores tempos por nível, recorde de velocidade (pares por minuto) e total de vitórias; no modo de 2, ranking 🥇🥈 da partida
 - **Coruja mascote em CSS** 🦉 — pisca, flutua, fala e comemora a vitória batendo as asas
 - **Fundo animado**, cartas que entram em cascata, **figuras grandes e uniformes**, vibração no acerto (celular)
 - **Totalmente responsivo** — celular, tablet e computador, retrato ou paisagem; o cronômetro **pausa sozinho** se a criança sair da aba

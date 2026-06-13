@@ -36,6 +36,7 @@ e acesse `http://localhost:8000`.
 - **Recordes e ranking** 🏆 — nível do jogador (Bronze → Mestre) que sobe conforme os pares encontrados, melhores tempos por nível, recorde de velocidade (pares por minuto) e total de vitórias; no modo de 2, ranking 🥇🥈 da partida
 - **Coruja mascote em CSS** 🦉 — pisca, flutua, fala e comemora a vitória batendo as asas
 - **Fundo animado**, cartas que entram em cascata, **figuras grandes e uniformes**, vibração no acerto (celular)
+- **Tabuleiro que cabe na tela sem rolagem** 📐 — o tamanho das cartas e o número de colunas são calculados automaticamente para todas as cartas caberem na tela em qualquer aparelho/orientação
 - **Totalmente responsivo** — celular, tablet e computador, retrato ou paisagem; o cronômetro **pausa sozinho** se a criança sair da aba
 - Progresso (moedas, figurinhas, fases destrancadas, idioma e tema) salvo no dispositivo
 

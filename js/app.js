@@ -990,6 +990,7 @@ function startGame(opts = {}) {
   else startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
 
   music.play(config.level);
+  requestAnimationFrame(() => requestAnimationFrame(fitBoard));
 }
 
 function renderBoard(level) {
@@ -1013,6 +1014,50 @@ function renderBoard(level) {
     board.appendChild(el);
   });
 }
+
+// Ajusta o tamanho das cartas para o tabuleiro inteiro caber na tela (sem rolagem).
+// Escolhe o número de colunas que deixa as cartas o maior possível cabendo em
+// largura E altura disponíveis — adaptando-se a cada tela e orientação.
+function fitBoard() {
+  if (currentScreen() !== 'game') return;
+  const board = $('#board');
+  const n = game.deck.length;
+  if (!n) return;
+
+  const ratio = 1.06;                              // altura/largura de cada carta
+  const gap = window.innerWidth < 420 ? 6 : 8;
+  const availW = Math.min(window.innerWidth, 720) - 24;
+  const footer = document.querySelector('#screen-game .game-footer');
+  const top = board.getBoundingClientRect().top + window.scrollY;
+  // reserva: rodapé + sua margem + respiro inferior (evita qualquer rolagem)
+  const footerH = (footer ? footer.offsetHeight : 0) + 34;
+  const availH = window.innerHeight - top - footerH;
+  if (availW <= 0 || availH <= 0) return;
+
+  let best = { cols: 2, size: 0 };
+  const maxCols = Math.min(n, 8);
+  for (let cols = 2; cols <= maxCols; cols++) {
+    const rows = Math.ceil(n / cols);
+    const w = (availW - gap * (cols - 1)) / cols;
+    const h = (availH - gap * (rows - 1)) / rows;
+    const size = Math.min(w, h / ratio);
+    if (size > best.size) best = { cols, size };
+  }
+  const size = Math.max(28, Math.min(best.size, 116));
+  board.dataset.cols = best.cols;
+  board.classList.add('fitted');
+  board.style.gridTemplateColumns = `repeat(${best.cols}, ${size}px)`;
+  board.style.gridAutoRows = `${Math.round(size * ratio)}px`;
+  board.style.gap = `${gap}px`;
+}
+
+let fitTimer = null;
+function scheduleFit() {
+  clearTimeout(fitTimer);
+  fitTimer = setTimeout(fitBoard, 120);
+}
+window.addEventListener('resize', () => { if (currentScreen() === 'game') scheduleFit(); });
+window.addEventListener('orientationchange', () => { if (currentScreen() === 'game') scheduleFit(); });
 
 function playerLabel(p) { return p.name ? esc(p.name) : t(p.key); }
 

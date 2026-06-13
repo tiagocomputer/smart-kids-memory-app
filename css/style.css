@@ -527,7 +527,8 @@ body {
 /* ============================================================
    Placar
    ============================================================ */
-.scoreboard { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; width: 100%; margin: 6px 0 12px; }
+.scoreboard { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; width: 100%; margin: 4px 0 8px; }
+#screen-game { padding-top: 8px; padding-bottom: 10px; justify-content: flex-start; }
 
 .player-tag {
   background: var(--chip-bg);
@@ -616,6 +617,13 @@ body {
   .board[data-cols="6"] { grid-template-columns: repeat(4, 1fr); }
 }
 
+/* Tabuleiro ajustado por JS: colunas/altura vêm inline para caber sem rolagem */
+.board.fitted {
+  width: auto;
+  max-width: 100%;
+}
+.board.fitted .card { aspect-ratio: auto; width: 100%; height: 100%; }
+
 .card {
   aspect-ratio: 1 / 1.12;
   perspective: 700px;
@@ -676,11 +684,11 @@ body {
 .card.shake { animation: shake 0.4s; }
 @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
-.game-footer { margin-top: 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.game-footer { margin-top: 12px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: center; }
 .moves { font-weight: 600; color: var(--on-bg-soft); }
 
 /* ---------- Cronômetro ---------- */
-.timer-wrap { display: flex; justify-content: center; margin-bottom: 12px; }
+.timer-wrap { display: flex; justify-content: center; margin-bottom: 8px; }
 .timer {
   background: var(--chip-bg);
   color: var(--text-dark);

@@ -58,8 +58,15 @@
       case 'cloud':
         return `<path d="M28 76 Q12 74 16 60 Q10 48 26 48 Q28 34 46 38 Q54 28 64 40 Q84 36 80 54 Q92 60 80 74 Z" fill="${c}" ${STROKE}/>`;
       case 'mushroom':
-        return `<rect x="42" y="58" width="16" height="32" rx="8" fill="#ffe9c7" ${STROKE}/>` +
-               `<path d="M50 18 Q90 24 84 56 Q50 70 16 56 Q10 24 50 18 Z" fill="${c}" ${STROKE}/>`;
+        // cogumelo mais realista: caule sombreado + chapéu com borda escura,
+        // centro claro e pintas brancas com leve sombra
+        return `<ellipse cx="50" cy="90" rx="22" ry="4" fill="#000" opacity=".12"/>` +
+               `<rect x="42" y="56" width="16" height="34" rx="8" fill="#f3e3c4" ${STROKE}/>` +
+               `<ellipse cx="46" cy="73" rx="3" ry="14" fill="#e6d2ac" opacity=".7"/>` +
+               `<path d="M16 56 Q24 70 50 70 Q76 70 84 56" fill="none" stroke="#caa987" stroke-width="2"/>` +
+               `<path d="M50 18 Q90 24 84 56 Q50 66 16 56 Q10 24 50 18 Z" fill="${c}" ${STROKE}/>` +
+               `<path d="M50 18 Q78 22 80 44 Q50 52 22 44 Q22 24 50 18 Z" fill="#fff" opacity=".18"/>` +
+               `<g fill="#fff" stroke="rgba(0,0,0,.06)"><ellipse cx="34" cy="40" rx="6" ry="5"/><ellipse cx="64" cy="42" rx="7" ry="6"/><ellipse cx="50" cy="29" rx="5" ry="4.5"/><ellipse cx="74" cy="34" rx="4" ry="3.5"/></g>`;
       case 'ghost':
         return `<path d="M20 60 Q20 28 50 28 Q80 28 80 60 L80 86 Q73 79 66 86 Q59 92 52 86 L50 84 L48 86 Q41 92 34 86 Q27 79 20 86 Z" fill="${c}" ${STROKE}/>`;
       case 'top':
@@ -173,14 +180,28 @@
     return s;
   }
 
+  // Sombreado suave (volume) + sombra no chão, sem usar gradientes com id
+  // (evita conflito quando vários SVGs convivem na mesma página)
+  const GROUND = `<ellipse cx="50" cy="93" rx="26" ry="5" fill="#000" opacity=".12"/>`;
+  function shade(bodyKind) {
+    if (['round', 'egg', 'square'].includes(bodyKind)) {
+      return `<ellipse cx="42" cy="44" rx="20" ry="14" fill="#fff" opacity=".16"/>` +
+             `<ellipse cx="50" cy="80" rx="26" ry="11" fill="#000" opacity=".10"/>`;
+    }
+    return '';
+  }
+
   // ---------- Monta o personagem ----------
   function build(spec) {
     const dy = FACE_DY[spec.body] || 0;
     const faceG = `<g transform="translate(0,${dy})">${eyes(spec.eyes)}${BLUSH}${mouth(spec.mouth)}</g>`;
-    const hasBadge = spec.badge; // crachá já tem "rosto" próprio (letra), mantém olhos só se quiser
+    const hasBadge = spec.badge; // crachá já tem "rosto" próprio (letra)
+    const kind = spec.body || 'round';
     return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img">` +
+      GROUND +
       back(spec) +
-      body(spec.body || 'round', spec.color, spec.color2) +
+      body(kind, spec.color, spec.color2) +
+      shade(kind) +
       detail(spec) +
       (hasBadge ? '' : faceG) +
       topper(spec) +

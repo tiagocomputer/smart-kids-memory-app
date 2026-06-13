@@ -229,6 +229,8 @@ const THEMES = {
 
 // Personagens originais em SVG (mario/toy/pokemon/disney) — ver js/characters.js
 const CHAR_THEMES = window.MM_CHARACTERS || {};
+// Ilustrações detalhadas (animais e dinossauros) — ver js/art.js
+const ART_THEMES = window.MM_ART || {};
 
 // Espécies de dinossauro: cada carta é um dinossauro, todas diferentes (cor + forma)
 const DINO_SPECIES = [];
@@ -241,7 +243,7 @@ const THEME_FACES = {};
 function themeFaces(id) {
   if (THEME_FACES[id]) return THEME_FACES[id];
   let faces;
-  if (id === 'dinos') faces = DINO_SPECIES.slice();
+  if (ART_THEMES[id]) faces = ART_THEMES[id].map((a) => ({ face: `${id}:${a.id}`, svg: a.svg }));
   else if (CHAR_THEMES[id]) faces = CHAR_THEMES[id].map((ch) => ({ face: `${id}:${ch.id}`, svg: ch.svg }));
   else faces = (THEMES[id] || []).map((e) => ({ face: e, emoji: e, hue: 0 }));
   THEME_FACES[id] = faces;
@@ -624,6 +626,8 @@ function updateStartButton() {
 const coinTiny = '<span class="coin-badge tiny" aria-hidden="true">★</span>';
 
 function themeIcon(th) {
+  const art = ART_THEMES[th.id];
+  if (art && art[0]) return `<span class="opt-svg">${art[0].svg}</span>`;
   if (th.char && CHAR_THEMES[th.id] && CHAR_THEMES[th.id][0]) {
     return `<span class="opt-svg">${CHAR_THEMES[th.id][0].svg}</span>`;
   }

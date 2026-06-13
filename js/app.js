@@ -31,6 +31,7 @@ const I18N = {
     themeToy: 'Mundo dos Brinquedos', themePokemon: 'Monstrinhos', themeDisney: 'Reino Encantado',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
+    pause: 'Pausar', paused: 'Jogo pausado ⏸️', resume: 'Continuar',
     moves: 'Jogadas: {n}', pairsLabel: 'Pares:',
     congrats: 'Parabéns! 🎉',
     completedMsg: 'Você completou o nível e ganhou uma figurinha nova!',
@@ -93,6 +94,7 @@ const I18N = {
     themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Enchanted Kingdom',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
+    pause: 'Pause', paused: 'Game paused ⏸️', resume: 'Resume',
     moves: 'Moves: {n}', pairsLabel: 'Pairs:',
     congrats: 'Congratulations! 🎉',
     completedMsg: 'You completed the level and won a brand new sticker!',
@@ -155,6 +157,7 @@ const I18N = {
     themeToy: 'Monde des Jouets', themePokemon: 'Petits Monstres', themeDisney: 'Royaume Enchanté',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
+    pause: 'Pause', paused: 'Jeu en pause ⏸️', resume: 'Reprendre',
     moves: 'Coups: {n}', pairsLabel: 'Paires:',
     congrats: 'Bravo! 🎉',
     completedMsg: 'Tu as terminé le niveau et gagné un nouvel autocollant!',
@@ -928,7 +931,7 @@ function drainRemoteQueue() {
 // ---------- Estado da partida ----------
 
 const game = {
-  players: [], current: 0, deck: [], flipped: [], lock: false, over: false,
+  players: [], current: 0, deck: [], flipped: [], lock: false, over: false, paused: false,
   moves: 0, matchedPairs: 0, totalPairs: 0, online: false, myIndex: 0,
 };
 let lastWin = null;
@@ -984,6 +987,8 @@ function startGame(opts = {}) {
   game.startTime = Date.now();
 
   closeRematchModal();
+  clearPause();
+  $('#btn-pause').hidden = game.online || game.players.length > 1;
   renderBoard(level);
   renderScoreboard();
   updateMoves();
@@ -1111,12 +1116,35 @@ function timeUp() {
   showScreen('timeup');
 }
 
+// ---------- Pausa (solo) ----------
+function pauseGame() {
+  if (game.over || game.paused || currentScreen() !== 'game') return;
+  game.paused = true;
+  stopTimer();
+  music.stop();
+  $('#board').classList.add('paused');
+  $('#pause-modal').hidden = false;
+}
+function resumeGame() {
+  if (!game.paused) return;
+  game.paused = false;
+  $('#board').classList.remove('paused');
+  $('#pause-modal').hidden = true;
+  if (!game.online && timeLeft > 0 && !game.over && !timerInt) timerInt = setInterval(timerTick, 1000);
+  if (storage.sound) music.play(config.level);
+}
+function clearPause() {
+  game.paused = false;
+  $('#board').classList.remove('paused');
+  $('#pause-modal').hidden = true;
+}
+
 document.addEventListener('visibilitychange', () => {
   const cur = currentScreen();
   if (document.hidden) {
     music.stop();
     if (cur === 'game') stopTimer();
-  } else if (cur === 'game' && !game.over) {
+  } else if (cur === 'game' && !game.over && !game.paused) {
     if (!game.online && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
     music.play(config.level);
   } else if (MENU_SCREENS.has(cur)) {
@@ -1127,7 +1155,7 @@ document.addEventListener('visibilitychange', () => {
 // ---------- Virar cartas ----------
 
 function flipCard(idx, el, remote = false) {
-  if (game.lock || game.over || game.deck[idx].matched || game.flipped.includes(idx)) return;
+  if (game.lock || game.over || game.paused || game.deck[idx].matched || game.flipped.includes(idx)) return;
   if (game.online && !remote && game.current !== game.myIndex) return;
   if (game.online && !remote) netSend({ type: 'flip', idx });
 
@@ -1545,12 +1573,23 @@ $('#btn-album-play').addEventListener('click', () => { sound.play('click'); goSe
 $('#btn-home').addEventListener('click', () => {
   sound.play('click');
   closeRematchModal();
+  clearPause();
   if (currentScreen() === 'game') leaveGame();
   netDestroy();
   showScreen('home');
 });
 
 $('#pack-box').addEventListener('click', openPack);
+
+$('#btn-pause').addEventListener('click', () => { sound.play('click'); pauseGame(); });
+$('#btn-resume').addEventListener('click', () => { sound.play('click'); resumeGame(); });
+$('#btn-pause-restart').addEventListener('click', () => { sound.play('click'); clearPause(); startGame(); });
+$('#btn-pause-home').addEventListener('click', () => {
+  sound.play('click');
+  clearPause();
+  if (currentScreen() === 'game') leaveGame();
+  showScreen('home');
+});
 
 $('#btn-rematch-yes').addEventListener('click', requestRematch);
 $('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); closeRematchModal(); leaveGame(); showScreen('home'); });

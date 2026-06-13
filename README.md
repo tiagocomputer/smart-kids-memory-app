@@ -22,7 +22,7 @@ e acesse `http://localhost:8000`.
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com 2 jogadores, o tempo aumenta)
 - **14 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 10 **trancadas com cadeado** 🔒 que se compram com a chave 🗝️: Dinossauros 🦖, Comida 🍕, Brinquedos 🧸, Heróis 🦸, Bandeiras 🚩, Fantasia 🐉, Mundo dos Brinquedos 🤠, Mundo do Mario 🍄, Monstrinhos ⚡ e Reino Encantado 🏰 (custos de 30 a 500 moedas)
 - **Fase dos dinossauros** 🦖 — 14 espécies reais ilustradas à mão (T-Rex, Tríceratops, Estegossauro, Braquiossauro, Pterodáctilo, Velociraptor, Anquilossauro, Espinossauro, Diplodoco e mais)
-- **Ilustrações detalhadas em SVG** 🎨 — fase de Animais com 16 bichos desenhados à mão; Mundo dos Cogumelos, Mundo dos Brinquedos, Monstrinhos e Reino Encantado com personagens próprios e sombreado; arte 100% original e sem marcas registradas
+- **Ilustrações detalhadas em SVG** 🎨 — 16 animais, 14 dinossauros (com olhos, garras e dentes), 16 cogumelos estilo toadstool e 14 monstrinhos de formas variadas (com braços, chifres e 1 a 3 olhos), além dos mundos dos Brinquedos e Reino Encantado; arte 100% original e sem marcas
 - **Cartas variadas a cada rodada** — cada fase tem 16 figuras e sorteia um conjunto diferente toda partida
 - **Música escolhível** 🎵 — botão de música no topo com 5 trilhas para o menu (Alegre, Aventura, Calminha, Espacial, Herói) e melodias próprias para cada nível durante a partida (tudo gerado por código)
 - **3 idiomas** 🌐 — Português 🇧🇷, Inglês 🇺🇸 e Francês 🇫🇷 (troca na hora)
@@ -37,6 +37,7 @@ e acesse `http://localhost:8000`.
 - **Coruja mascote em CSS** 🦉 — pisca, flutua, fala e comemora a vitória batendo as asas
 - **Fundo animado**, cartas que entram em cascata, **figuras grandes e uniformes**, vibração no acerto (celular)
 - **Tabuleiro que cabe na tela sem rolagem** 📐 — o tamanho das cartas e o número de colunas são calculados automaticamente para todas as cartas caberem na tela em qualquer aparelho/orientação
+- **Botão de pausa** ⏸️ — no modo de 1 jogador, pausa o cronômetro e borra o tabuleiro (sem espiar), com Continuar / Recomeçar / Início
 - **Totalmente responsivo** — celular, tablet e computador, retrato ou paisagem; o cronômetro **pausa sozinho** se a criança sair da aba
 - Progresso (moedas, figurinhas, fases destrancadas, idioma e tema) salvo no dispositivo
 

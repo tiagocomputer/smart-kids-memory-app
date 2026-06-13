@@ -168,6 +168,7 @@
     <div class="board" id="board"></div>
     <div class="game-footer">
       <span class="moves" id="moves-label"></span>
+      <button class="btn btn-small" id="btn-pause">⏸️ <span data-i18n="pause">Pausar</span></button>
       <button class="btn btn-small" id="btn-restart">🔄 <span data-i18n="restart">Recomeçar</span></button>
     </div>
   </main>
@@ -267,6 +268,19 @@
       <div class="win-buttons">
         <button class="btn btn-big btn-play" id="btn-unlock-yes"></button>
         <button class="btn btn-small" id="btn-unlock-no"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP: jogo pausado -->
+  <div class="modal" id="pause-modal" hidden>
+    <div class="modal-card">
+      <div class="modal-emoji">⏸️</div>
+      <h3 data-i18n="paused">Jogo pausado ⏸️</h3>
+      <div class="win-buttons">
+        <button class="btn btn-big btn-play" id="btn-resume">▶️ <span data-i18n="resume">Continuar</span></button>
+        <button class="btn btn-small" id="btn-pause-restart">🔄 <span data-i18n="restart">Recomeçar</span></button>
+        <button class="btn btn-small" id="btn-pause-home">🏠 <span data-i18n="home">Início</span></button>
       </div>
     </div>
   </div>

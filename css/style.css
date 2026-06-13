@@ -624,6 +624,9 @@ body {
 }
 .board.fitted .card { aspect-ratio: auto; width: 100%; height: 100%; }
 
+/* Tabuleiro borrado durante a pausa (impede espiar as cartas) */
+.board.paused { filter: blur(14px); pointer-events: none; transition: filter 0.2s; }
+
 .card {
   aspect-ratio: 1 / 1.12;
   perspective: 700px;

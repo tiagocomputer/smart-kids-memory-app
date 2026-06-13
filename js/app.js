@@ -24,7 +24,7 @@ const I18N = {
     connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
-    themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo do Mario',
+    themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo dos Cogumelos',
     themeToy: 'Mundo dos Brinquedos', themePokemon: 'Monstrinhos', themeDisney: 'Reino Encantado',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
@@ -83,8 +83,8 @@ const I18N = {
     connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
-    themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: "Mario's World",
-    themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Magic Kingdom',
+    themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: 'Mushroom World',
+    themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Enchanted Kingdom',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     moves: 'Moves: {n}', pairsLabel: 'Pairs:',
@@ -142,7 +142,7 @@ const I18N = {
     connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
-    themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde de Mario',
+    themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde des Champignons',
     themeToy: 'Monde des Jouets', themePokemon: 'Petits Monstres', themeDisney: 'Royaume Enchanté',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
@@ -213,14 +213,13 @@ const THEMES = {
   brinquedos: ['🧸', '🪀', '🎲', '🪁', '🚂', '🎠', '🤖', '🎯', '🪆', '🛴', '🎪', '🎨', '🎮', '🧩', '🚁', '🛼'],
   herois:     ['🦸‍♂️', '🦸‍♀️', '🦹‍♂️', '🕸️', '🦇', '⚡', '🛡️', '💥', '👊', '🧪', '🚨', '💪', '🦸', '🧑‍🚀', '🥷', '🦾'],
   fantasia2:  ['🐉', '🦄', '🧙‍♂️', '🧚', '🧜‍♀️', '🏰', '👑', '🗡️', '🛡️', '🔮', '🌟', '🧝‍♀️', '🐲', '🦅', '⚔️', '📜'],
-  mario:      ['🍄', '⭐', '🔥', '🏰', '👑', '🟥', '🧱', '❓', '🐢', '🌼', '💚', '🚩', '💎', '👻', '🪙', '🟫'],
-  toy:        ['🤠', '🚀', '👽', '🐷', '🦖', '🐶', '🪀', '🎯', '🚂', '🎪', '🧸', '⭐', '🎈', '🪁', '🎁', '🔭'],
-  pokemon:    ['⚡', '🔥', '💧', '🌿', '🔴', '⭐', '🐭', '🐉', '🦎', '🌙', '🍃', '❄️', '🪨', '🌟', '🌑', '🌀'],
-  disney:     ['🏰', '👸', '🤴', '🧜‍♀️', '🧚', '🦁', '🐭', '🪄', '👑', '🌹', '⏰', '🎈', '🦆', '🐻', '🍎', '🕰️'],
   bandeiras:  ['🇧🇷', '🇺🇸', '🇫🇷', '🇯🇵', '🇮🇹', '🇩🇪', '🇪🇸', '🇬🇧', '🇨🇦', '🇲🇽', '🇦🇷', '🇵🇹', '🇨🇳', '🇦🇺', '🇰🇷', '🇳🇱'],
   // dinos é tratado de forma especial (espécies coloridas) em buildFaces()
   dinos:      ['🦕', '🦖'],
 };
+
+// Personagens originais em SVG (mario/toy/pokemon/disney) — ver js/characters.js
+const CHAR_THEMES = window.MM_CHARACTERS || {};
 
 // Espécies de dinossauro: cada carta é um dinossauro, todas diferentes (cor + forma)
 const DINO_SPECIES = [];
@@ -234,6 +233,7 @@ function themeFaces(id) {
   if (THEME_FACES[id]) return THEME_FACES[id];
   let faces;
   if (id === 'dinos') faces = DINO_SPECIES.slice();
+  else if (CHAR_THEMES[id]) faces = CHAR_THEMES[id].map((ch) => ({ face: `${id}:${ch.id}`, svg: ch.svg }));
   else faces = (THEMES[id] || []).map((e) => ({ face: e, emoji: e, hue: 0 }));
   THEME_FACES[id] = faces;
   return faces;
@@ -251,10 +251,10 @@ const THEME_LIST = [
   { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 120 },
   { id: 'bandeiras',  icon: '🚩', key: 'themeBandeiras',  cost: 150 },
   { id: 'fantasia2',  icon: '🐉', key: 'themeFantasia2',  cost: 200 },
-  { id: 'toy',        icon: '🤠', key: 'themeToy',        cost: 260 },
-  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 320 },
-  { id: 'pokemon',    icon: '⚡', key: 'themePokemon',    cost: 400 },
-  { id: 'disney',     icon: '🏰', key: 'themeDisney',     cost: 500 },
+  { id: 'toy',        icon: '🤠', key: 'themeToy',        cost: 260, char: true },
+  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 320, char: true },
+  { id: 'pokemon',    icon: '⚡', key: 'themePokemon',    cost: 400, char: true },
+  { id: 'disney',     icon: '🏰', key: 'themeDisney',     cost: 500, char: true },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
@@ -614,13 +614,20 @@ function updateStartButton() {
 
 const coinTiny = '<span class="coin-badge tiny" aria-hidden="true">★</span>';
 
+function themeIcon(th) {
+  if (th.char && CHAR_THEMES[th.id] && CHAR_THEMES[th.id][0]) {
+    return `<span class="opt-svg">${CHAR_THEMES[th.id][0].svg}</span>`;
+  }
+  return th.icon;
+}
+
 function renderThemeOptions() {
   const row = $('#theme-options');
   row.innerHTML = THEME_LIST.map((th) => {
     const locked = !isThemeUnlocked(th.id);
     return `
       <button class="opt ${config.theme === th.id ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}">
-        <span class="opt-emoji">${locked ? '🔒' : th.icon}</span>
+        <span class="opt-emoji">${locked ? '🔒' : themeIcon(th)}</span>
         <span>${t(th.key)}</span>
         ${locked ? `<small class="cost">🗝️ ${th.cost}${coinTiny}</small>` : ''}
       </button>`;
@@ -895,7 +902,7 @@ function startGame(opts = {}) {
   }
 
   game.current = 0;
-  game.deck = deckFaces.map((f) => ({ face: f.face, emoji: f.emoji, hue: f.hue || 0, matched: false }));
+  game.deck = deckFaces.map((f) => ({ face: f.face, emoji: f.emoji, hue: f.hue || 0, svg: f.svg, matched: false }));
   game.flipped = [];
   game.lock = false;
   game.over = false;
@@ -927,10 +934,11 @@ function renderBoard(level) {
     el.style.animationDelay = `${idx * 35}ms`;
     el.setAttribute('aria-label', '?');
     const hueStyle = card.hue ? ` style="filter:hue-rotate(${card.hue}deg) saturate(1.6)"` : '';
+    const front = card.svg ? card.svg : card.emoji;
     el.innerHTML = `
       <div class="card-inner">
         <div class="card-face card-back">❓</div>
-        <div class="card-face card-front"${hueStyle}>${card.emoji}</div>
+        <div class="card-face card-front ${card.svg ? 'has-svg' : ''}"${hueStyle}>${front}</div>
       </div>`;
     el.addEventListener('click', () => flipCard(idx, el));
     board.appendChild(el);

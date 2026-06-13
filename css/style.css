@@ -659,6 +659,13 @@ body {
   border: 3px solid rgba(255, 255, 255, 0.5);
 }
 .card-front { background: #fff; transform: rotateY(180deg); border: 3px solid var(--yellow); }
+/* Cartas com personagem original (SVG) em vez de emoji */
+.card-front.has-svg { padding: 6%; }
+.card-front.has-svg svg { width: 100%; height: 100%; display: block; }
+
+/* Ícone de personagem dentro do botão de fase */
+.opt-svg { display: inline-block; width: 1.7em; height: 1.7em; vertical-align: middle; }
+.opt-svg svg { width: 100%; height: 100%; display: block; }
 
 .card.matched { cursor: default; animation: pop 0.45s; }
 .card.matched .card-front { border-color: var(--green); background: #ecfdf5; }

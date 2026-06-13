@@ -22,6 +22,7 @@ e acesse `http://localhost:8000`.
 - **3 níveis com cronômetro** ⏱️ — Fácil (8 pares · 1:40), Médio (10 pares · 2:10) e Difícil (12 pares · 2:40). Terminar antes do tempo dá **bônus de moedas**; se o tempo acabar, é só tentar de novo! (com 2 jogadores, o tempo aumenta)
 - **14 fases temáticas** — 4 abertas (Animais 🐶, Frutas 🍎, Espaço 🚀, Oceano 🐠) e 10 **trancadas com cadeado** 🔒 que se compram com a chave 🗝️: Dinossauros 🦖, Comida 🍕, Brinquedos 🧸, Heróis 🦸, Bandeiras 🚩, Fantasia 🐉, Mundo dos Brinquedos 🤠, Mundo do Mario 🍄, Monstrinhos ⚡ e Reino Encantado 🏰 (custos de 30 a 500 moedas)
 - **Fase dos dinossauros** 🦖 — todas as cartas são dinossauros, cada um de uma cor e espécie diferente
+- **Personagens originais desenhados em SVG** 🎨 — as fases Mundo dos Cogumelos, Mundo dos Brinquedos, Monstrinhos e Reino Encantado têm mascotes "kawaii" próprios (encanador, caubói de brinquedo, monstrinhos por elemento, princesa, dragão, unicórnio...), arte 100% original e sem marcas registradas
 - **Cartas variadas a cada rodada** — cada fase tem 16 figuras e sorteia um conjunto diferente toda partida
 - **Música escolhível** 🎵 — botão de música no topo com 5 trilhas para o menu (Alegre, Aventura, Calminha, Espacial, Herói) e melodias próprias para cada nível durante a partida (tudo gerado por código)
 - **3 idiomas** 🌐 — Português 🇧🇷, Inglês 🇺🇸 e Francês 🇫🇷 (troca na hora)

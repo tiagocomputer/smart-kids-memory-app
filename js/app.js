@@ -812,17 +812,20 @@ let rematchMe = false, rematchPeer = false, peerLeft = false;
 
 function resetRematch() { rematchMe = false; rematchPeer = false; peerLeft = false; }
 
+function openRematchModal() {
+  updateRematchUI();
+  $('#rematch-modal').hidden = false;
+}
+function closeRematchModal() { $('#rematch-modal').hidden = true; }
+
 function updateRematchUI() {
   const status = $('#rematch-status');
   const yes = $('#btn-rematch-yes');
-  const q = $('#rematch-q');
   if (peerLeft) {
     yes.disabled = true;
-    q.textContent = '';
     status.textContent = t('peerLeft');
     return;
   }
-  q.textContent = t('rematchQ');
   if (rematchMe) {
     yes.disabled = true;
     status.textContent = rematchPeer ? '' : t('waitingRematch');
@@ -835,6 +838,7 @@ function updateRematchUI() {
 function tryStartRematch() {
   if (rematchMe && rematchPeer && !peerLeft) {
     resetRematch();
+    closeRematchModal();
     // Só o anfitrião monta o novo baralho; o convidado espera o 'start'
     if (game.myIndex === 0) hostStartMatch();
   }
@@ -886,10 +890,10 @@ function handleNetData(data) {
 
 function handleDisconnect() {
   const cur = currentScreen();
-  if (cur === 'game' && game.online && !game.over) {
+  if (cur === 'game' && game.online && !game.over && !game.finishing) {
     showToast(t('connLost')); leaveGame(); showScreen('home');
-  } else if (cur === 'win' && game.online) {
-    // Partida acabou e o outro saiu: oferece só sair, sem travar
+  } else if ((cur === 'win' || game.finishing) && game.online) {
+    // Partida acabou (ou está terminando) e o outro saiu: só deixa sair
     peerLeft = true; rematchPeer = false;
     updateRematchUI();
     netDestroy();
@@ -969,11 +973,13 @@ function startGame(opts = {}) {
   game.flipped = [];
   game.lock = false;
   game.over = false;
+  game.finishing = false;
   game.moves = 0;
   game.matchedPairs = 0;
   game.totalPairs = level.pairs;
   game.startTime = Date.now();
 
+  closeRematchModal();
   renderBoard(level);
   renderScoreboard();
   updateMoves();
@@ -1093,7 +1099,7 @@ function flipCard(idx, el, remote = false) {
     game.deck[b].matched = true;
     game.matchedPairs++;
     game.players[game.current].pairs++;
-    if (game.matchedPairs === game.totalPairs) stopTimer();
+    if (game.matchedPairs === game.totalPairs) { game.finishing = true; stopTimer(); }
     if (navigator.vibrate) navigator.vibrate(60);
     setTimeout(() => {
       sound.play('match');
@@ -1215,16 +1221,22 @@ function endGame() {
   };
 
   $('#gift-area').hidden = !iWin;
-  // No duelo (online) mostra o popup de revanche; senão, os botões normais
+  // No duelo (online), esconde os botões normais e usa o popup de revanche
   $('#win-buttons-default').hidden = game.online;
-  $('#rematch-box').hidden = !game.online;
-  if (game.online) { resetRematch(); updateRematchUI(); }
+  closeRematchModal();
+  if (game.online) resetRematch();
   preparePack();
   renderWinTexts();
   showScreen('win');
   sound.play(iWin ? 'win' : 'miss');
   if (iWin) setTimeout(() => sound.play('coin'), 700);
   launchConfetti(iWin ? 4500 : 1500);
+
+  if (game.online) {
+    // Mostra a recompensa sozinha e abre o popup "Continuar o duelo?"
+    if (iWin) setTimeout(openPack, 500);
+    setTimeout(() => { if (currentScreen() === 'win' && game.online) openRematchModal(); }, 1500);
+  }
 }
 
 function renderWinTexts() {
@@ -1483,6 +1495,7 @@ $('#btn-win-album').addEventListener('click', () => {
 $('#btn-album-play').addEventListener('click', () => { sound.play('click'); goSetup(); });
 $('#btn-home').addEventListener('click', () => {
   sound.play('click');
+  closeRematchModal();
   if (currentScreen() === 'game') leaveGame();
   netDestroy();
   showScreen('home');
@@ -1491,7 +1504,7 @@ $('#btn-home').addEventListener('click', () => {
 $('#pack-box').addEventListener('click', openPack);
 
 $('#btn-rematch-yes').addEventListener('click', requestRematch);
-$('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); leaveGame(); showScreen('home'); });
+$('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); closeRematchModal(); leaveGame(); showScreen('home'); });
 
 $('#btn-sound').addEventListener('click', () => {
   storage.sound = !storage.sound;

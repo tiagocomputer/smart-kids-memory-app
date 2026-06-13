@@ -95,8 +95,10 @@
     </section>
 
     <section class="setup-block">
+      <h3 data-i18n="chooseSkin">Cor da pele</h3>
+      <div class="skin-row" id="profile-skin-options"></div>
       <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>
-      <div class="option-row avatar-row" id="profile-avatar-options"></div>
+      <div class="avatar-row" id="profile-avatar-options"></div>
     </section>
 
     <button class="btn btn-big btn-play" id="btn-profile-continue"><span data-i18n="continueBtn">Continuar</span> ➡️</button>
@@ -155,7 +157,10 @@
     <section class="setup-block">
       <h3 data-i18n="yourName">Seu nome</h3>
       <input type="text" id="join-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
-      <div class="option-row avatar-row" id="join-avatar-options"></div>
+      <h3 data-i18n="chooseSkin">Cor da pele</h3>
+      <div class="skin-row" id="join-skin-options"></div>
+      <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>
+      <div class="avatar-row" id="join-avatar-options"></div>
     </section>
     <button class="btn btn-big btn-play" id="btn-join"><span data-i18n="joinBtn">Entrar!</span> 🚀</button>
     <p class="waiting" id="join-status"></p>
@@ -305,6 +310,7 @@
   <script src="js/vendor/peerjs.min.js"></script>
   <script src="js/art.js"></script>
   <script src="js/characters.js"></script>
+  <script src="js/avatars.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

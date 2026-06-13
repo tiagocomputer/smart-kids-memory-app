@@ -476,17 +476,47 @@ body {
 .name-input::placeholder { color: #a78bfa; opacity: 0.8; }
 .name-input.shake { animation: shake 0.4s; border-color: #ef4444; }
 .avatar-row {
-  margin-top: 12px;
-  max-height: 168px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+  max-height: 196px;
   overflow-y: auto;
-  padding: 6px;
-  gap: 8px;
+  padding: 8px;
+  gap: 10px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.12);
   scrollbar-width: thin;
 }
-.avatar-opt { min-width: 0; width: 48px; height: 48px; font-size: 1.5rem; padding: 0; border-radius: 14px; box-shadow: 0 3px 0 rgba(0,0,0,0.18); }
-.avatar-opt.selected { transform: scale(1.12); }
+.avatar-opt {
+  width: 60px; height: 60px;
+  padding: 0;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid transparent;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.avatar-opt svg { width: 100%; height: 100%; display: block; }
+.avatar-opt:active { transform: scale(0.92); }
+.avatar-opt.selected { border-color: var(--yellow); transform: scale(1.12); box-shadow: 0 4px 0 rgba(0,0,0,0.18), 0 0 12px rgba(251,191,36,0.8); }
+
+/* Seletor de tom de pele (estilo emoji do WhatsApp) */
+.skin-row { display: flex; justify-content: center; gap: 10px; margin: 8px 0 2px; flex-wrap: wrap; }
+.skin-opt {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: transform 0.12s, border-color 0.12s;
+}
+.skin-opt:active { transform: scale(0.9); }
+.skin-opt.selected { border-color: var(--yellow); transform: scale(1.16); }
 
 .btn-records {
   background: linear-gradient(180deg, #fda4af, #fb7185);
@@ -505,7 +535,8 @@ body {
   font-size: 1.05rem;
   margin-bottom: 16px;
 }
-.profile-chip span:first-child { font-size: 1.3rem; }
+.profile-chip span:first-child { font-size: 1.3rem; display: inline-flex; }
+#profile-chip-avatar svg { width: 26px; height: 26px; display: block; border-radius: 50%; background: #fff; }
 
 /* Fases bloqueadas (cadeado + preço da chave) */
 .opt.locked {
@@ -544,7 +575,8 @@ body {
   opacity: 0.6;
   transition: all 0.25s;
 }
-.player-tag .avatar { font-size: 1.35rem; }
+.player-tag .avatar { display: inline-flex; }
+.player-tag .avatar svg { width: 28px; height: 28px; display: block; border-radius: 50%; background: #fff; }
 .player-tag .score { background: var(--yellow); border-radius: 999px; min-width: 26px; text-align: center; padding: 2px 7px; }
 .player-tag.turn { opacity: 1; border-color: var(--yellow); transform: scale(1.07); box-shadow: 0 0 16px rgba(251, 191, 36, 0.8); }
 .player-tag.me::after { content: '⭐'; font-size: 0.85rem; }
@@ -750,6 +782,10 @@ body {
 @keyframes card-in { from { opacity: 0; transform: translateY(24px) scale(0.92); } to { opacity: 1; transform: none; } }
 
 .win-card h2 { font-size: clamp(1.5rem, 7vw, 2rem); margin: 2px 0; }
+.win-ava { display: inline-flex; vertical-align: middle; }
+.win-ava svg { width: 38px; height: 38px; border-radius: 50%; background: #fff; }
+.rank-row { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 3px 0; }
+.win-ava-sm svg { width: 26px; height: 26px; border-radius: 50%; background: #fff; display: block; }
 .win-card #win-subtitle { font-size: clamp(0.95rem, 4vw, 1.1rem); opacity: 0.82; margin-bottom: 4px; }
 .stars { font-size: 2rem; margin: 6px 0; letter-spacing: 4px; min-height: 1em; }
 .stars .dim { opacity: 0.22; }

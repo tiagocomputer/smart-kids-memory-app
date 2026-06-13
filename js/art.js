@@ -1,14 +1,15 @@
 /* ============================================================
    Memória Mágica — arte ilustrada (SVG)
-   Animais, dinossauros, cogumelos e monstrinhos desenhados à
-   mão em vetor, com sombreado. Tudo arte original.
-   Expõe window.MM_ART = { animais, dinos, mario, pokemon }.
+   Animais, dinossauros (estilo cartoon fofo), cogumelos,
+   monstrinhos e criaturinhas. Tudo arte original.
+   Expõe window.MM_ART = { animais, dinos, mario, pokemon, criaturas }.
    ============================================================ */
 
 (function () {
   'use strict';
 
   const S = 'stroke-linejoin="round" stroke-linecap="round"';
+  const OUT = '#2b2b2b'; // contorno preto e marcado, estilo cartoon
   function svg(inner) {
     return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" role="img">${inner}</svg>`;
   }
@@ -18,19 +19,22 @@
            `<circle cx="${x}" cy="${(y + r * 0.18).toFixed(1)}" r="${(r * 0.6).toFixed(1)}" fill="#23170c"/>` +
            `<circle cx="${(x + r * 0.28).toFixed(1)}" cy="${(y - r * 0.32).toFixed(1)}" r="${(r * 0.22).toFixed(1)}" fill="#fff"/>`;
   }
-  // olho menor de réptil (com pálpebra) para os dinossauros
-  function dEye(x, y) {
-    return `<ellipse cx="${x}" cy="${y}" rx="4" ry="4.4" fill="#fff" stroke="rgba(0,0,0,.3)" stroke-width="1"/>` +
-           `<circle cx="${x}" cy="${y + 0.4}" r="2.3" fill="#1b1208"/>` +
-           `<circle cx="${x + 1.1}" cy="${y - 1}" r="0.9" fill="#fff"/>` +
-           `<path d="M${x - 4.6} ${y - 2.6} Q${x} ${y - 6.5} ${x + 4.6} ${y - 2.6}" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="1.4"/>`;
+  // olho grande e fofo (cartoon) para os dinossauros
+  function bigEye(x, y, r) {
+    r = r || 7;
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${OUT}" stroke-width="1.6"/>` +
+           `<circle cx="${x}" cy="${y + 0.6}" r="${(r * 0.55).toFixed(1)}" fill="#1b1208"/>` +
+           `<circle cx="${(x + r * 0.32).toFixed(1)}" cy="${(y - r * 0.34).toFixed(1)}" r="${(r * 0.26).toFixed(1)}" fill="#fff"/>`;
+  }
+  function smile(x, y, w) {
+    w = w || 7;
+    return `<path d="M${x - w} ${y} Q${x} ${y + w * 0.9} ${x + w} ${y}" fill="none" stroke="${OUT}" stroke-width="2" ${S}/>`;
   }
 
   // =====================================================
   //  ANIMAIS — rostos ilustrados (vista de frente)
   // =====================================================
   const A = {};
-
   A.cachorro = svg(
     `<g stroke="#6b4f2a" stroke-width="2.4" ${S}>
        <path d="M18 38 Q10 66 30 76 L36 54 Z" fill="#b9863f"/>
@@ -183,214 +187,170 @@
   );
 
   // =====================================================
-  //  DINOSSAUROS — espécies reais (perfil), com olho,
-  //  garras, dentes e sombreado de barriga
+  //  DINOSSAUROS — cartoon fofo (contorno preto, cores vivas)
   // =====================================================
   const D = {};
-
-  D.trex = svg(
-    `<g stroke="#2f4a22" stroke-width="2.4" ${S}>
-       <path d="M40 56 Q16 54 6 74 Q22 66 42 66 Z" fill="#5f8a43"/>
-       <path d="M40 62 L38 84 L48 84 L50 64 Z" fill="#4f7637"/><path d="M38 84 L36 88 M42 84 L42 88 M46 84 L48 88" stroke="#e8dcc0" stroke-width="1.6"/>
-       <path d="M34 50 Q28 80 52 82 Q76 82 74 52 Q72 38 52 38 Q40 40 34 50 Z" fill="#6a994e"/>
-       <path d="M58 64 L56 84 L67 84 L68 64 Z" fill="#6a994e"/><path d="M56 84 L54 88 M60 84 L60 88 M64 84 L66 88" stroke="#e8dcc0" stroke-width="1.6"/>
-       <path d="M66 50 Q66 28 84 26 L96 30 Q98 40 88 40 L88 44 L80 45 Q70 46 66 50 Z" fill="#6a994e"/>
-       <path d="M84 41 L84 44 M88 40 L88 43 M92 39 L92 42" stroke="#fff" stroke-width="1.4"/>
-       <path d="M62 54 q6 1 7 5" fill="none"/>
-       <path d="M40 60 Q52 76 66 66" fill="none" stroke="#a7c957" stroke-width="3.5"/>
-       <g fill="#557a3e"><circle cx="46" cy="50" r="1.6"/><circle cx="56" cy="48" r="1.6"/><circle cx="64" cy="50" r="1.6"/></g>
-     </g>` + dEye(84, 33)
+  // helper: corpo padrão de dino bípede (cabeça à direita)
+  function biped(col, belly, head) {
+    return `<g stroke="${OUT}" stroke-width="3" ${S}>` +
+      `<path d="M40 56 Q14 52 6 74 Q22 64 42 66 Z" fill="${col}"/>` +
+      `<path d="M40 62 L38 86 L49 86 L51 64 Z" fill="${col}"/><path d="M37 86 L35 90 M41 86 L41 90 M45 86 L47 90" stroke="${OUT}" stroke-width="2"/>` +
+      `<path d="M33 48 Q26 80 52 82 Q78 82 76 50 Q74 36 52 36 Q40 38 33 48 Z" fill="${col}"/>` +
+      `<path d="M58 64 L56 86 L67 86 L68 64 Z" fill="${col}"/><path d="M55 86 L53 90 M59 86 L59 90 M63 86 L65 90" stroke="${OUT}" stroke-width="2"/>` +
+      `<ellipse cx="50" cy="66" rx="15" ry="11" fill="${belly}"/>` +
+      head + `</g>`;
+  }
+  D.trex = svg(biped('#c451c4', '#ecc0ec',
+    `<path d="M64 48 Q64 26 84 24 L97 30 Q99 41 88 41 L88 45 L80 46 Q70 46 64 48 Z" fill="#c451c4"/>` +
+    `<path d="M84 41 L84 45 M88 40 L88 44 M92 40 L92 43" stroke="#fff" stroke-width="1.6"/>`
+  ) + bigEye(80, 33) + smile(86, 44, 5));
+  D.estegossauro = svg(
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M22 60 Q42 42 66 46 Q86 48 94 60 Q86 70 66 70 Q42 72 22 60 Z" fill="#33b6a6"/>
+       <path d="M10 68 Q3 60 6 52 Q14 58 20 64 Z" fill="#33b6a6"/>
+       <path d="M32 66 L30 86 L41 86 L43 66 Z" fill="#33b6a6"/><path d="M62 66 L60 86 L71 86 L73 66 Z" fill="#33b6a6"/>
+       <g fill="#f5a623"><path d="M30 46 L36 28 L42 46 Z"/><path d="M44 42 L50 22 L56 42 Z"/><path d="M58 44 L64 26 L70 44 Z"/></g>
+       <ellipse cx="58" cy="62" rx="20" ry="9" fill="#bdeee6"/>
+       <path d="M84 50 Q96 46 98 54 Q94 60 84 58 Z" fill="#33b6a6"/>
+     </g>` + bigEye(90, 54, 5.5) + smile(91, 60, 4)
+  );
+  D.velociraptor = svg(biped('#9b6ad0', '#dcc6f0',
+    `<path d="M62 48 Q62 30 80 30 L96 35 Q98 44 88 44 L82 45 Q70 46 62 48 Z" fill="#9b6ad0"/>` +
+    `<path d="M84 41 L84 44 M88 40 L88 43 M92 39 L92 42" stroke="#fff" stroke-width="1.4"/>`
+  ) + bigEye(78, 36) + smile(86, 44, 5));
+  D.braquiossauro = svg(
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M26 64 Q8 62 4 78 Q18 70 32 70 Z" fill="#5fc36a"/>
+       <ellipse cx="44" cy="62" rx="24" ry="17" fill="#5fc36a"/>
+       <ellipse cx="44" cy="68" rx="19" ry="9" fill="#c4eec8"/>
+       <path d="M32 76 L30 90 L41 90 L42 76 Z" fill="#4ea659"/><path d="M50 76 L50 90 L61 90 L60 76 Z" fill="#4ea659"/>
+       <path d="M56 56 Q58 22 74 12 Q83 14 78 27 Q72 40 70 60 Z" fill="#5fc36a"/>
+       <path d="M74 12 Q85 8 87 15 Q85 22 76 22 Z" fill="#5fc36a"/>
+     </g>` + bigEye(80, 16, 5.5) + smile(83, 20, 4)
   );
   D.triceratops = svg(
-    `<g stroke="#3a4a55" stroke-width="2.4" ${S}>
-       <path d="M30 58 Q12 56 8 74 Q20 68 34 66 Z" fill="#6b8694"/>
-       <path d="M34 64 L32 84 L43 84 L44 66 Z" fill="#5a7280"/><path d="M32 84 L30 88 M36 84 L36 88 M40 84 L42 88" stroke="#e6dcc0" stroke-width="1.6"/>
-       <path d="M30 50 Q24 78 50 80 Q72 80 70 54 Q68 42 50 42 Q38 42 30 50 Z" fill="#7d9aa8"/>
-       <path d="M56 66 L54 84 L65 84 L66 66 Z" fill="#7d9aa8"/>
-       <path d="M64 56 Q60 30 86 32 Q92 48 84 60 Q76 64 64 56 Z" fill="#8fb0bf"/>
-       <path d="M64 56 Q68 40 80 40 Q86 48 82 58 Z" fill="#7d9aa8"/>
-       <path d="M82 56 Q92 56 96 62 L88 64 Z" fill="#e6dcc0"/>
-       <path d="M72 44 L70 30 L78 40 Z" fill="#e6dcc0"/><path d="M82 46 L84 32 L88 44 Z" fill="#e6dcc0"/>
-     </g>` + dEye(76, 52)
-  );
-  D.estegossauro = svg(
-    `<g stroke="#5a4a2a" stroke-width="2.4" ${S}>
-       <path d="M22 58 Q40 40 64 44 Q84 46 92 58 Q86 66 64 66 Q40 68 22 58 Z" fill="#8a7a44"/>
-       <path d="M10 66 Q4 60 6 54 Q14 58 20 62 Z" fill="#8a7a44"/>
-       <path d="M34 62 L32 82 L42 82 L44 62 Z" fill="#74672f"/><path d="M64 62 L62 82 L72 82 L74 62 Z" fill="#74672f"/>
-       <path d="M84 50 Q94 46 96 52 Q92 58 84 56 Z" fill="#a89a5a"/>
-       <g fill="#c6a83a" stroke="#7a6420"><path d="M30 44 L36 28 L42 44 Z"/><path d="M44 40 L50 22 L56 40 Z"/><path d="M58 42 L64 26 L70 42 Z"/></g>
-       <path d="M10 64 L2 60 M12 67 L4 70" stroke="#7a6420" stroke-width="3"/>
-     </g>` + dEye(90, 52)
-  );
-  D.braquiossauro = svg(
-    `<g stroke="#5a4030" stroke-width="2.4" ${S}>
-       <path d="M28 64 Q10 62 6 76 Q18 70 32 70 Z" fill="#8a6a4a"/>
-       <ellipse cx="46" cy="64" rx="24" ry="16" fill="#9a7a56"/>
-       <ellipse cx="46" cy="70" rx="20" ry="9" fill="#c2a37e" opacity=".5"/>
-       <path d="M34 76 L32 90 L42 90 L43 76 Z" fill="#80623f"/><path d="M52 76 L52 90 L61 90 L60 76 Z" fill="#80623f"/>
-       <path d="M58 58 Q60 24 74 14 Q82 16 78 28 Q72 40 70 60 Z" fill="#9a7a56"/>
-       <path d="M74 14 Q84 10 86 16 Q84 22 76 22 Z" fill="#9a7a56"/>
-     </g>` + dEye(80, 17)
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M30 60 Q12 58 8 74 Q20 68 34 66 Z" fill="#f0863c"/>
+       <path d="M34 66 L32 86 L43 86 L44 66 Z" fill="#d96f28"/><path d="M56 66 L54 86 L65 86 L66 66 Z" fill="#d96f28"/>
+       <path d="M30 50 Q24 78 50 80 Q72 80 70 54 Q68 42 50 42 Q38 42 30 50 Z" fill="#f59b54"/>
+       <path d="M62 56 Q58 28 88 30 Q94 48 84 60 Q76 64 62 56 Z" fill="#f6b07a"/>
+       <ellipse cx="48" cy="64" rx="14" ry="10" fill="#fcdcc0"/>
+       <path d="M70 44 L68 28 L78 40 Z" fill="#fff" stroke="${OUT}"/><path d="M82 48 L84 32 L90 46 Z" fill="#fff" stroke="${OUT}"/>
+       <path d="M40 44 L38 34 L46 42 Z" fill="#fff" stroke="${OUT}"/>
+     </g>` + bigEye(54, 52) + smile(40, 60, 4)
   );
   D.pterodactilo = svg(
-    `<g stroke="#7a3a1a" stroke-width="2.4" ${S}>
-       <path d="M48 40 Q20 24 8 44 Q26 44 44 54 Z" fill="#d98a4a"/>
-       <path d="M52 40 Q80 24 92 44 Q74 44 56 54 Z" fill="#d98a4a"/>
-       <path d="M30 28 L8 44 M70 28 L92 44" stroke="#b3702f" stroke-width="2"/>
-       <ellipse cx="50" cy="52" rx="10" ry="14" fill="#e89a55"/>
-       <path d="M50 64 Q50 80 56 86 Q52 78 54 64 Z" fill="#e89a55"/>
-       <path d="M44 40 Q40 28 52 26 Q64 26 60 38 L74 33 L58 44 Z" fill="#e89a55"/>
-       <path d="M58 38 L74 33" />
-     </g>` + dEye(54, 35)
-  );
-  D.velociraptor = svg(
-    `<g stroke="#1f5a55" stroke-width="2.4" ${S}>
-       <path d="M30 50 Q8 40 4 56 Q22 54 34 60 Z" fill="#2f8a82"/>
-       <path d="M30 46 Q26 66 46 68 Q62 68 62 52 Q62 42 48 42 Q36 40 30 46 Z" fill="#37a79d"/>
-       <path d="M48 66 L44 86 L52 86 L56 66 Z" fill="#2f8a82"/><path d="M44 86 L40 90 L48 88 Z" fill="#e6dcc0"/>
-       <path d="M58 48 Q60 34 76 34 L90 38 Q92 46 84 46 L78 47 Q66 48 58 48 Z" fill="#37a79d"/>
-       <path d="M82 42 L82 45 M86 41 L86 44 M90 40 L90 43" stroke="#fff" stroke-width="1.2"/>
-       <path d="M40 58 Q50 66 58 60" fill="none" stroke="#7fd0c8" stroke-width="3"/>
-       <g fill="#1f7a72"><circle cx="44" cy="50" r="1.4"/><circle cx="52" cy="48" r="1.4"/></g>
-     </g>` + dEye(80, 40)
-  );
-  D.anquilossauro = svg(
-    `<g stroke="#4a4a30" stroke-width="2.4" ${S}>
-       <circle cx="14" cy="62" r="9" fill="#8a8a50"/>
-       <path d="M22 62 Q20 56 26 58 Z M14 54 Q12 48 18 50 Z M14 70 Q12 76 18 74 Z" fill="#a6a060"/>
-       <path d="M24 64 Q40 44 64 48 Q86 50 92 64 Q86 72 64 72 Q40 74 24 64 Z" fill="#8a8a50"/>
-       <path d="M40 70 L38 84 L48 84 L49 70 Z" fill="#74743f"/><path d="M64 70 L63 84 L73 84 L73 70 Z" fill="#74743f"/>
-       <path d="M86 58 Q96 56 96 64 Q90 68 84 64 Z" fill="#a6a060"/>
-       <g fill="#bdb86a" stroke="#7a7438"><circle cx="40" cy="54" r="3"/><circle cx="52" cy="51" r="3.5"/><circle cx="64" cy="52" r="3.5"/><circle cx="76" cy="56" r="3"/></g>
-     </g>` + dEye(90, 60)
-  );
-  D.parassaurolofo = svg(
-    `<g stroke="#2a5a3a" stroke-width="2.4" ${S}>
-       <path d="M30 56 Q10 52 6 70 Q20 64 34 64 Z" fill="#3f9a5a"/>
-       <path d="M36 62 L34 84 L44 84 L45 64 Z" fill="#34804b"/>
-       <path d="M32 48 Q26 78 52 80 Q74 80 72 52 Q70 40 52 40 Q40 40 32 48 Z" fill="#4cb06a"/>
-       <path d="M58 64 L57 84 L67 84 L67 64 Z" fill="#4cb06a"/>
-       <path d="M64 50 Q66 34 80 32 L92 22 Q96 28 88 34 L80 44 Q72 48 64 50 Z" fill="#4cb06a"/>
-       <path d="M80 32 Q90 24 92 22" fill="none" stroke="#2a5a3a"/>
-       <path d="M40 58 Q52 72 64 62" fill="none" stroke="#8fd9a2" stroke-width="3.5"/>
-     </g>` + dEye(74, 46)
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M48 42 Q18 24 6 46 Q26 44 44 56 Z" fill="#f5b942"/>
+       <path d="M52 42 Q82 24 94 46 Q74 44 56 56 Z" fill="#f5b942"/>
+       <ellipse cx="50" cy="52" rx="11" ry="15" fill="#f7c965"/>
+       <ellipse cx="50" cy="56" rx="6" ry="9" fill="#fde6b0"/>
+       <path d="M50 66 Q50 82 56 88 Q52 80 54 66 Z" fill="#f5b942"/>
+       <path d="M44 42 Q40 28 52 26 Q64 26 60 38 L76 32 L58 46 Z" fill="#f5b942"/>
+     </g>` + bigEye(45, 48, 5) + bigEye(58, 47, 4) + smile(52, 58, 4)
   );
   D.espinossauro = svg(
-    `<g stroke="#6a2f2a" stroke-width="2.4" ${S}>
-       <path d="M30 60 Q34 40 56 40 Q82 40 86 60 Q80 70 56 70 Q34 70 30 60 Z" fill="#b5544a"/>
-       <path d="M30 60 Q12 58 6 74 Q20 68 34 66 Z" fill="#b5544a"/>
-       <path d="M34 42 Q40 24 46 42 Z M48 40 Q56 20 62 40 Z M64 42 Q72 24 76 44 Z" fill="#d98a82" stroke="#6a2f2a"/>
-       <path d="M40 66 L38 84 L48 84 L49 66 Z" fill="#9a473e"/><path d="M62 66 L61 84 L71 84 L71 66 Z" fill="#9a473e"/>
-       <path d="M84 54 Q96 50 98 58 Q96 64 86 62 L82 58 Z" fill="#c56a60"/>
-       <path d="M90 56 L90 59 M94 56 L94 59" stroke="#fff" stroke-width="1.2"/>
-     </g>` + dEye(88, 55)
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M30 60 Q34 40 56 40 Q82 40 86 60 Q80 70 56 70 Q34 70 30 60 Z" fill="#4a90d9"/>
+       <path d="M30 60 Q12 58 6 74 Q20 68 34 66 Z" fill="#4a90d9"/>
+       <path d="M34 42 Q40 22 46 42 Z M48 40 Q56 18 62 40 Z M64 42 Q72 22 76 44 Z" fill="#9b6ad0"/>
+       <path d="M40 66 L38 86 L49 86 L50 66 Z" fill="#3a78b8"/><path d="M62 66 L61 86 L72 86 L72 66 Z" fill="#3a78b8"/>
+       <ellipse cx="56" cy="64" rx="18" ry="8" fill="#bcd9f4"/>
+       <path d="M84 54 Q98 50 99 58 Q96 64 86 62 L82 58 Z" fill="#4a90d9"/>
+       <path d="M90 56 L90 60 M94 56 L94 60" stroke="#fff" stroke-width="1.4"/>
+     </g>` + bigEye(86, 54, 5) + smile(90, 60, 4)
   );
+  D.anquilossauro = svg(
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <circle cx="13" cy="62" r="10" fill="#8aa84a"/>
+       <path d="M24 64 Q40 44 64 48 Q86 50 92 64 Q86 72 64 72 Q40 74 24 64 Z" fill="#8aa84a"/>
+       <path d="M40 70 L38 86 L49 86 L50 70 Z" fill="#74903a"/><path d="M64 70 L63 86 L74 86 L74 70 Z" fill="#74903a"/>
+       <path d="M86 58 Q98 54 99 62 Q92 68 84 64 Z" fill="#9bb95a"/>
+       <g fill="#c6dd7a" stroke="${OUT}" stroke-width="1.6"><path d="M36 52 l5 -6 l5 6 z"/><path d="M50 49 l5 -6 l5 6 z"/><path d="M64 50 l5 -6 l5 6 z"/></g>
+     </g>` + bigEye(90, 60, 5) + smile(90, 66, 4)
+  );
+  D.parassaurolofo = svg(biped('#7ac74f', '#cdeeb6',
+    `<path d="M64 50 Q66 32 80 30 L94 20 Q98 27 89 33 L80 44 Q72 48 64 50 Z" fill="#7ac74f"/>` +
+    `<path d="M80 30 Q92 22 94 20" fill="none" stroke="${OUT}"/>`
+  ) + bigEye(74, 46) + smile(82, 46, 5));
   D.diplodoco = svg(
-    `<g stroke="#3a4a3a" stroke-width="2.4" ${S}>
-       <path d="M50 60 Q22 54 4 64 Q22 62 50 66 Z" fill="#6a8a6a"/>
-       <ellipse cx="56" cy="62" rx="20" ry="12" fill="#7a9a7a"/>
-       <path d="M46 70 L45 84 L54 84 L54 70 Z" fill="#5a7a5a"/><path d="M62 70 L62 84 L71 84 L70 70 Z" fill="#5a7a5a"/>
-       <path d="M70 58 Q84 44 94 46 Q90 52 82 54 L74 62 Z" fill="#7a9a7a"/>
-       <path d="M88 48 Q96 46 96 50 Q92 52 88 50 Z" fill="#7a9a7a"/>
-       <path d="M40 64 Q54 72 66 64" fill="none" stroke="#a8c8a8" stroke-width="3"/>
-     </g>` + dEye(90, 49)
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M50 60 Q22 54 4 64 Q22 62 50 66 Z" fill="#5bbf9a"/>
+       <ellipse cx="56" cy="62" rx="21" ry="13" fill="#5bbf9a"/>
+       <ellipse cx="56" cy="66" rx="16" ry="7" fill="#c2eedd"/>
+       <path d="M46 72 L45 86 L54 86 L54 72 Z" fill="#4aa686"/><path d="M62 72 L62 86 L71 86 L70 72 Z" fill="#4aa686"/>
+       <path d="M70 58 Q84 42 96 46 Q90 52 82 54 L74 62 Z" fill="#5bbf9a"/>
+       <path d="M90 47 Q98 45 98 50 Q93 53 89 50 Z" fill="#5bbf9a"/>
+     </g>` + bigEye(90, 48, 5) + smile(92, 53, 4)
   );
   D.dimetrodon = svg(
-    `<g stroke="#6a5a2a" stroke-width="2.4" ${S}>
-       <path d="M24 64 Q40 36 56 36 Q80 36 90 60 Q80 68 56 66 Q36 68 24 64 Z" fill="#b59a4a"/>
-       <path d="M16 66 Q6 64 4 72 Q12 70 20 70 Z" fill="#b59a4a"/>
-       <path d="M26 50 Q46 22 78 48 Q66 40 56 40 Q42 40 26 50 Z" fill="#cdb35e"/>
-       <path d="M28 50 V36 M37 44 V26 M47 42 V22 M57 42 V24 M67 44 V28 M77 48 V34" stroke="#8a7430" stroke-width="3"/>
-       <path d="M34 64 L33 80 L42 80 L42 64 Z" fill="#9a8238"/><path d="M64 64 L64 80 L73 80 L72 64 Z" fill="#9a8238"/>
-       <path d="M84 58 Q94 56 94 64 Q88 66 82 62 Z" fill="#cdb35e"/>
-       <path d="M88 60 L94 60" />
-     </g>` + dEye(87, 60)
+    `<g stroke="${OUT}" stroke-width="3" ${S}>
+       <path d="M24 64 Q40 36 56 36 Q80 36 90 60 Q80 68 56 66 Q36 68 24 64 Z" fill="#e87040"/>
+       <path d="M16 66 Q6 64 4 72 Q12 70 20 70 Z" fill="#e87040"/>
+       <path d="M26 50 Q46 20 80 48 Q66 40 56 40 Q42 40 26 50 Z" fill="#f5a06a"/>
+       <path d="M28 50 V36 M38 44 V26 M48 42 V22 M58 42 V24 M68 44 V28 M78 48 V34" stroke="${OUT}" stroke-width="2"/>
+       <path d="M34 64 L33 80 L42 80 L42 64 Z" fill="#c95a2e"/><path d="M64 64 L64 80 L73 80 L72 64 Z" fill="#c95a2e"/>
+       <path d="M84 58 Q96 54 97 62 Q90 68 82 62 Z" fill="#e87040"/>
+     </g>` + bigEye(87, 60, 5) + smile(90, 66, 4)
   );
-  D.paquicefalo = svg(
-    `<g stroke="#5a3a6a" stroke-width="2.4" ${S}>
-       <path d="M34 56 Q12 52 6 70 Q20 64 36 64 Z" fill="#8a6aa0"/>
-       <path d="M38 62 L37 84 L47 84 L47 64 Z" fill="#74578a"/>
-       <path d="M34 48 Q28 78 54 80 Q76 80 74 52 Q72 40 54 40 Q42 40 34 48 Z" fill="#9a7ab0"/>
-       <path d="M58 64 L57 84 L67 84 L67 64 Z" fill="#9a7ab0"/>
-       <path d="M66 48 Q64 28 84 30 Q92 32 90 44 Q84 50 74 50 Q70 50 66 48 Z" fill="#9a7ab0"/>
-       <path d="M70 30 Q78 26 86 32 Q80 36 72 34 Z" fill="#b89ad0"/>
-       <g fill="#7a5a8a"><circle cx="69" cy="47" r="1.6"/><circle cx="75" cy="48" r="1.6"/><circle cx="81" cy="46" r="1.6"/></g>
-       <path d="M40 60 Q52 74 64 64" fill="none" stroke="#c6abda" stroke-width="3.5"/>
-     </g>` + dEye(80, 43)
-  );
-  D.iguanodonte = svg(
-    `<g stroke="#3a5a3a" stroke-width="2.4" ${S}>
-       <path d="M32 56 Q10 52 4 70 Q18 64 34 64 Z" fill="#6a9a6a"/>
-       <path d="M36 62 L35 84 L45 84 L45 64 Z" fill="#558055"/>
-       <path d="M32 48 Q26 80 54 82 Q78 82 76 52 Q74 40 54 40 Q42 40 32 48 Z" fill="#7caf7c"/>
-       <path d="M58 64 L57 84 L67 84 L67 64 Z" fill="#7caf7c"/>
-       <path d="M64 50 Q64 34 82 34 L92 38 Q94 46 86 46 Q72 48 64 50 Z" fill="#7caf7c"/>
-       <path d="M60 54 L55 47" stroke="#3a5a3a" stroke-width="3"/>
-       <path d="M40 60 Q52 74 64 64" fill="none" stroke="#b6d8b6" stroke-width="3.5"/>
-     </g>` + dEye(80, 40)
-  );
-  D.carnotauro = svg(
-    `<g stroke="#7a3a2a" stroke-width="2.4" ${S}>
-       <path d="M34 56 Q12 52 6 72 Q20 66 36 66 Z" fill="#b56a4a"/>
-       <path d="M38 64 L37 84 L47 84 L47 66 Z" fill="#9a523a"/>
-       <path d="M34 48 Q28 78 54 80 Q76 80 74 52 Q72 40 54 40 Q42 40 34 48 Z" fill="#c97a55"/>
-       <path d="M58 66 L57 84 L67 84 L67 66 Z" fill="#c97a55"/>
-       <path d="M66 50 Q66 32 84 32 L94 36 Q96 44 88 44 L86 47 Q74 48 66 50 Z" fill="#c97a55"/>
-       <path d="M72 34 L70 26 L76 33 Z" fill="#e0a080"/><path d="M80 34 L83 27 L85 34 Z" fill="#e0a080"/>
-       <path d="M84 44 L94 42"/><path d="M40 60 Q52 74 64 64" fill="none" stroke="#e6a989" stroke-width="3.5"/>
-     </g>` + dEye(82, 40)
-  );
+  D.paquicefalo = svg(biped('#a06ad0', '#ddc6f0',
+    `<path d="M64 50 Q60 28 86 30 Q95 32 92 46 Q86 52 74 52 Q68 52 64 50 Z" fill="#a06ad0"/>` +
+    `<path d="M70 32 Q80 26 88 34 Q82 38 72 36 Z" fill="#c2a0e6"/>` +
+    `<g fill="#7a5a8a"><circle cx="68" cy="48" r="1.8"/><circle cx="75" cy="49" r="1.8"/><circle cx="82" cy="47" r="1.8"/></g>`
+  ) + bigEye(76, 44) + smile(84, 48, 4));
+  D.iguanodonte = svg(biped('#6abf6a', '#cdeeb6',
+    `<path d="M64 50 Q64 34 82 34 L95 39 Q97 47 87 47 Q73 49 64 50 Z" fill="#6abf6a"/>`
+  ) + bigEye(78, 40) + smile(86, 46, 5) +
+    `<path d="M60 54 L55 47" stroke="${OUT}" stroke-width="3" ${S}/>`);
+  D.carnotauro = svg(biped('#e0594a', '#f6c0b6',
+    `<path d="M64 50 Q64 32 84 32 L96 37 Q98 45 88 45 L82 46 Q72 48 64 50 Z" fill="#e0594a"/>` +
+    `<path d="M70 34 L68 24 L75 32 Z" fill="#fff" stroke="${OUT}"/><path d="M80 34 L83 25 L85 33 Z" fill="#fff" stroke="${OUT}"/>`
+  ) + bigEye(78, 40) + smile(86, 46, 5));
 
   // =====================================================
-  //  MUNDO DOS COGUMELOS — toadstools realistas (sem rosto)
+  //  MUNDO DOS COGUMELOS — toadstools fofos (estilo storybook)
   // =====================================================
   function mush(o) {
     const cap = o.cap, cd = o.capDark, hi = o.capHi || '#ffffff';
-    const stem = o.stem || '#efe6d2', sd = o.stemDark || '#cdbf9f';
-    const shadow = `<ellipse cx="50" cy="93" rx="24" ry="4.5" fill="#000" opacity=".13"/>`;
-    const grass = o.grass
-      ? `<g stroke="${o.grass}" stroke-width="3.5" fill="none" ${S}><path d="M26 92 Q24 82 30 78"/><path d="M34 93 Q34 82 40 80"/><path d="M66 93 Q66 82 60 80"/><path d="M74 92 Q76 82 70 78"/></g>` +
-        (o.flower ? `<g><circle cx="22" cy="80" r="3" fill="${o.flower}"/><circle cx="22" cy="80" r="1.2" fill="#fde047"/><circle cx="80" cy="82" r="3" fill="${o.flower}"/><circle cx="80" cy="82" r="1.2" fill="#fde047"/></g>` : '')
+    const stem = o.stem || '#fbf3e0', sd = o.stemDark || '#e6d8bd';
+    const shadow = `<ellipse cx="50" cy="93" rx="24" ry="4.5" fill="#000" opacity=".12"/>`;
+    const grass = o.grass !== false
+      ? `<g stroke="#7cc85a" stroke-width="3.5" fill="none" ${S}><path d="M26 92 Q24 82 30 78"/><path d="M34 93 Q34 82 40 80"/><path d="M66 93 Q66 82 60 80"/><path d="M74 92 Q76 82 70 78"/></g>`
       : '';
-    const stemTop = o.shape === 'cone' ? 54 : o.shape === 'flat' ? 48 : 50;
-    const stemSvg = `<path d="M41 86 Q36 62 46 ${stemTop} L54 ${stemTop} Q64 62 59 86 Q50 90 41 86 Z" fill="${stem}" stroke="#b3a486" stroke-width="2" ${S}/>` +
-      `<path d="M54 ${stemTop} Q64 62 59 86 Q55 88 53 86 Q58 64 52 ${stemTop} Z" fill="${sd}" opacity=".5"/>`;
-    const ring = o.ring ? `<path d="M40 65 Q50 72 60 65 Q58 69 50 69 Q42 69 40 65 Z" fill="${sd}"/>` : '';
+    // caule bulboso e fofo
+    const stemSvg = `<path d="M40 88 Q33 64 47 56 L53 56 Q67 64 60 88 Q50 93 40 88 Z" fill="${stem}" stroke="#cbb892" stroke-width="2.2" ${S}/>` +
+      `<ellipse cx="44" cy="74" rx="3.5" ry="11" fill="${sd}" opacity=".5"/>`;
+    // chapéu bem arredondado e fofo
     let cap_, L, R, Y;
-    if (o.shape === 'flat') { cap_ = `M13 47 Q12 33 50 31 Q88 33 87 47 Q50 58 13 47 Z`; L = 13; R = 87; Y = 47; }
-    else if (o.shape === 'cone') { cap_ = `M28 54 Q31 16 50 14 Q69 16 72 54 Q50 62 28 54 Z`; L = 28; R = 72; Y = 54; }
-    else if (o.shape === 'button') { cap_ = `M24 50 Q22 24 50 22 Q78 24 76 50 Q50 58 24 50 Z`; L = 24; R = 76; Y = 50; }
-    else { cap_ = `M16 50 Q13 22 50 20 Q87 22 84 50 Q50 60 16 50 Z`; L = 16; R = 84; Y = 50; }
-    const capSvg = `<path d="${cap_}" fill="${cap}" stroke="${cd}" stroke-width="2.2" ${S}/>`;
-    const under = `<path d="M${L} ${Y} Q50 ${Y + 9} ${R} ${Y} Q50 ${Y + 4} ${L} ${Y} Z" fill="${cd}"/>`;
-    const high = `<path d="M${L + 12} ${Y - 18} Q50 ${Y - 27} ${R - 12} ${Y - 18} Q50 ${Y - 22} ${L + 12} ${Y - 18} Z" fill="${hi}" opacity=".22"/>`;
-    let spots = '';
-    if (o.spots) {
-      const sc = o.spotColor || '#fff7ea';
-      const pts = o.shape === 'cone' ? [[42, 34, 4], [56, 30, 4], [50, 24, 3], [60, 42, 3], [40, 44, 3]]
-        : [[34, 38, 5], [60, 34, 6], [48, 27, 4], [70, 42, 4], [28, 44, 4], [50, 44, 5]];
-      spots = `<g fill="${sc}" stroke="rgba(0,0,0,.05)">` + pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('') + `</g>`;
-    }
-    return svg(shadow + grass + stemSvg + ring + capSvg + under + spots + high);
+    if (o.shape === 'tall') { cap_ = `M22 52 Q20 22 50 20 Q80 22 78 52 Q50 62 22 52 Z`; L = 22; R = 78; Y = 52; }
+    else { cap_ = `M14 52 Q12 20 50 18 Q88 20 86 52 Q50 64 14 52 Z`; L = 14; R = 86; Y = 52; }
+    const capSvg = `<path d="${cap_}" fill="${cap}" stroke="${cd}" stroke-width="2.4" ${S}/>`;
+    const under = `<path d="M${L} ${Y} Q50 ${Y + 10} ${R} ${Y} Q50 ${Y + 4} ${L} ${Y} Z" fill="${cd}" opacity=".85"/>`;
+    const high = `<ellipse cx="40" cy="34" rx="16" ry="9" fill="${hi}" opacity=".3"/>`;
+    const sc = o.spotColor || '#fffaf0';
+    const pts = o.shape === 'tall'
+      ? [[38, 36, 6], [60, 34, 6], [50, 28, 4.5], [30, 46, 4], [68, 46, 4]]
+      : [[32, 38, 7], [62, 34, 7], [48, 28, 5], [74, 44, 5], [26, 46, 5], [50, 46, 6]];
+    const spots = o.spots === false ? '' : `<g fill="${sc}" stroke="rgba(0,0,0,.04)">` + pts.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}"/>`).join('') + `</g>`;
+    return svg(shadow + grass + stemSvg + capSvg + under + spots + high);
   }
   const M = {
-    cogvermelho: mush({ shape: 'dome', cap: '#e23b2e', capDark: '#a82414', capHi: '#ff8a6a', spots: true, ring: true, grass: '#6cbf52', flower: '#fb7185' }),
-    coglaranja: mush({ shape: 'dome', cap: '#f08023', capDark: '#b85410', capHi: '#ffd0a0', spots: true, grass: '#6cbf52' }),
-    cogamarelo: mush({ shape: 'flat', cap: '#f4c430', capDark: '#bb8e10', capHi: '#fff0a0', spots: true, grass: '#6cbf52', flower: '#fbbf24' }),
-    cogrosa: mush({ shape: 'dome', cap: '#ef5da8', capDark: '#bb2f78', capHi: '#ffb0d8', spots: true }),
-    cogroxo: mush({ shape: 'button', cap: '#9b5de5', capDark: '#6d28d9', capHi: '#d8b8ff', spots: true, grass: '#6cbf52' }),
-    cogmarrom: mush({ shape: 'dome', cap: '#9a6a3a', capDark: '#6e4a24', capHi: '#caa078', ring: true }),
-    cogcone: mush({ shape: 'cone', cap: '#e2483b', capDark: '#a8281c', capHi: '#ff9a80', spots: true, grass: '#6cbf52' }),
-    cogbotao: mush({ shape: 'button', cap: '#f06a48', capDark: '#b8401f', capHi: '#ffc0a0', spots: true }),
-    cogazul: mush({ shape: 'flat', cap: '#3ba9d6', capDark: '#1f6f96', capHi: '#bfeaff', spots: true, grass: '#6cbf52' }),
-    cogverde: mush({ shape: 'dome', cap: '#4caf50', capDark: '#2f7a32', capHi: '#bff0c0', spots: true }),
-    cogamanita: mush({ shape: 'dome', cap: '#d42a3a', capDark: '#9a1420', capHi: '#ff7a86', spots: true, spotColor: '#fffdf5', ring: true, grass: '#6cbf52', flower: '#f472b6' }),
-    cogcoral: mush({ shape: 'cone', cap: '#ff7a59', capDark: '#c44a2e', capHi: '#ffc8b0', grass: '#6cbf52' }),
-    cogdourado: mush({ shape: 'flat', cap: '#e0a020', capDark: '#a87410', capHi: '#ffe0a0', spots: true, ring: true }),
-    cogvinho: mush({ shape: 'button', cap: '#a83246', capDark: '#741f2e', capHi: '#d87888', spots: true, grass: '#6cbf52' }),
-    cogturquesa: mush({ shape: 'dome', cap: '#2bb3a3', capDark: '#16786c', capHi: '#a8f0e6', spots: true }),
-    cogbebe: mush({ shape: 'button', cap: '#f59ab0', capDark: '#c4607a', capHi: '#ffd0dc', spots: true, grass: '#6cbf52', flower: '#fb7185' }),
+    cogvermelho: mush({ cap: '#e8463a', capDark: '#b52a1f', capHi: '#ff9a86' }),
+    coglaranja: mush({ cap: '#f3852a', capDark: '#bf5d12', capHi: '#ffce9e' }),
+    cogamarelo: mush({ shape: 'tall', cap: '#f5c531', capDark: '#bd9210', capHi: '#fff2a6' }),
+    cogrosa: mush({ cap: '#f06bb0', capDark: '#bf3d82', capHi: '#ffc0e0' }),
+    cogroxo: mush({ shape: 'tall', cap: '#a06ad8', capDark: '#6d28d9', capHi: '#dcc0ff' }),
+    cogazul: mush({ cap: '#46abd6', capDark: '#1f7096', capHi: '#bfeaff' }),
+    cogverde: mush({ cap: '#54b85a', capDark: '#317a36', capHi: '#c2eec4' }),
+    cogvermelho2: mush({ shape: 'tall', cap: '#df2f3a', capDark: '#9a141f', capHi: '#ff8088', spotColor: '#fffdf5' }),
+    cogcoral: mush({ cap: '#fb7a59', capDark: '#c4492e', capHi: '#ffcab8' }),
+    cogturquesa: mush({ cap: '#2bbbac', capDark: '#16786c', capHi: '#a8f0e8' }),
+    cogvinho: mush({ shape: 'tall', cap: '#b03250', capDark: '#741f32', capHi: '#e08098' }),
+    cogdourado: mush({ cap: '#e6a824', capDark: '#aa7610', capHi: '#ffe2a0' }),
+    coglilas: mush({ cap: '#c79ae8', capDark: '#9466c4', capHi: '#ecd8ff' }),
+    cogbebe: mush({ shape: 'tall', cap: '#f7a6bd', capDark: '#c4607a', capHi: '#ffd6e2' }),
+    cogmenta: mush({ cap: '#7ad0a8', capDark: '#3f9a72', capHi: '#c8f2dd' }),
+    cogfogo: mush({ cap: '#f0542a', capDark: '#b53314', capHi: '#ffb090' }),
   };
 
   // =====================================================
@@ -399,8 +359,7 @@
   function monsterMouth(kind, d) {
     if (kind === 'teeth')
       return `<path d="M36 62 Q50 78 64 62 Q50 68 36 62 Z" fill="#7a1f3a"/>` +
-             `<path d="M39 63 L42 70 L46 63 L50 71 L54 63 L58 70 L61 63" fill="#fff"/>` +
-             `<path d="M40 64 L43 60 M50 65 L50 60 M60 64 L57 60" stroke="#7a1f3a" stroke-width="0"/>`;
+             `<path d="M39 63 L42 70 L46 63 L50 71 L54 63 L58 70 L61 63" fill="#fff"/>`;
     if (kind === 'oo') return `<ellipse cx="50" cy="66" rx="6.5" ry="8" fill="#7a1f3a"/><ellipse cx="50" cy="70" rx="4" ry="3" fill="#e06a8a"/>`;
     if (kind === 'fangs') return `<path d="M38 62 Q50 70 62 62" fill="none" stroke="${d}" stroke-width="3" ${S}/><path d="M44 64 L46 70 L48 64 Z" fill="#fff"/><path d="M52 64 L54 70 L56 64 Z" fill="#fff"/>`;
     return `<path d="M40 64 Q50 73 60 64" fill="none" stroke="${d}" stroke-width="3" ${S}/>`;
@@ -454,6 +413,61 @@
   };
 
   // =====================================================
+  //  CRIATURINHAS — bichinhos elementais (estilo "pocket pet"
+  //  ORIGINAL, sem copiar nenhum personagem de marca)
+  // =====================================================
+  function creature(o) {
+    const c = o.color, d = o.dark, b = o.belly || '#ffffff';
+    const shadow = `<ellipse cx="50" cy="93" rx="20" ry="4.5" fill="#000" opacity=".14"/>`;
+    // pés
+    const feet = `<ellipse cx="40" cy="86" rx="8" ry="5" fill="${d}"/><ellipse cx="60" cy="86" rx="8" ry="5" fill="${d}"/>`;
+    // cauda
+    let tail = '';
+    if (o.tail === 'flame') tail = `<path d="M74 70 Q90 64 86 50 Q84 60 78 60 Q82 50 74 56 Q72 64 74 70 Z" fill="#fb923c" stroke="${d}" stroke-width="1.6" ${S}/>`;
+    else if (o.tail === 'leaf') tail = `<path d="M74 68 Q92 64 92 50 Q82 54 76 62 Z" fill="#5fbf5a" stroke="${d}" stroke-width="1.6" ${S}/>`;
+    else if (o.tail === 'curl') tail = `<path d="M74 72 Q90 72 88 60 Q86 68 80 66" fill="none" stroke="${d}" stroke-width="4" ${S}/>`;
+    else if (o.tail === 'fin') tail = `<path d="M74 64 L92 54 L90 70 Z" fill="${c}" stroke="${d}" stroke-width="1.6" ${S}/>`;
+    // corpo (ovo/pera) + barriga
+    const body = `<path d="M50 26 Q74 30 74 58 Q74 84 50 84 Q26 84 26 58 Q26 30 50 26 Z" fill="${c}" stroke="${d}" stroke-width="2.6" ${S}/>` +
+      `<ellipse cx="50" cy="66" rx="15" ry="14" fill="${b}"/>`;
+    // bracinhos
+    const arms = `<path d="M28 60 Q20 62 18 70" fill="none" stroke="${c}" stroke-width="7" ${S}/><path d="M72 60 Q80 62 82 70" fill="none" stroke="${c}" stroke-width="7" ${S}/>`;
+    // orelhas/topo por elemento
+    let ears = '';
+    if (o.ears === 'mouse') ears = `<circle cx="34" cy="26" r="11" fill="${c}" stroke="${d}" stroke-width="2.4"/><circle cx="66" cy="26" r="11" fill="${c}" stroke="${d}" stroke-width="2.4"/><circle cx="34" cy="26" r="5" fill="${d}"/><circle cx="66" cy="26" r="5" fill="${d}"/>`;
+    else if (o.ears === 'long') ears = `<path d="M36 30 L30 8 L44 26 Z" fill="${c}" stroke="${d}" stroke-width="2.4" ${S}/><path d="M64 30 L70 8 L56 26 Z" fill="${c}" stroke="${d}" stroke-width="2.4" ${S}/>`;
+    else if (o.ears === 'fin') ears = `<path d="M50 24 Q44 6 56 8 Q62 16 58 26 Z" fill="${o.accent || '#67e8f9'}" stroke="${d}" stroke-width="2" ${S}/>`;
+    else if (o.ears === 'leaf') ears = `<path d="M50 26 Q44 6 50 4 Q56 6 50 26 Z" fill="#5fbf5a" stroke="${d}" stroke-width="2" ${S}/><path d="M40 28 Q34 14 42 14 Z M60 28 Q66 14 58 14 Z" fill="#5fbf5a" stroke="${d}" stroke-width="1.6"/>`;
+    else if (o.ears === 'horn') ears = `<path d="M40 28 L36 12 L46 24 Z" fill="${o.accent || '#fde047'}" stroke="${d}" stroke-width="2"/><path d="M60 28 L64 12 L54 24 Z" fill="${o.accent || '#fde047'}" stroke="${d}" stroke-width="2"/>`;
+    else if (o.ears === 'shell') ears = `<path d="M30 58 Q30 40 50 40 Q70 40 70 58" fill="none" stroke="${d}" stroke-width="2"/>`;
+    // cheek / blush
+    const blush = `<circle cx="33" cy="60" r="3.5" fill="#ff8fb1" opacity=".6"/><circle cx="67" cy="60" r="3.5" fill="#ff8fb1" opacity=".6"/>`;
+    // bochecha elétrica
+    const cheeks = o.cheeks ? `<circle cx="32" cy="58" r="4" fill="#f43f5e"/><circle cx="68" cy="58" r="4" fill="#f43f5e"/>` : blush;
+    return svg(shadow + tail + feet + arms + ears + body + cheeks + eye(42, 50, 6) + eye(58, 50, 6) +
+      `<path d="M46 60 Q50 65 54 60" fill="none" stroke="${d}" stroke-width="2.2" ${S}/>`);
+  }
+  const CR = {
+    crfogo: creature({ color: '#f4623a', dark: '#b53314', tail: 'flame', ears: 'horn', accent: '#ffd24a' }),
+    cragua: creature({ color: '#3aa6e0', dark: '#1f6f96', tail: 'fin', ears: 'fin', belly: '#dff3ff' }),
+    crfolha: creature({ color: '#5fbf5a', dark: '#2f7a36', tail: 'leaf', ears: 'leaf', belly: '#e6f7df' }),
+    crraio: creature({ color: '#f5c531', dark: '#b88a10', tail: 'curl', ears: 'mouse', cheeks: true }),
+    crgelo: creature({ color: '#9fe0ec', dark: '#3f9aa8', tail: 'fin', ears: 'horn', accent: '#bff0ff', belly: '#f0fbff' }),
+    crpedra: creature({ color: '#b0a48a', dark: '#7a6e54', tail: 'curl', ears: 'shell', belly: '#e8e0cf' }),
+    crmato: creature({ color: '#86c84a', dark: '#4f7a1f', tail: 'leaf', ears: 'long', belly: '#eef7d8' }),
+    crflor: creature({ color: '#f48ab4', dark: '#bf4f78', tail: 'leaf', ears: 'leaf', belly: '#ffe6f0' }),
+    crsombra: creature({ color: '#8b6ad0', dark: '#5b3a9a', tail: 'curl', ears: 'horn', accent: '#c0a0ff', belly: '#e6dcff' }),
+    crmar: creature({ color: '#2bbbac', dark: '#16786c', tail: 'fin', ears: 'fin', belly: '#d8f5ef' }),
+    crsol: creature({ color: '#f6a623', dark: '#b8730f', tail: 'flame', ears: 'horn', accent: '#ffe08a' }),
+    crlua: creature({ color: '#7aa6e0', dark: '#3f6aa8', tail: 'curl', ears: 'long', belly: '#e6eeff' }),
+    crrosa: creature({ color: '#f06bb0', dark: '#bf3d82', tail: 'curl', ears: 'mouse', belly: '#ffe0f0' }),
+    crtrovao: creature({ color: '#c084fc', dark: '#7e22ce', tail: 'curl', ears: 'horn', accent: '#fde047', cheeks: true }),
+  };
+
+  // =====================================================
   function toList(obj) { return Object.keys(obj).map((id) => ({ id, svg: obj[id] })); }
-  window.MM_ART = { animais: toList(A), dinos: toList(D), mario: toList(M), pokemon: toList(MO) };
+  window.MM_ART = {
+    animais: toList(A), dinos: toList(D), mario: toList(M),
+    pokemon: toList(MO), criaturas: toList(CR),
+  };
 })();

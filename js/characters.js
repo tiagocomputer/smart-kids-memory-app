@@ -270,6 +270,23 @@
       { id: 'rosa', body: 'rose', color: '#ef4444' },
       { id: 'mago', body: 'round', color: '#a78bfa', topper: 'wizardhat', tcolor: '#6d28d9' },
     ],
+    // Mundo do Encanador (plataforma, inspirado no gênero — original)
+    plataforma: [
+      { id: 'heroi', body: 'round', color: '#fcd9b6', topper: 'cap', tcolor: '#e23b2e', mouth: 'mustache' },
+      { id: 'irmao', body: 'round', color: '#fcd9b6', topper: 'cap', tcolor: '#2f9e44', mouth: 'mustache' },
+      { id: 'princesa', body: 'round', color: '#fcd9b6', topper: 'princess', tcolor: '#f06bb0' },
+      { id: 'cogumelo', body: 'mushroom', color: '#e23b2e', spots: true },
+      { id: 'estrela', body: 'star', color: '#fbbf24', mouth: 'open' },
+      { id: 'moeda', body: 'round', color: '#fbbf24', ring: true },
+      { id: 'bloco', body: 'square', color: '#f59e0b', badge: '?' },
+      { id: 'fantasma', body: 'ghost', color: '#ffffff' },
+      { id: 'flor', body: 'round', color: '#ff5d5d', petals: true, tcolor: '#7ac74f' },
+      { id: 'nuvem', body: 'cloud', color: '#ffffff' },
+      { id: 'dino', body: 'round', color: '#7ac74f', topper: 'spikes', tcolor: '#4f7a1f' },
+      { id: 'castelo', body: 'castle', color: '#c4b5fd', color2: '#f472b6' },
+      { id: 'rei', body: 'round', color: '#fde68a', topper: 'crown' },
+      { id: 'fogo', body: 'round', color: '#fb923c', topper: 'flame' },
+    ],
   };
 
   const out = {};

@@ -13,7 +13,7 @@ const I18N = {
     setupTitle: 'Preparar Jogo 🎮',
     profileTitle: 'Quem é você? 🙋', continueBtn: 'Continuar',
     nameNeeded: 'Escreva seu nome! ✏️',
-    yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar',
+    yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar', chooseSkin: 'Cor da pele',
     qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
     inviteTitle: 'Convide o Jogador 2 📱',
     inviteHint: 'Peça para o jogador 2 escanear este código com a câmera do celular',
@@ -29,6 +29,7 @@ const I18N = {
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo dos Cogumelos',
     themeToy: 'Mundo dos Brinquedos', themePokemon: 'Monstrinhos', themeDisney: 'Reino Encantado',
+    themePlataforma: 'Mundo do Encanador', themeCriaturas: 'Criaturinhas',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
     pause: 'Pausar', paused: 'Jogo pausado ⏸️', resume: 'Continuar',
@@ -76,7 +77,7 @@ const I18N = {
     setupTitle: 'Set Up Game 🎮',
     profileTitle: 'Who are you? 🙋', continueBtn: 'Continue',
     nameNeeded: 'Write your name! ✏️',
-    yourName: 'Your name', chooseAvatar: 'Choose your avatar',
+    yourName: 'Your name', chooseAvatar: 'Choose your avatar', chooseSkin: 'Skin tone',
     qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
     inviteTitle: 'Invite Player 2 📱',
     inviteHint: 'Ask player 2 to scan this code with their phone camera',
@@ -92,6 +93,7 @@ const I18N = {
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: 'Mushroom World',
     themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Enchanted Kingdom',
+    themePlataforma: 'Plumber World', themeCriaturas: 'Lil Creatures',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     pause: 'Pause', paused: 'Game paused ⏸️', resume: 'Resume',
@@ -139,7 +141,7 @@ const I18N = {
     setupTitle: 'Préparer le jeu 🎮',
     profileTitle: 'Qui es-tu? 🙋', continueBtn: 'Continuer',
     nameNeeded: 'Écris ton prénom! ✏️',
-    yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar',
+    yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar', chooseSkin: 'Couleur de peau',
     qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
     inviteTitle: 'Invite le Joueur 2 📱',
     inviteHint: 'Demande au joueur 2 de scanner ce code avec son téléphone',
@@ -155,6 +157,7 @@ const I18N = {
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde des Champignons',
     themeToy: 'Monde des Jouets', themePokemon: 'Petits Monstres', themeDisney: 'Royaume Enchanté',
+    themePlataforma: 'Monde du Plombier', themeCriaturas: 'Petites Créatures',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
     pause: 'Pause', paused: 'Jeu en pause ⏸️', resume: 'Reprendre',
@@ -269,6 +272,8 @@ const THEME_LIST = [
   { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 320, char: true },
   { id: 'pokemon',    icon: '⚡', key: 'themePokemon',    cost: 400, char: true },
   { id: 'disney',     icon: '🏰', key: 'themeDisney',     cost: 500, char: true },
+  { id: 'plataforma', icon: '🍄', key: 'themePlataforma', cost: 350, char: true },
+  { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 450 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
@@ -280,12 +285,18 @@ const LEVELS = {
 const EXTRA_TIME_PER_PLAYER = 40;
 const CONSOLATION_COINS = 3;
 
-const AVATAR_CHOICES = [
-  '🦁', '🐯', '🐶', '🐱', '🦊', '🐼', '🐨', '🐵', '🐸', '🐰', '🐷', '🐮', '🐔', '🐧',
-  '🐙', '🐳', '🐬', '🦈', '🐠', '🦀', '🐢', '🦭',
-  '🦄', '🐉', '🧚', '🧜‍♀️', '🧙‍♂️', '🦸‍♂️', '🦸‍♀️', '🥷', '🤖', '👽', '🧞', '🐲',
-  '👸', '🤴', '👑', '🧝‍♀️', '🤠', '🚀', '🍄', '⭐', '🎈', '🤡',
-];
+// Avatares ilustrados (com tom de pele) — ver js/avatars.js
+const AVATARS = window.MM_AVATARS || { skins: ['#f1c27d'], list: [] };
+const AVATAR_MAP = {};
+AVATARS.list.forEach((a) => { AVATAR_MAP[a.id] = a; });
+const AVATAR_IDS = AVATARS.list.map((a) => a.id);
+const DEFAULT_AVATAR = AVATAR_IDS[0] || 'k1';
+function avatarSVG(id, skinIdx) {
+  const a = AVATAR_MAP[id] || AVATARS.list[0];
+  if (!a) return '';
+  const skin = AVATARS.skins[skinIdx] != null ? AVATARS.skins[skinIdx] : (AVATARS.skins[1] || AVATARS.skins[0]);
+  return a.svg(a.human ? skin : undefined);
+}
 const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 
 // Figurinhas colecionáveis (rarity 'legendary' = dourada e rara)
@@ -362,8 +373,10 @@ const storage = {
   set menuMusic(v) { if (MUSIC_IDS.has(v)) localStorage.setItem('mm_music', v); },
   get name() { return (localStorage.getItem('mm_name') || '').slice(0, 12); },
   set name(v) { localStorage.setItem('mm_name', String(v).slice(0, 12)); },
-  get avatar() { const a = localStorage.getItem('mm_avatar'); return AVATAR_CHOICES.includes(a) ? a : AVATAR_CHOICES[0]; },
-  set avatar(v) { if (AVATAR_CHOICES.includes(v)) localStorage.setItem('mm_avatar', v); },
+  get avatar() { const a = localStorage.getItem('mm_avatar'); return AVATAR_IDS.includes(a) ? a : DEFAULT_AVATAR; },
+  set avatar(v) { if (AVATAR_IDS.includes(v)) localStorage.setItem('mm_avatar', v); },
+  get skin() { const n = parseInt(localStorage.getItem('mm_skin') || '1', 10); return (n >= 0 && n < AVATARS.skins.length) ? n : 1; },
+  set skin(v) { const n = parseInt(v, 10); if (n >= 0 && n < AVATARS.skins.length) localStorage.setItem('mm_skin', String(n)); },
   get records() { try { return JSON.parse(localStorage.getItem('mm_records') || '{}'); } catch { return {}; } },
   set records(v) { localStorage.setItem('mm_records', JSON.stringify(v)); },
 };
@@ -544,23 +557,49 @@ function toggleTheme() {
 
 // ---------- Perfil do jogador (nome + avatar) ----------
 
+const AVATAR_PICKERS = ['profile-avatar-options', 'join-avatar-options'];
+const SKIN_PICKERS = ['profile-skin-options', 'join-skin-options'];
+
 function renderAvatarPicker(id) {
   const row = document.getElementById(id);
-  row.innerHTML = AVATAR_CHOICES.map((a) =>
-    `<button class="opt avatar-opt ${a === storage.avatar ? 'selected' : ''}" data-avatar="${a}" aria-label="avatar">${a}</button>`
+  if (!row) return;
+  row.innerHTML = AVATARS.list.map((a) =>
+    `<button class="avatar-opt ${a.id === storage.avatar ? 'selected' : ''}" data-avatar="${a.id}" aria-label="avatar">${avatarSVG(a.id, storage.skin)}</button>`
   ).join('');
+}
+function renderSkinPicker(id) {
+  const row = document.getElementById(id);
+  if (!row) return;
+  row.innerHTML = AVATARS.skins.map((c, i) =>
+    `<button class="skin-opt ${i === storage.skin ? 'selected' : ''}" data-skin="${i}" style="background:${c}" aria-label="cor de pele"></button>`
+  ).join('');
+}
+function renderAllPickers() {
+  AVATAR_PICKERS.forEach(renderAvatarPicker);
+  SKIN_PICKERS.forEach(renderSkinPicker);
 }
 
 function setupProfileControls() {
-  const pickers = ['profile-avatar-options', 'join-avatar-options'];
-  pickers.forEach((id) => {
+  AVATAR_PICKERS.forEach((id) => {
     renderAvatarPicker(id);
-    document.getElementById(id).addEventListener('click', (e) => {
+    const row = document.getElementById(id);
+    if (row) row.addEventListener('click', (e) => {
       const b = e.target.closest('[data-avatar]');
       if (!b) return;
       storage.avatar = b.dataset.avatar;
       sound.play('click');
-      pickers.forEach(renderAvatarPicker);
+      AVATAR_PICKERS.forEach(renderAvatarPicker);
+    });
+  });
+  SKIN_PICKERS.forEach((id) => {
+    renderSkinPicker(id);
+    const row = document.getElementById(id);
+    if (row) row.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-skin]');
+      if (!b) return;
+      storage.skin = b.dataset.skin;
+      sound.play('click');
+      renderAllPickers(); // tom de pele afeta os avatares humanos
     });
   });
   const inputs = ['profile-name-input', 'join-name-input'].map((id) => document.getElementById(id));
@@ -573,7 +612,7 @@ function setupProfileControls() {
   });
 }
 
-function myProfile() { return { name: storage.name, avatar: storage.avatar }; }
+function myProfile() { return { name: storage.name, avatarId: storage.avatar, skin: storage.skin }; }
 
 function requireName(inputId) {
   if (storage.name.trim()) return true;
@@ -588,7 +627,7 @@ function requireName(inputId) {
 }
 
 function renderProfileChip() {
-  $('#profile-chip-avatar').textContent = storage.avatar;
+  $('#profile-chip-avatar').innerHTML = avatarSVG(storage.avatar, storage.skin);
   $('#profile-chip-name').textContent = storage.name;
 }
 
@@ -716,8 +755,10 @@ function netSend(msg) {
 }
 function sanitizeProfile(p) {
   const name = String((p && p.name) || '').replace(/[<>&"']/g, '').slice(0, 12);
-  const avatar = AVATAR_CHOICES.includes(p && p.avatar) ? p.avatar : AVATAR_CHOICES[0];
-  return { name, avatar };
+  const avatarId = AVATAR_IDS.includes(p && p.avatarId) ? p.avatarId : DEFAULT_AVATAR;
+  let skin = parseInt(p && p.skin, 10);
+  if (!(skin >= 0 && skin < AVATARS.skins.length)) skin = 1;
+  return { name, avatarId, skin };
 }
 
 let inviteUrl = '';
@@ -882,7 +923,7 @@ function handleNetData(data) {
       config.theme = data.theme;
       config.level = data.level;
       const profiles = (Array.isArray(data.profiles) ? data.profiles : []).slice(0, 2).map(sanitizeProfile);
-      while (profiles.length < 2) profiles.push({ name: '', avatar: AVATAR_CHOICES[0] });
+      while (profiles.length < 2) profiles.push({ name: '', avatarId: DEFAULT_AVATAR, skin: 1 });
       startGame({ online: true, myIndex: 1, deck, profiles });
       break;
     }
@@ -963,13 +1004,13 @@ function startGame(opts = {}) {
   }
 
   if (game.online) {
-    game.players = opts.profiles.map((p, i) => ({ key: PLAYER_KEYS[i], avatar: p.avatar, name: p.name || null, pairs: 0 }));
+    game.players = opts.profiles.map((p, i) => ({ key: PLAYER_KEYS[i], avatarId: p.avatarId, skin: p.skin, name: p.name || null, pairs: 0 }));
   } else {
-    const mine = storage.avatar;
-    const others = AVATAR_CHOICES.filter((a) => a !== mine);
+    const others = AVATAR_IDS.filter((a) => a !== storage.avatar);
     game.players = Array.from({ length: config.players }, (_, i) => ({
       key: PLAYER_KEYS[i],
-      avatar: i === 0 ? mine : others[i - 1],
+      avatarId: i === 0 ? storage.avatar : (others[i - 1] || DEFAULT_AVATAR),
+      skin: storage.skin,
       name: i === 0 ? (storage.name || null) : null,
       pairs: 0,
     }));
@@ -1075,14 +1116,14 @@ function renderScoreboard() {
   if (game.players.length === 1) {
     sb.innerHTML = `
       <div class="player-tag turn">
-        <span class="avatar">${game.players[0].avatar}</span>
+        <span class="avatar">${avatarSVG(game.players[0].avatarId, game.players[0].skin)}</span>
         ${t('pairsLabel')} <span class="score">${game.matchedPairs}/${game.totalPairs}</span>
       </div>`;
     return;
   }
   sb.innerHTML = game.players.map((p, i) => `
       <div class="player-tag ${i === game.current ? 'turn' : ''} ${game.online && i === game.myIndex ? 'me' : ''}">
-        <span class="avatar">${p.avatar}</span>${playerLabel(p)}
+        <span class="avatar">${avatarSVG(p.avatarId, p.skin)}</span>${playerLabel(p)}
         <span class="score">${p.pairs}</span>
       </div>`).join('');
 }
@@ -1257,15 +1298,22 @@ function endGame() {
     const tie = ranked.filter((p) => p.pairs === best).length > 1;
     result = {
       tie, winnerIndex: ranked[0].index, winnerKey: ranked[0].key,
-      winnerName: ranked[0].name, winnerAvatar: ranked[0].avatar,
-      ranking: ranked.map((p) => ({ avatar: p.avatar, name: p.name, pairs: p.pairs })),
+      winnerName: ranked[0].name, winnerAvatar: avatarSVG(ranked[0].avatarId, ranked[0].skin),
+      ranking: ranked.map((p) => ({ avatar: avatarSVG(p.avatarId, p.skin), name: p.name, pairs: p.pairs })),
     };
   }
 
   const iWin = !(game.online && result) || result.tie || result.winnerIndex === game.myIndex;
   const secondsUsed = !game.online ? Math.max(1, Math.round((Date.now() - game.startTime) / 1000)) : 0;
   const timeBonus = (!game.online && timeLeft > 0) ? Math.floor(timeLeft / 5) : 0;
-  const coinsEarned = iWin ? game.totalPairs * 2 + level.bonus + timeBonus : CONSOLATION_COINS;
+  // No duelo, cada jogador ganha moedas pelos pares que ELE encontrou
+  // (+ bônus do nível para quem vence) e isso soma à carteira geral dele.
+  let coinsEarned;
+  if (game.online && result) {
+    coinsEarned = Math.max(2, game.players[game.myIndex].pairs * 2 + (iWin ? level.bonus : 0));
+  } else {
+    coinsEarned = game.totalPairs * 2 + level.bonus + timeBonus;
+  }
   storage.coins += coinsEarned;
 
   // XP/ranking: solo conta os pares do nível; online conta os meus pares
@@ -1325,11 +1373,15 @@ function renderWinTexts() {
 
   if (w.result) {
     const winnerLabel = w.result.winnerName ? esc(w.result.winnerName) : t(w.result.winnerKey);
-    title.textContent = w.result.tie ? t('tie') : t('winnerWon', { name: w.result.winnerAvatar + ' ' + winnerLabel });
+    if (w.result.tie) {
+      title.textContent = t('tie');
+    } else {
+      title.innerHTML = `<span class="win-ava">${w.result.winnerAvatar}</span> ${t('winnerWon', { name: winnerLabel })}`;
+    }
     const medals = ['🥇', '🥈'];
     subtitle.innerHTML = w.result.ranking
-      .map((p, i) => `${medals[i] || ''} ${p.avatar} ${p.name ? esc(p.name) : ''} <b>${p.pairs}</b>`)
-      .join('<br>');
+      .map((p, i) => `<span class="rank-row">${medals[i] || ''} <span class="win-ava-sm">${p.avatar}</span> ${p.name ? esc(p.name) : ''} <b>${p.pairs}</b></span>`)
+      .join('');
     starsEl.innerHTML = '';
   } else {
     title.textContent = t('congrats');

@@ -190,22 +190,26 @@
   //  DINOSSAUROS — cartoon fofo (contorno preto, cores vivas)
   // =====================================================
   const D = {};
-  // helper: corpo padrão de dino bípede (cabeça à direita)
+  // helper: corpo padrão de dino bípede (cabeça à direita) — chunky/fofo
   function biped(col, belly, head) {
-    return `<g stroke="${OUT}" stroke-width="3" ${S}>` +
-      `<path d="M40 56 Q14 52 6 74 Q22 64 42 66 Z" fill="${col}"/>` +
-      `<path d="M40 62 L38 86 L49 86 L51 64 Z" fill="${col}"/><path d="M37 86 L35 90 M41 86 L41 90 M45 86 L47 90" stroke="${OUT}" stroke-width="2"/>` +
-      `<path d="M33 48 Q26 80 52 82 Q78 82 76 50 Q74 36 52 36 Q40 38 33 48 Z" fill="${col}"/>` +
-      `<path d="M58 64 L56 86 L67 86 L68 64 Z" fill="${col}"/><path d="M55 86 L53 90 M59 86 L59 90 M63 86 L65 90" stroke="${OUT}" stroke-width="2"/>` +
-      `<ellipse cx="50" cy="66" rx="15" ry="11" fill="${belly}"/>` +
-      head + `</g>`;
+    return `<ellipse cx="50" cy="93" rx="22" ry="4.5" fill="#000" opacity=".12"/>` +
+      `<g stroke="${OUT}" stroke-width="3.4" ${S}>` +
+      `<path d="M42 56 Q10 52 6 76 Q24 66 46 68 Z" fill="${col}"/>` +
+      `<path d="M36 60 Q32 84 40 90 L52 90 Q56 74 52 60 Z" fill="${col}"/>` +
+      `<path d="M33 46 Q24 82 54 84 Q80 84 78 50 Q76 34 52 34 Q40 36 33 46 Z" fill="${col}"/>` +
+      `<path d="M58 62 Q54 86 62 92 L74 92 Q78 76 74 62 Z" fill="${col}"/>` +
+      `<path d="M37 90 l-4 4 m9 -4 l0 4 m7 -4 l4 4 M59 92 l-4 4 m9 -4 l0 4 m7 -4 l4 4" stroke-width="2.4"/>` +
+      `<ellipse cx="52" cy="66" rx="16" ry="13" fill="${belly}"/>` +
+      head +
+      `<path d="M54 56 q7 1 9 6" fill="none" stroke-width="3"/>` +
+      `</g>`;
   }
   D.trex = svg(biped('#c451c4', '#ecc0ec',
     `<path d="M64 48 Q64 26 84 24 L97 30 Q99 41 88 41 L88 45 L80 46 Q70 46 64 48 Z" fill="#c451c4"/>` +
     `<path d="M84 41 L84 45 M88 40 L88 44 M92 40 L92 43" stroke="#fff" stroke-width="1.6"/>`
   ) + bigEye(80, 33) + smile(86, 44, 5));
   D.estegossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M22 60 Q42 42 66 46 Q86 48 94 60 Q86 70 66 70 Q42 72 22 60 Z" fill="#33b6a6"/>
        <path d="M10 68 Q3 60 6 52 Q14 58 20 64 Z" fill="#33b6a6"/>
        <path d="M32 66 L30 86 L41 86 L43 66 Z" fill="#33b6a6"/><path d="M62 66 L60 86 L71 86 L73 66 Z" fill="#33b6a6"/>
@@ -219,7 +223,7 @@
     `<path d="M84 41 L84 44 M88 40 L88 43 M92 39 L92 42" stroke="#fff" stroke-width="1.4"/>`
   ) + bigEye(78, 36) + smile(86, 44, 5));
   D.braquiossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M26 64 Q8 62 4 78 Q18 70 32 70 Z" fill="#5fc36a"/>
        <ellipse cx="44" cy="62" rx="24" ry="17" fill="#5fc36a"/>
        <ellipse cx="44" cy="68" rx="19" ry="9" fill="#c4eec8"/>
@@ -229,7 +233,7 @@
      </g>` + bigEye(80, 16, 5.5) + smile(83, 20, 4)
   );
   D.triceratops = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M30 60 Q12 58 8 74 Q20 68 34 66 Z" fill="#f0863c"/>
        <path d="M34 66 L32 86 L43 86 L44 66 Z" fill="#d96f28"/><path d="M56 66 L54 86 L65 86 L66 66 Z" fill="#d96f28"/>
        <path d="M30 50 Q24 78 50 80 Q72 80 70 54 Q68 42 50 42 Q38 42 30 50 Z" fill="#f59b54"/>
@@ -240,7 +244,7 @@
      </g>` + bigEye(54, 52) + smile(40, 60, 4)
   );
   D.pterodactilo = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M48 42 Q18 24 6 46 Q26 44 44 56 Z" fill="#f5b942"/>
        <path d="M52 42 Q82 24 94 46 Q74 44 56 56 Z" fill="#f5b942"/>
        <ellipse cx="50" cy="52" rx="11" ry="15" fill="#f7c965"/>
@@ -250,7 +254,7 @@
      </g>` + bigEye(45, 48, 5) + bigEye(58, 47, 4) + smile(52, 58, 4)
   );
   D.espinossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M30 60 Q34 40 56 40 Q82 40 86 60 Q80 70 56 70 Q34 70 30 60 Z" fill="#4a90d9"/>
        <path d="M30 60 Q12 58 6 74 Q20 68 34 66 Z" fill="#4a90d9"/>
        <path d="M34 42 Q40 22 46 42 Z M48 40 Q56 18 62 40 Z M64 42 Q72 22 76 44 Z" fill="#9b6ad0"/>
@@ -261,7 +265,7 @@
      </g>` + bigEye(86, 54, 5) + smile(90, 60, 4)
   );
   D.anquilossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <circle cx="13" cy="62" r="10" fill="#8aa84a"/>
        <path d="M24 64 Q40 44 64 48 Q86 50 92 64 Q86 72 64 72 Q40 74 24 64 Z" fill="#8aa84a"/>
        <path d="M40 70 L38 86 L49 86 L50 70 Z" fill="#74903a"/><path d="M64 70 L63 86 L74 86 L74 70 Z" fill="#74903a"/>
@@ -274,7 +278,7 @@
     `<path d="M80 30 Q92 22 94 20" fill="none" stroke="${OUT}"/>`
   ) + bigEye(74, 46) + smile(82, 46, 5));
   D.diplodoco = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M50 60 Q22 54 4 64 Q22 62 50 66 Z" fill="#5bbf9a"/>
        <ellipse cx="56" cy="62" rx="21" ry="13" fill="#5bbf9a"/>
        <ellipse cx="56" cy="66" rx="16" ry="7" fill="#c2eedd"/>
@@ -284,7 +288,7 @@
      </g>` + bigEye(90, 48, 5) + smile(92, 53, 4)
   );
   D.dimetrodon = svg(
-    `<g stroke="${OUT}" stroke-width="3" ${S}>
+    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
        <path d="M24 64 Q40 36 56 36 Q80 36 90 60 Q80 68 56 66 Q36 68 24 64 Z" fill="#e87040"/>
        <path d="M16 66 Q6 64 4 72 Q12 70 20 70 Z" fill="#e87040"/>
        <path d="M26 50 Q46 20 80 48 Q66 40 56 40 Q42 40 26 50 Z" fill="#f5a06a"/>
@@ -301,7 +305,7 @@
   D.iguanodonte = svg(biped('#6abf6a', '#cdeeb6',
     `<path d="M64 50 Q64 34 82 34 L95 39 Q97 47 87 47 Q73 49 64 50 Z" fill="#6abf6a"/>`
   ) + bigEye(78, 40) + smile(86, 46, 5) +
-    `<path d="M60 54 L55 47" stroke="${OUT}" stroke-width="3" ${S}/>`);
+    `<path d="M60 54 L55 47" stroke="${OUT}" stroke-width="3.4" ${S}/>`);
   D.carnotauro = svg(biped('#e0594a', '#f6c0b6',
     `<path d="M64 50 Q64 32 84 32 L96 37 Q98 45 88 45 L82 46 Q72 48 64 50 Z" fill="#e0594a"/>` +
     `<path d="M70 34 L68 24 L75 32 Z" fill="#fff" stroke="${OUT}"/><path d="M80 34 L83 25 L85 33 Z" fill="#fff" stroke="${OUT}"/>`

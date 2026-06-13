@@ -124,5 +124,15 @@
     { id: 'alien', human: false, svg: () => alien },
   ];
 
+  // avatares de emoji (os antigos) — agora em ícones redondos
+  function emojiAvatar(ch) {
+    return svg(`<rect x="0" y="0" width="100" height="100" rx="50" fill="#fff"/>` +
+      `<text x="50" y="70" font-size="56" text-anchor="middle" font-family="'Apple Color Emoji','Segoe UI Emoji','Noto Color Emoji',sans-serif">${ch}</text>`);
+  }
+  const EMOJI = ['🦁', '🐯', '🐶', '🐱', '🦊', '🐼', '🐨', '🐵', '🐸', '🐰', '🐷', '🐮', '🐔', '🐧',
+    '🐙', '🐳', '🐬', '🦈', '🐠', '🦀', '🐢', '🦭', '🦄', '🐉', '🧚', '🧜‍♀️', '🧙‍♂️', '🦸‍♂️',
+    '🦸‍♀️', '🥷', '🤖', '👽', '🧞', '🐲', '👸', '🤴', '👑', '🧝‍♀️', '🤠', '🚀', '🍄', '⭐', '🎈', '🤡'];
+  EMOJI.forEach((ch, i) => L.push({ id: 'em' + i, human: false, svg: () => emojiAvatar(ch) }));
+
   window.MM_AVATARS = { skins: SKINS, list: L };
 })();

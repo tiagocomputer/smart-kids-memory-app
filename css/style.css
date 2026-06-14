@@ -705,6 +705,16 @@ body {
 /* Cartas com personagem original (SVG) em vez de emoji */
 .card-front.has-svg { padding: 6%; }
 .card-front.has-svg svg { width: 100%; height: 100%; display: block; }
+/* Cartas com imagem (dinossauros, aventureiros) */
+.card-front.has-img { padding: 5%; }
+.card-front img.card-img { width: 100%; height: 100%; object-fit: contain; display: block; }
+/* Avatares e ícones de fase em imagem */
+.avatar-opt img.avatar-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.opt-img { width: 1.7em; height: 1.7em; object-fit: contain; vertical-align: middle; display: inline-block; }
+.player-tag .avatar img.avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; display: block; }
+#profile-chip-avatar img.avatar-img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display: block; }
+.win-ava img.avatar-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; }
+.win-ava-sm img.avatar-img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; display: block; }
 
 /* Ícone de personagem dentro do botão de fase */
 .opt-svg { display: inline-block; width: 1.7em; height: 1.7em; vertical-align: middle; }

@@ -29,7 +29,7 @@ const I18N = {
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo dos Cogumelos',
     themeToy: 'Mundo dos Brinquedos', themePokemon: 'Monstrinhos', themeDisney: 'Reino Encantado',
-    themePlataforma: 'Mundo do Encanador', themeCriaturas: 'Criaturinhas',
+    themeAventureiros: 'Mundo dos Aventureiros', themeCriaturas: 'Criaturinhas',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
     pause: 'Pausar', paused: 'Jogo pausado ⏸️', resume: 'Continuar',
@@ -93,7 +93,7 @@ const I18N = {
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: 'Mushroom World',
     themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Enchanted Kingdom',
-    themePlataforma: 'Plumber World', themeCriaturas: 'Lil Creatures',
+    themeAventureiros: 'Adventurers World', themeCriaturas: 'Lil Creatures',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     pause: 'Pause', paused: 'Game paused ⏸️', resume: 'Resume',
@@ -157,7 +157,7 @@ const I18N = {
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde des Champignons',
     themeToy: 'Monde des Jouets', themePokemon: 'Petits Monstres', themeDisney: 'Royaume Enchanté',
-    themePlataforma: 'Monde du Plombier', themeCriaturas: 'Petites Créatures',
+    themeAventureiros: 'Monde des Aventuriers', themeCriaturas: 'Petites Créatures',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
     pause: 'Pause', paused: 'Jeu en pause ⏸️', resume: 'Reprendre',
@@ -245,11 +245,28 @@ const DINO_SPECIES = [];
   DINO_SPECIES.push({ face: `🦕#${hue}`, emoji: '🦕', hue });
 });
 
+// Fases com IMAGENS (arquivos fornecidos): dinossauros e aventureiros.
+// Os dinos vêm 8 imagens; completo até 14 com variações de cor (hue) para
+// caber no nível Difícil (12 pares).
+const IMG_THEMES = {
+  dinos: [
+    { id: 'd1', img: 'img/dinos/d1.webp' }, { id: 'd2', img: 'img/dinos/d2.webp' },
+    { id: 'd3', img: 'img/dinos/d3.webp' }, { id: 'd4', img: 'img/dinos/d4.webp' },
+    { id: 'd5', img: 'img/dinos/d5.webp' }, { id: 'd6', img: 'img/dinos/d6.webp' },
+    { id: 'd7', img: 'img/dinos/d7.webp' }, { id: 'd8', img: 'img/dinos/d8.webp' },
+    { id: 'd1b', img: 'img/dinos/d1.webp', hue: 150 }, { id: 'd3b', img: 'img/dinos/d3.webp', hue: 210 },
+    { id: 'd5b', img: 'img/dinos/d5.webp', hue: 90 }, { id: 'd7b', img: 'img/dinos/d7.webp', hue: 280 },
+    { id: 'd2b', img: 'img/dinos/d2.webp', hue: 300 }, { id: 'd8b', img: 'img/dinos/d8.webp', hue: 60 },
+  ],
+  aventureiros: Array.from({ length: 12 }, (_, i) => ({ id: 'v' + (i + 1), img: 'img/adv/v' + (i + 1) + '.webp' })),
+};
+
 const THEME_FACES = {};
 function themeFaces(id) {
   if (THEME_FACES[id]) return THEME_FACES[id];
   let faces;
-  if (ART_THEMES[id]) faces = ART_THEMES[id].map((a) => ({ face: `${id}:${a.id}`, svg: a.svg }));
+  if (IMG_THEMES[id]) faces = IMG_THEMES[id].map((f) => ({ face: f.id, img: f.img, hue: f.hue || 0 }));
+  else if (ART_THEMES[id]) faces = ART_THEMES[id].map((a) => ({ face: `${id}:${a.id}`, svg: a.svg }));
   else if (CHAR_THEMES[id]) faces = CHAR_THEMES[id].map((ch) => ({ face: `${id}:${ch.id}`, svg: ch.svg }));
   else faces = (THEMES[id] || []).map((e) => ({ face: e, emoji: e, hue: 0 }));
   THEME_FACES[id] = faces;
@@ -272,7 +289,7 @@ const THEME_LIST = [
   { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 320, char: true },
   { id: 'pokemon',    icon: '⚡', key: 'themePokemon',    cost: 400, char: true },
   { id: 'disney',     icon: '🏰', key: 'themeDisney',     cost: 500, char: true },
-  { id: 'plataforma', icon: '🍄', key: 'themePlataforma', cost: 350, char: true },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 350 },
   { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 450 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
@@ -294,6 +311,7 @@ const DEFAULT_AVATAR = AVATAR_IDS[0] || 'k1';
 function avatarSVG(id, skinIdx) {
   const a = AVATAR_MAP[id] || AVATARS.list[0];
   if (!a) return '';
+  if (a.img) return `<img class="avatar-img" src="${a.img}" alt="" draggable="false">`;
   const skin = AVATARS.skins[skinIdx] != null ? AVATARS.skins[skinIdx] : (AVATARS.skins[1] || AVATARS.skins[0]);
   return a.svg(a.human ? skin : undefined);
 }
@@ -602,15 +620,23 @@ function setupProfileControls() {
       AVATAR_PICKERS.forEach(renderAvatarPicker);
     });
   });
+  // Sem tom de pele (avatares são imagens prontas): esconde o seletor
   SKIN_PICKERS.forEach((id) => {
-    renderSkinPicker(id);
     const row = document.getElementById(id);
-    if (row) row.addEventListener('click', (e) => {
+    if (!row) return;
+    if (AVATARS.skins.length === 0) {
+      row.hidden = true;
+      const h = row.previousElementSibling;
+      if (h && h.tagName === 'H3') h.hidden = true;
+      return;
+    }
+    renderSkinPicker(id);
+    row.addEventListener('click', (e) => {
       const b = e.target.closest('[data-skin]');
       if (!b) return;
       storage.skin = b.dataset.skin;
       sound.play('click');
-      renderAllPickers(); // tom de pele afeta os avatares humanos
+      renderAllPickers();
     });
   });
   const inputs = ['profile-name-input', 'join-name-input'].map((id) => document.getElementById(id));
@@ -679,6 +705,9 @@ function updateStartButton() {
 const coinTiny = '<span class="coin-badge tiny" aria-hidden="true">★</span>';
 
 function themeIcon(th) {
+  if (IMG_THEMES[th.id] && IMG_THEMES[th.id][0]) {
+    return `<span class="opt-svg"><img class="opt-img" src="${IMG_THEMES[th.id][0].img}" alt=""></span>`;
+  }
   const art = ART_THEMES[th.id];
   if (art && art[0]) return `<span class="opt-svg">${art[0].svg}</span>`;
   if (th.char && CHAR_THEMES[th.id] && CHAR_THEMES[th.id][0]) {
@@ -1044,7 +1073,7 @@ function startGame(opts = {}) {
   }
 
   game.current = 0;
-  game.deck = deckFaces.map((f) => ({ face: f.face, emoji: f.emoji, hue: f.hue || 0, svg: f.svg, matched: false }));
+  game.deck = deckFaces.map((f) => ({ face: f.face, emoji: f.emoji, hue: f.hue || 0, svg: f.svg, img: f.img, matched: false }));
   game.flipped = [];
   game.lock = false;
   game.over = false;
@@ -1080,12 +1109,21 @@ function renderBoard(level) {
     el.dataset.index = idx;
     el.style.animationDelay = `${idx * 35}ms`;
     el.setAttribute('aria-label', '?');
-    const hueStyle = card.hue ? ` style="filter:hue-rotate(${card.hue}deg) saturate(1.6)"` : '';
-    const front = card.svg ? card.svg : card.emoji;
+    let front, frontClass = '', frontStyle = '';
+    if (card.img) {
+      const hf = card.hue ? ` style="filter:hue-rotate(${card.hue}deg)"` : '';
+      front = `<img class="card-img" src="${card.img}"${hf} alt="" draggable="false">`;
+      frontClass = 'has-img';
+    } else if (card.svg) {
+      front = card.svg; frontClass = 'has-svg';
+    } else {
+      front = card.emoji;
+      if (card.hue) frontStyle = ` style="filter:hue-rotate(${card.hue}deg) saturate(1.6)"`;
+    }
     el.innerHTML = `
       <div class="card-inner">
         <div class="card-face card-back">❓</div>
-        <div class="card-face card-front ${card.svg ? 'has-svg' : ''}"${hueStyle}>${front}</div>
+        <div class="card-face card-front ${frontClass}"${frontStyle}>${front}</div>
       </div>`;
     el.addEventListener('click', () => flipCard(idx, el));
     board.appendChild(el);

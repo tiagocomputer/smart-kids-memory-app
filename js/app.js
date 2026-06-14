@@ -245,9 +245,10 @@ const DINO_SPECIES = [];
   DINO_SPECIES.push({ face: `🦕#${hue}`, emoji: '🦕', hue });
 });
 
-// Fases com IMAGENS (arquivos fornecidos): dinossauros (8) e aventureiros (12).
+// Fases com IMAGENS (arquivos fornecidos): animais (13), dinossauros (12) e aventureiros (12).
 const IMG_THEMES = {
-  dinos: Array.from({ length: 8 }, (_, i) => ({ id: 'd' + (i + 1), img: 'img/dinos/d' + (i + 1) + '.webp' })),
+  animais: Array.from({ length: 13 }, (_, i) => ({ id: 'an' + (i + 1), img: 'img/animais/an' + (i + 1) + '.webp' })),
+  dinos: Array.from({ length: 12 }, (_, i) => ({ id: 'd' + (i + 1), img: 'img/dinos/d' + (i + 1) + '.webp' })),
   aventureiros: Array.from({ length: 12 }, (_, i) => ({ id: 'v' + (i + 1), img: 'img/adv/v' + (i + 1) + '.webp' })),
 };
 
@@ -403,17 +404,35 @@ function isThemeUnlocked(id) {
 
 const sound = (() => {
   let ctx = null;
+  let unlocked = false;
   function ensureCtx() {
     if (!ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
-      ctx = new AC();
+      try { ctx = new AC(); } catch { return null; }
     }
     // resume cobre 'suspended' E 'interrupted' (iOS) — antes só tratava 'suspended'
     if (ctx.state !== 'running' && ctx.resume) { try { ctx.resume(); } catch { /* ignora */ } }
     return ctx;
   }
-  function resume() { if (ctx && ctx.state !== 'running' && ctx.resume) { try { ctx.resume(); } catch { /* ignora */ } } }
+  // Destrava o áudio no 1º gesto do usuário: cria o contexto, dá resume e toca
+  // um buffer MUDO (obrigatório no iOS). Cobre web, Android e iOS.
+  function unlock() {
+    const c = ensureCtx();
+    if (!c) return;
+    if (!unlocked) {
+      try {
+        const buf = c.createBuffer(1, 1, 22050);
+        const src = c.createBufferSource();
+        src.buffer = buf;
+        src.connect(c.destination);
+        src.start(0);
+        unlocked = true;
+      } catch { /* ignora */ }
+    }
+    if (c.state !== 'running' && c.resume) { try { c.resume(); } catch { /* ignora */ } }
+  }
+  function resume() { unlock(); }
   function tone(freq, start, duration, type = 'sine', volume = 0.18) {
     try {
       const c = ensureCtx();
@@ -433,6 +452,7 @@ const sound = (() => {
   }
   function play(name) {
     if (!storage.sound) return;
+    ensureCtx();   // garante contexto ativo a cada som pedido
     switch (name) {
       case 'flip':  tone(420, 0, 0.1, 'triangle'); break;
       case 'match': tone(523, 0, 0.12); tone(659, 0.1, 0.12); tone(784, 0.2, 0.2); break;
@@ -447,12 +467,13 @@ const sound = (() => {
       case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
     }
   }
-  return { play, tone, resume };
+  return { play, tone, resume, unlock };
 })();
 
-// Religa o áudio em QUALQUER toque/tecla (cobre quando o iOS interrompe o som)
-['pointerdown', 'touchend', 'click', 'keydown'].forEach((ev) =>
-  document.addEventListener(ev, () => sound.resume(), { passive: true }));
+// Destrava/religa o áudio no 1º gesto e em QUALQUER toque/tecla depois (cobre o
+// bloqueio de autoplay na web, Android e iOS, e quando o iOS interrompe o som).
+['pointerdown', 'touchstart', 'touchend', 'mousedown', 'click', 'keydown'].forEach((ev) =>
+  document.addEventListener(ev, () => sound.unlock(), { passive: true, capture: true }));
 
 // ---------- Música de fundo ----------
 

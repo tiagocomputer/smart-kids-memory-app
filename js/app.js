@@ -396,18 +396,25 @@ function isThemeUnlocked(id) {
 const sound = (() => {
   let ctx = null;
   function ensureCtx() {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === 'suspended') ctx.resume();
+    if (!ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+    }
+    // resume cobre 'suspended' E 'interrupted' (iOS) — antes só tratava 'suspended'
+    if (ctx.state !== 'running' && ctx.resume) { try { ctx.resume(); } catch { /* ignora */ } }
     return ctx;
   }
+  function resume() { if (ctx && ctx.state !== 'running' && ctx.resume) { try { ctx.resume(); } catch { /* ignora */ } } }
   function tone(freq, start, duration, type = 'sine', volume = 0.18) {
     try {
       const c = ensureCtx();
+      if (!c) return;
       const osc = c.createOscillator();
       const gain = c.createGain();
       osc.type = type;
       osc.frequency.value = freq;
-      const t0 = c.currentTime + start;
+      const t0 = c.currentTime + 0.03 + start;   // pequena folga p/ não agendar no passado
       gain.gain.setValueAtTime(0, t0);
       gain.gain.linearRampToValueAtTime(volume, t0 + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
@@ -432,8 +439,12 @@ const sound = (() => {
       case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
     }
   }
-  return { play, tone };
+  return { play, tone, resume };
 })();
+
+// Religa o áudio em QUALQUER toque/tecla (cobre quando o iOS interrompe o som)
+['pointerdown', 'touchend', 'click', 'keydown'].forEach((ev) =>
+  document.addEventListener(ev, () => sound.resume(), { passive: true }));
 
 // ---------- Música de fundo ----------
 
@@ -1185,7 +1196,7 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     music.stop();
     if (cur === 'game') stopTimer();
-  } else if (cur === 'game' && !game.over && !game.paused) {
+  } else if (sound.resume(), cur === 'game' && !game.over && !game.paused) {
     if (!game.online && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
     music.play(config.level);
   } else if (MENU_SCREENS.has(cur)) {

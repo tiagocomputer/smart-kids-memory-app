@@ -357,8 +357,8 @@ body {
 /* Balão de fala */
 .speech {
   position: absolute;
-  top: 2px;
-  left: 8%;
+  top: -6px;
+  left: 50%;
   right: auto;
   z-index: 2;
   background: #fff;
@@ -374,13 +374,13 @@ body {
 .speech::after {
   content: '';
   position: absolute;
-  bottom: -8px; left: 16px;
+  bottom: -8px; left: 50%; margin-left: -7px;
   border: 7px solid transparent;
   border-top-color: #fff;
 }
 @keyframes speech-pop {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.04); }
+  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+  50% { transform: translateX(-50%) translateY(-4px) scale(1.04); }
 }
 
 /* ============================================================
@@ -400,69 +400,50 @@ body {
   z-index: -1;
   pointer-events: none;
 }
+/* Mascote parada (sem flutuar) — só asas, bico e olhos se mexem, como no vídeo */
 .owl-mascot {
   position: relative;
   width: clamp(200px, 56vw, 290px);
   aspect-ratio: 384 / 326;
   filter: drop-shadow(0 14px 12px rgba(20, 0, 45, 0.4));
 }
-.owl-mascot.floating { animation: mascot-bob 3.6s ease-in-out infinite; transform-origin: 50% 82%; }
-@keyframes mascot-bob {
-  0%, 100% { transform: translateY(0) rotate(-2deg) scale(1); }
-  50% { transform: translateY(-14px) rotate(2deg) scale(1.015); }
-}
-/* camadas da mesma imagem com máscaras suaves -> partes animáveis sem emenda */
-.owl-layer {
-  position: absolute;
-  inset: 0;
-  background: url('../img/owl.webp?v=20') center/contain no-repeat;
-}
-.owl-base {
-  -webkit-mask-image: radial-gradient(16.5% 23.5% at 84% 27.5%, transparent 42%, #000 100%);
-          mask-image: radial-gradient(16.5% 23.5% at 84% 27.5%, transparent 42%, #000 100%);
-}
-.owl-wing {
-  -webkit-mask-image: radial-gradient(16.5% 23.5% at 84% 27.5%, #000 42%, transparent 100%);
-          mask-image: radial-gradient(16.5% 23.5% at 84% 27.5%, #000 42%, transparent 100%);
-  transform-origin: 70% 46%;
-  animation: owl-wing 2.4s ease-in-out infinite;
-}
-.owl-beak {
-  -webkit-mask-image: radial-gradient(10% 8.5% at 46% 43%, #000 40%, transparent 100%);
-          mask-image: radial-gradient(10% 8.5% at 46% 43%, #000 40%, transparent 100%);
-  transform-origin: 46% 36%;
-  animation: owl-beak 2.8s ease-in-out infinite;
-}
+/* camadas já recortadas (sem máscara em runtime -> robusto em qualquer device) */
+.owl-layer { position: absolute; inset: 0; background-position: center; background-size: contain; background-repeat: no-repeat; }
+.owl-base   { background-image: url('../img/owl-body.webp?v=21'); }
+.owl-wing-l { background-image: url('../img/owl-wing-l.webp?v=21'); transform-origin: 27% 42%; animation: owl-wing-l 1.6s ease-in-out infinite; }
+.owl-wing-r { background-image: url('../img/owl-wing-r.webp?v=21'); transform-origin: 70% 46%; animation: owl-wing-r 1.6s ease-in-out infinite; }
+.owl-beak   { background-image: url('../img/owl-beak.webp?v=21'); transform-origin: 46% 36%; animation: owl-beak 2.6s ease-in-out infinite; }
 /* pálpebras (piscar) — elipses da cor do rosto que descem sobre os olhos */
 .owl-lid {
   position: absolute;
   width: 17%;
-  height: 22%;
-  top: 16%;
+  height: 23%;
+  top: 15.5%;
   background: #f9eaf4;
-  border-radius: 50% 50% 48% 48%;
+  border-radius: 50% 50% 46% 46%;
   transform: scaleY(0);
   transform-origin: top center;
 }
-.owl-lid-l { left: 24%; animation: owl-blink 4.2s ease-in-out infinite; }
-.owl-lid-r { left: 50%; animation: owl-blink 4.2s ease-in-out infinite; }
-/* sem suporte a mask: mostra só o corpo (coruja estática, sem cópias sobrepostas) */
-.owl-wing, .owl-beak { display: none; }
-@supports ((-webkit-mask-image: radial-gradient(#000, #000)) or (mask-image: radial-gradient(#000, #000))) {
-  .owl-base { /* máscara ativa */ }
-  .owl-wing, .owl-beak { display: block; }
+.owl-lid-l { left: 24%; animation: owl-blink 4s ease-in-out infinite; }
+.owl-lid-r { left: 50%; animation: owl-blink 4s ease-in-out infinite; }
+@keyframes owl-wing-r {
+  0%, 100% { transform: rotate(0deg); }
+  45% { transform: rotate(13deg); }
 }
-@keyframes owl-wing {
-  0%, 100% { transform: rotate(-3deg); }
-  50% { transform: rotate(10deg); }
+@keyframes owl-wing-l {
+  0%, 100% { transform: rotate(0deg); }
+  45% { transform: rotate(-13deg); }
 }
 @keyframes owl-beak {
   0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.06); }
+  50% { transform: scaleY(1.07); }
 }
 @keyframes owl-blink {
-  0%, 90%, 100% { transform: scaleY(0); }
-  93%, 97% { transform: scaleY(1); }
+  0%, 88%, 100% { transform: scaleY(0); }
+  92%, 96% { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .owl-wing-l, .owl-wing-r, .owl-beak, .owl-lid { animation: none; }
 }
 
 /* Botões do menu inicial: círculo de ícone + rótulo + seta */

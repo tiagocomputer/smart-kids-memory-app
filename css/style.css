@@ -402,6 +402,24 @@ body {
 
 .menu { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 340px; }
 
+/* Crédito do desenvolvedor (rodapé da tela inicial) */
+.credit {
+  margin-top: clamp(18px, 4vh, 30px);
+  font-size: 0.85rem;
+  color: var(--on-bg-soft);
+  text-align: center;
+  opacity: 0.9;
+}
+.credit-link {
+  color: var(--yellow);
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.15s, filter 0.15s;
+}
+.credit-link::before { content: "📸 "; }
+.credit-link:hover, .credit-link:active { border-bottom-color: var(--yellow); filter: brightness(1.1); }
+
 /* ============================================================
    Botões
    ============================================================ */

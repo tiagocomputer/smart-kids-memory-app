@@ -8,6 +8,7 @@ const I18N = {
   pt: {
     appName1: 'Memória', appName2: 'Mágica',
     subtitle: 'Encontre os pares, ganhe moedas e colecione figurinhas!',
+    madeBy: 'Desenvolvido por',
     owlGreeting: 'Olá! Vamos brincar?',
     play: 'Jogar', album: 'Álbum de Figurinhas', records: 'Recordes',
     setupTitle: 'Preparar Jogo 🎮',
@@ -32,6 +33,7 @@ const I18N = {
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
     themeMario: 'Mundo dos Cogumelos', themeMonstrinhos: 'Monstrinhos',
+    themeEncanadores: 'Mundo dos Encanadores', themeRobos: 'Mundo dos Robôs',
     themeFantasia: 'Mundo da Fantasia', themeEmocoes: 'Mundo das Emoções',
     themeAventureiros: 'Mundo dos Aventureiros', themeCriaturas: 'Criaturinhas',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
@@ -76,6 +78,7 @@ const I18N = {
   en: {
     appName1: 'Magic', appName2: 'Memory',
     subtitle: 'Match the pairs, earn coins and collect stickers!',
+    madeBy: 'Made by',
     owlGreeting: "Hi! Let's play?",
     play: 'Play', album: 'Sticker Album', records: 'Records',
     setupTitle: 'Set Up Game 🎮',
@@ -100,6 +103,7 @@ const I18N = {
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
     themeMario: 'Mushroom World', themeMonstrinhos: 'Lil Monsters',
+    themeEncanadores: 'Plumbers World', themeRobos: 'Robots World',
     themeFantasia: 'Fantasy World', themeEmocoes: 'Emotions World',
     themeAventureiros: 'Adventurers World', themeCriaturas: 'Lil Creatures',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
@@ -144,6 +148,7 @@ const I18N = {
   fr: {
     appName1: 'Mémoire', appName2: 'Magique',
     subtitle: 'Trouve les paires, gagne des pièces et collectionne des autocollants!',
+    madeBy: 'Développé par',
     owlGreeting: 'Salut! On joue?',
     play: 'Jouer', album: "Album d'autocollants", records: 'Records',
     setupTitle: 'Préparer le jeu 🎮',
@@ -168,6 +173,7 @@ const I18N = {
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
     themeMario: 'Monde des Champignons', themeMonstrinhos: 'Petits Monstres',
+    themeEncanadores: 'Monde des Plombiers', themeRobos: 'Monde des Robots',
     themeFantasia: 'Monde de la Fantaisie', themeEmocoes: 'Monde des Émotions',
     themeAventureiros: 'Monde des Aventuriers', themeCriaturas: 'Petites Créatures',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
@@ -273,6 +279,8 @@ const IMG_THEMES = {
   monstrinhos: imgTheme('mo', 'monstrinhos', 12),
   fantasia: imgTheme('fa', 'fantasia', 12),
   emocoes: imgTheme('em', 'emocoes', 12),
+  encanadores: imgTheme('en', 'encanadores', 12),
+  robos: imgTheme('ro', 'robos', 12),
   aventureiros: imgTheme('v', 'adv', 12),
 };
 
@@ -300,10 +308,12 @@ const THEME_LIST = [
   { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 120 },
   { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 160 },
   { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 200 },
-  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 260 },
-  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 320 },
-  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 380 },
-  { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 450 },
+  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 240 },
+  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 280 },
+  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 320 },
+  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 360 },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 420 },
+  { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 480 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 

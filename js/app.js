@@ -436,6 +436,12 @@ const sound = (() => {
   // Destrava o áudio no 1º gesto do usuário: cria o contexto, dá resume e toca
   // um buffer MUDO (obrigatório no iOS). Cobre web, Android e iOS.
   function unlock() {
+    // Após o aparelho dormir, o iOS deixa o contexto preso em 'interrupted'
+    // (e 'closed' nunca volta); resume() não recupera. Recria do zero no gesto.
+    if (ctx && (ctx.state === 'interrupted' || ctx.state === 'closed')) {
+      try { if (ctx.state !== 'closed' && ctx.close) ctx.close(); } catch { /* ignora */ }
+      ctx = null; master = null; unlocked = false;
+    }
     const c = ensureCtx();
     if (!c) return;
     if (!unlocked) {

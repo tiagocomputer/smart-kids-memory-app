@@ -22,6 +22,7 @@ const I18N = {
     waitingPlayer: 'Esperando o jogador 2…', connecting: 'Conectando…',
     joinTitle: 'Entrar no jogo 🎮', joinBtn: 'Entrar!',
     connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
+    soundOn: 'Som ligado', soundOff: 'Som desligado', soundBlocked: 'Áudio bloqueado pelo navegador',
     rematchQ: 'Continuar o duelo?', rematchYes: 'Continuar duelo', rematchNo: 'Sair',
     waitingRematch: 'Esperando o outro jogador…', peerWantsRematch: 'O outro quer jogar de novo! 🔁',
     peerLeft: 'O outro jogador saiu 👋',
@@ -86,6 +87,7 @@ const I18N = {
     waitingPlayer: 'Waiting for player 2…', connecting: 'Connecting…',
     joinTitle: 'Join the game 🎮', joinBtn: 'Join!',
     connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
+    soundOn: 'Sound on', soundOff: 'Sound off', soundBlocked: 'Audio blocked by the browser',
     rematchQ: 'Continue the duel?', rematchYes: 'Keep dueling', rematchNo: 'Leave',
     waitingRematch: 'Waiting for the other player…', peerWantsRematch: 'The other wants a rematch! 🔁',
     peerLeft: 'The other player left 👋',
@@ -150,6 +152,7 @@ const I18N = {
     waitingPlayer: 'En attente du joueur 2…', connecting: 'Connexion…',
     joinTitle: 'Rejoindre le jeu 🎮', joinBtn: 'Entrer!',
     connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
+    soundOn: 'Son activé', soundOff: 'Son coupé', soundBlocked: 'Audio bloqué par le navigateur',
     rematchQ: 'Continuer le duel?', rematchYes: 'Continuer le duel', rematchNo: 'Sortir',
     waitingRematch: "En attente de l'autre joueur…", peerWantsRematch: "L'autre veut rejouer! 🔁",
     peerLeft: "L'autre joueur est parti 👋",
@@ -245,11 +248,18 @@ const DINO_SPECIES = [];
   DINO_SPECIES.push({ face: `🦕#${hue}`, emoji: '🦕', hue });
 });
 
-// Fases com IMAGENS (arquivos fornecidos): animais (13), dinossauros (12) e aventureiros (12).
+// Fases com IMAGENS (arquivos fornecidos). Cada item é uma figura recortada.
+const imgTheme = (prefix, dir, n) =>
+  Array.from({ length: n }, (_, i) => ({ id: prefix + (i + 1), img: 'img/' + dir + '/' + prefix + (i + 1) + '.webp' }));
 const IMG_THEMES = {
-  animais: Array.from({ length: 13 }, (_, i) => ({ id: 'an' + (i + 1), img: 'img/animais/an' + (i + 1) + '.webp' })),
-  dinos: Array.from({ length: 12 }, (_, i) => ({ id: 'd' + (i + 1), img: 'img/dinos/d' + (i + 1) + '.webp' })),
-  aventureiros: Array.from({ length: 12 }, (_, i) => ({ id: 'v' + (i + 1), img: 'img/adv/v' + (i + 1) + '.webp' })),
+  animais: imgTheme('an', 'animais', 13),
+  frutas: imgTheme('fr', 'frutas', 12),
+  espaco: imgTheme('es', 'espaco', 12),
+  oceano: imgTheme('oc', 'oceano', 12),
+  dinos: imgTheme('d', 'dinos', 12),
+  comida: imgTheme('co', 'comida', 12),
+  mario: imgTheme('cog', 'cogumelos', 12),
+  aventureiros: imgTheme('v', 'adv', 12),
 };
 
 const THEME_FACES = {};
@@ -404,15 +414,23 @@ function isThemeUnlocked(id) {
 
 const sound = (() => {
   let ctx = null;
+  let master = null;
   let unlocked = false;
   function ensureCtx() {
     if (!ctx) {
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return null;
       try { ctx = new AC(); } catch { return null; }
+      try {
+        master = ctx.createGain();
+        master.gain.value = 0.9;
+        master.connect(ctx.destination);
+      } catch { master = null; }
     }
     // resume cobre 'suspended' E 'interrupted' (iOS) — antes só tratava 'suspended'
-    if (ctx.state !== 'running' && ctx.resume) { try { ctx.resume(); } catch { /* ignora */ } }
+    if (ctx.state !== 'running' && ctx.resume) {
+      try { const p = ctx.resume(); if (p && p.catch) p.catch(() => {}); } catch { /* ignora */ }
+    }
     return ctx;
   }
   // Destrava o áudio no 1º gesto do usuário: cria o contexto, dá resume e toca
@@ -445,11 +463,12 @@ const sound = (() => {
       gain.gain.setValueAtTime(0, t0);
       gain.gain.linearRampToValueAtTime(volume, t0 + 0.015);
       gain.gain.exponentialRampToValueAtTime(0.001, t0 + duration);
-      osc.connect(gain).connect(c.destination);
+      osc.connect(gain).connect(master || c.destination);
       osc.start(t0);
       osc.stop(t0 + duration + 0.05);
     } catch { /* áudio bloqueado — segue sem som */ }
   }
+  function state() { return ctx ? ctx.state : 'sem-contexto'; }
   function play(name) {
     if (!storage.sound) return;
     ensureCtx();   // garante contexto ativo a cada som pedido
@@ -467,7 +486,7 @@ const sound = (() => {
       case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
     }
   }
-  return { play, tone, resume, unlock };
+  return { play, tone, resume, unlock, state };
 })();
 
 // Destrava/religa o áudio no 1º gesto e em QUALQUER toque/tecla depois (cobre o
@@ -1728,12 +1747,18 @@ $('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); clos
 $('#btn-sound').addEventListener('click', () => {
   storage.sound = !storage.sound;
   updateSoundButton();
-  sound.play('click');
+  sound.unlock();            // destrava no próprio gesto do botão
   music.stop();
   const cur = currentScreen();
   if (storage.sound) {
+    // toca um "teste" claro e mostra o estado do áudio (ajuda a diagnosticar)
+    sound.play('reveal');
+    const st = sound.state();
+    showToast(st === 'running' ? `${t('soundOn')} 🔊` : `🔇 ${t('soundBlocked')} (${st})`);
     if (cur === 'game' && !game.over) music.play(config.level);
     else if (MENU_SCREENS.has(cur)) music.playMenu();
+  } else {
+    showToast(`${t('soundOff')} 🔇`);
   }
 });
 $('#btn-theme').addEventListener('click', () => { sound.play('click'); toggleTheme(); });

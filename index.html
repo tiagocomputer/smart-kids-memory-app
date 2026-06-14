@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=16" />
+  <link rel="stylesheet" href="css/style.css?v=17" />
 </head>
 <body>
 
@@ -116,9 +116,17 @@
 
     <section class="setup-block">
       <h3 data-i18n="qPlayers">Quantos jogadores?</h3>
-      <div class="option-row" id="player-options">
-        <button class="opt selected" data-players="1"><span class="opt-emoji">🙋</span>1</button>
-        <button class="opt" data-players="2"><span class="opt-emoji">🙋👭</span>2</button>
+      <div class="option-row player-pick" id="player-options">
+        <button class="opt opt-player selected" data-players="1">
+          <span class="opt-player-ico">🙋</span>
+          <span class="opt-player-title" data-i18n="onePlayer">1 jogador</span>
+          <small data-i18n="onePlayerSub">Jogue sozinho</small>
+        </button>
+        <button class="opt opt-player" data-players="2">
+          <span class="opt-player-ico">🤝</span>
+          <span class="opt-player-title" data-i18n="twoPlayers">2 jogadores</span>
+          <small data-i18n="twoPlayersSub">Duelo · QR code</small>
+        </button>
       </div>
     </section>
 
@@ -298,6 +306,7 @@
       <p class="waiting" id="rematch-status"></p>
       <div class="win-buttons">
         <button class="btn btn-big btn-play" id="btn-rematch-yes">🔁 <span data-i18n="rematchYes">Continuar duelo</span></button>
+        <button class="btn btn-album" id="btn-rematch-phase">🗺️ <span data-i18n="rematchPhase">Trocar de fase</span></button>
         <button class="btn btn-small" id="btn-rematch-no">🚪 <span data-i18n="rematchNo">Sair</span></button>
       </div>
     </div>
@@ -306,11 +315,11 @@
   <!-- Aviso flutuante (ex.: conexão caiu) -->
   <div class="toast" id="toast" hidden></div>
 
-  <script src="js/vendor/qrcode.js?v=16"></script>
-  <script src="js/vendor/peerjs.min.js?v=16"></script>
-  <script src="js/art.js?v=16"></script>
-  <script src="js/characters.js?v=16"></script>
-  <script src="js/avatars.js?v=16"></script>
-  <script src="js/app.js?v=16"></script>
+  <script src="js/vendor/qrcode.js?v=17"></script>
+  <script src="js/vendor/peerjs.min.js?v=17"></script>
+  <script src="js/art.js?v=17"></script>
+  <script src="js/characters.js?v=17"></script>
+  <script src="js/avatars.js?v=17"></script>
+  <script src="js/app.js?v=17"></script>
 </body>
 </html>

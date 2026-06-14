@@ -15,6 +15,8 @@ const I18N = {
     nameNeeded: 'Escreva seu nome! ✏️',
     yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar', chooseSkin: 'Cor da pele',
     qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
+    onePlayer: '1 jogador', onePlayerSub: 'Jogue sozinho',
+    twoPlayers: '2 jogadores', twoPlayersSub: 'Duelo · QR code',
     inviteTitle: 'Convide o Jogador 2 📱',
     inviteHint: 'Peça para o jogador 2 escanear este código com a câmera do celular',
     shareLink: 'Ou envie o link', linkCopied: 'Link copiado! 📋',
@@ -24,12 +26,13 @@ const I18N = {
     connLost: 'A conexão caiu 😢', cancel: 'Cancelar', wellPlayed: 'Bem jogado!',
     soundOn: 'Som ligado', soundOff: 'Som desligado', soundBlocked: 'Áudio bloqueado pelo navegador',
     rematchQ: 'Continuar o duelo?', rematchYes: 'Continuar duelo', rematchNo: 'Sair',
+    rematchPhase: 'Trocar de fase', waitingPhase: 'O outro está escolhendo a fase… 🗺️',
     waitingRematch: 'Esperando o outro jogador…', peerWantsRematch: 'O outro quer jogar de novo! 🔁',
     peerLeft: 'O outro jogador saiu 👋',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
     themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
-    themeFantasia2: 'Fantasia', themeBandeiras: 'Bandeiras', themeMario: 'Mundo dos Cogumelos',
-    themeToy: 'Mundo dos Brinquedos', themePokemon: 'Monstrinhos', themeDisney: 'Reino Encantado',
+    themeMario: 'Mundo dos Cogumelos', themeMonstrinhos: 'Monstrinhos',
+    themeFantasia: 'Mundo da Fantasia', themeEmocoes: 'Mundo das Emoções',
     themeAventureiros: 'Mundo dos Aventureiros', themeCriaturas: 'Criaturinhas',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
@@ -80,6 +83,8 @@ const I18N = {
     nameNeeded: 'Write your name! ✏️',
     yourName: 'Your name', chooseAvatar: 'Choose your avatar', chooseSkin: 'Skin tone',
     qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
+    onePlayer: '1 player', onePlayerSub: 'Play solo',
+    twoPlayers: '2 players', twoPlayersSub: 'Duel · QR code',
     inviteTitle: 'Invite Player 2 📱',
     inviteHint: 'Ask player 2 to scan this code with their phone camera',
     shareLink: 'Or send the link', linkCopied: 'Link copied! 📋',
@@ -89,12 +94,13 @@ const I18N = {
     connLost: 'Connection lost 😢', cancel: 'Cancel', wellPlayed: 'Well played!',
     soundOn: 'Sound on', soundOff: 'Sound off', soundBlocked: 'Audio blocked by the browser',
     rematchQ: 'Continue the duel?', rematchYes: 'Keep dueling', rematchNo: 'Leave',
+    rematchPhase: 'Change stage', waitingPhase: 'The other is picking a stage… 🗺️',
     waitingRematch: 'Waiting for the other player…', peerWantsRematch: 'The other wants a rematch! 🔁',
     peerLeft: 'The other player left 👋',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
     themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
-    themeFantasia2: 'Fantasy', themeBandeiras: 'Flags', themeMario: 'Mushroom World',
-    themeToy: 'Toy World', themePokemon: 'Lil Monsters', themeDisney: 'Enchanted Kingdom',
+    themeMario: 'Mushroom World', themeMonstrinhos: 'Lil Monsters',
+    themeFantasia: 'Fantasy World', themeEmocoes: 'Emotions World',
     themeAventureiros: 'Adventurers World', themeCriaturas: 'Lil Creatures',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
@@ -145,6 +151,8 @@ const I18N = {
     nameNeeded: 'Écris ton prénom! ✏️',
     yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar', chooseSkin: 'Couleur de peau',
     qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
+    onePlayer: '1 joueur', onePlayerSub: 'Joue en solo',
+    twoPlayers: '2 joueurs', twoPlayersSub: 'Duel · QR code',
     inviteTitle: 'Invite le Joueur 2 📱',
     inviteHint: 'Demande au joueur 2 de scanner ce code avec son téléphone',
     shareLink: 'Ou envoie le lien', linkCopied: 'Lien copié! 📋',
@@ -154,12 +162,13 @@ const I18N = {
     connLost: 'Connexion perdue 😢', cancel: 'Annuler', wellPlayed: 'Bien joué!',
     soundOn: 'Son activé', soundOff: 'Son coupé', soundBlocked: 'Audio bloqué par le navigateur',
     rematchQ: 'Continuer le duel?', rematchYes: 'Continuer le duel', rematchNo: 'Sortir',
+    rematchPhase: 'Changer de phase', waitingPhase: "L'autre choisit la phase… 🗺️",
     waitingRematch: "En attente de l'autre joueur…", peerWantsRematch: "L'autre veut rejouer! 🔁",
     peerLeft: "L'autre joueur est parti 👋",
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
     themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
-    themeFantasia2: 'Fantaisie', themeBandeiras: 'Drapeaux', themeMario: 'Monde des Champignons',
-    themeToy: 'Monde des Jouets', themePokemon: 'Petits Monstres', themeDisney: 'Royaume Enchanté',
+    themeMario: 'Monde des Champignons', themeMonstrinhos: 'Petits Monstres',
+    themeFantasia: 'Monde de la Fantaisie', themeEmocoes: 'Monde des Émotions',
     themeAventureiros: 'Monde des Aventuriers', themeCriaturas: 'Petites Créatures',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
@@ -258,7 +267,12 @@ const IMG_THEMES = {
   oceano: imgTheme('oc', 'oceano', 12),
   dinos: imgTheme('d', 'dinos', 12),
   comida: imgTheme('co', 'comida', 12),
+  brinquedos: imgTheme('br', 'brinquedos', 12),
+  herois: imgTheme('he', 'herois', 12),
   mario: imgTheme('cog', 'cogumelos', 12),
+  monstrinhos: imgTheme('mo', 'monstrinhos', 12),
+  fantasia: imgTheme('fa', 'fantasia', 12),
+  emocoes: imgTheme('em', 'emocoes', 12),
   aventureiros: imgTheme('v', 'adv', 12),
 };
 
@@ -284,13 +298,11 @@ const THEME_LIST = [
   { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 50 },
   { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 80 },
   { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 120 },
-  { id: 'bandeiras',  icon: '🚩', key: 'themeBandeiras',  cost: 150 },
-  { id: 'fantasia2',  icon: '🐉', key: 'themeFantasia2',  cost: 200 },
-  { id: 'toy',        icon: '🤠', key: 'themeToy',        cost: 260, char: true },
-  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 320, char: true },
-  { id: 'pokemon',    icon: '⚡', key: 'themePokemon',    cost: 400, char: true },
-  { id: 'disney',     icon: '🏰', key: 'themeDisney',     cost: 500, char: true },
-  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 350 },
+  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 160 },
+  { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 200 },
+  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 260 },
+  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 320 },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 380 },
   { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 450 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
@@ -706,8 +718,10 @@ function renderProfileChip() {
 
 function goSetup() {
   if (!storage.name.trim()) { showScreen('profile'); return; }
+  duelPicking = false;
   renderProfileChip();
   renderThemeOptions();
+  updateStartButton();
   showScreen('setup');
 }
 
@@ -733,6 +747,7 @@ bindOptionRow('player-options', 'players', (v) => {
 bindOptionRow('level-options', 'level', (v) => (config.level = v));
 
 function updateStartButton() {
+  if (duelPicking) { $('#start-label').textContent = `${t('rematchYes')} ⚔️`; return; }
   $('#start-label').textContent = config.players === 2 ? t('startQR') : `${t('start')} 🎉`;
 }
 
@@ -950,6 +965,7 @@ function hostStartMatch() {
 // ---------- Revanche (duelo) ----------
 
 let rematchMe = false, rematchPeer = false, peerLeft = false;
+let duelPicking = false;   // anfitrião escolhendo nova fase com o duelo ainda conectado
 
 function resetRematch() { rematchMe = false; rematchPeer = false; peerLeft = false; }
 
@@ -962,11 +978,14 @@ function closeRematchModal() { $('#rematch-modal').hidden = true; }
 function updateRematchUI() {
   const status = $('#rematch-status');
   const yes = $('#btn-rematch-yes');
+  const phase = $('#btn-rematch-phase');
   if (peerLeft) {
     yes.disabled = true;
+    if (phase) phase.disabled = true;
     status.textContent = t('peerLeft');
     return;
   }
+  if (phase) phase.disabled = false;
   if (rematchMe) {
     yes.disabled = true;
     status.textContent = rematchPeer ? '' : t('waitingRematch');
@@ -994,6 +1013,29 @@ function requestRematch() {
   tryStartRematch();
 }
 
+// Trocar de fase mantendo o duelo conectado: o anfitrião (índice 0) escolhe a
+// nova fase na tela de preparar; o convidado espera o 'start'.
+function chooseNewPhase() {
+  if (peerLeft) return;
+  sound.play('click');
+  resetRematch();
+  closeRematchModal();
+  if (game.myIndex === 0) {
+    duelPicking = true;
+    renderThemeOptions();
+    updateStartButton();
+    showScreen('setup');
+    showToast(t('rematchPhase') + ' 🗺️');
+  } else {
+    // convidado pede ao anfitrião e fica aguardando
+    netSend({ type: 'pickphase' });
+    openRematchModal();
+    $('#rematch-status').textContent = t('waitingPhase');
+    $('#btn-rematch-yes').disabled = true;
+    $('#btn-rematch-phase').disabled = true;
+  }
+}
+
 function handleNetData(data) {
   if (!data || typeof data !== 'object') return;
   switch (data.type) {
@@ -1006,6 +1048,18 @@ function handleNetData(data) {
       rematchPeer = true;
       if (currentScreen() === 'win') updateRematchUI();
       tryStartRematch();
+      break;
+    case 'pickphase':
+      // o outro jogador pediu para trocar de fase; só o anfitrião escolhe
+      if (game.myIndex === 0 && !peerLeft) {
+        resetRematch();
+        closeRematchModal();
+        duelPicking = true;
+        renderThemeOptions();
+        updateStartButton();
+        showScreen('setup');
+        showToast(t('rematchPhase') + ' 🗺️');
+      }
       break;
     case 'start': {
       if (!THEME_IDS.has(data.theme) || !LEVELS[data.level] || !Array.isArray(data.deck)) return;
@@ -1086,6 +1140,8 @@ function startGame(opts = {}) {
   game.myIndex = opts.myIndex ?? 0;
   remoteQueue.length = 0;
   resetRematch();
+  duelPicking = false;
+  closeRematchModal();
 
   // Algumas fases têm menos figuras que o nível pede (ex.: 8 dinossauros);
   // nesses casos a rodada usa só o que a fase tem.
@@ -1675,6 +1731,7 @@ function leaveGame() {
   stopTimer();
   music.stop();
   game.over = true;
+  duelPicking = false;
   if (game.online) { netSend({ type: 'bye' }); netDestroy(); game.online = false; }
 }
 
@@ -1703,7 +1760,8 @@ $('#btn-go-records').addEventListener('click', () => { sound.play('click'); rend
 $('#btn-records-back').addEventListener('click', () => { sound.play('click'); showScreen('home'); });
 $('#btn-start').addEventListener('click', () => {
   sound.play('click');
-  if (config.players === 2) hostInvite();
+  if (duelPicking && game.online && conn) { duelPicking = false; hostStartMatch(); }
+  else if (config.players === 2) hostInvite();
   else startGame();
 });
 $('#btn-restart').addEventListener('click', () => {
@@ -1748,6 +1806,7 @@ $('#btn-pause-home').addEventListener('click', () => {
 });
 
 $('#btn-rematch-yes').addEventListener('click', requestRematch);
+$('#btn-rematch-phase').addEventListener('click', chooseNewPhase);
 $('#btn-rematch-no').addEventListener('click', () => { sound.play('click'); closeRematchModal(); leaveGame(); showScreen('home'); });
 
 $('#btn-sound').addEventListener('click', () => {

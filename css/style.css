@@ -455,6 +455,38 @@ body {
 .opt-emoji { font-size: 1.5rem; }
 .opt small { font-size: 0.72rem; font-weight: 500; opacity: 0.7; }
 
+/* Seleção de 1 ou 2 jogadores — cartões grandes e convidativos */
+.player-pick { gap: 14px; align-items: stretch; }
+.opt-player {
+  flex: 1 1 0;
+  max-width: 210px;
+  padding: 16px 14px 14px;
+  gap: 5px;
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(165deg, var(--card-surface), color-mix(in srgb, var(--card-surface) 84%, var(--purple) 16%));
+}
+.opt-player::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 6px;
+  background: linear-gradient(90deg, var(--pink), var(--yellow), var(--green));
+  opacity: 0.55; transition: opacity 0.12s;
+}
+.opt-player .opt-player-ico {
+  font-size: 2.3rem; line-height: 1;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.18));
+  transition: transform 0.18s;
+}
+.opt-player .opt-player-title { font-size: clamp(1rem, 4vw, 1.18rem); font-weight: 700; }
+.opt-player small { opacity: 0.72; }
+.opt-player.selected {
+  border-color: var(--yellow);
+  background: linear-gradient(165deg, color-mix(in srgb, var(--card-surface) 80%, var(--yellow) 20%), color-mix(in srgb, var(--card-surface) 80%, var(--pink) 20%));
+}
+.opt-player.selected::before { opacity: 1; height: 7px; }
+.opt-player.selected .opt-player-ico { transform: scale(1.12) rotate(-4deg); }
+
 /* Nome e avatar do jogador */
 .name-input {
   width: 100%;

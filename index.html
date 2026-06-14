@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=18" />
+  <link rel="stylesheet" href="css/style.css?v=19" />
 </head>
 <body>
 
@@ -57,31 +57,28 @@
       <span class="sparkle s1">✨</span>
       <span class="sparkle s2">⭐</span>
       <span class="sparkle s3">💫</span>
-      <div class="owl floating">
-        <div class="owl-ear left"></div>
-        <div class="owl-ear right"></div>
-        <div class="owl-body">
-          <div class="owl-wing left"></div>
-          <div class="owl-wing right"></div>
-          <div class="owl-belly"></div>
-          <div class="owl-eyes">
-            <div class="owl-eye"><span class="owl-pupil"></span></div>
-            <div class="owl-eye"><span class="owl-pupil"></span></div>
-          </div>
-          <div class="owl-beak"></div>
-        </div>
-        <div class="owl-foot left"></div>
-        <div class="owl-foot right"></div>
-      </div>
+      <img class="owl-mascot floating" src="img/owl.webp?v=19" alt="Coruja Memória Mágica" draggable="false" />
       <div class="speech" id="owl-speech" data-i18n="owlGreeting">Olá! Vamos brincar?</div>
     </div>
 
     <h1 class="title"><span data-i18n="appName1">Memória</span><br/><span class="accent" data-i18n="appName2">Mágica</span></h1>
     <p class="subtitle" data-i18n="subtitle">Encontre os pares, ganhe moedas e colecione figurinhas!</p>
     <div class="menu">
-      <button class="btn btn-big btn-play" id="btn-go-setup">▶️ <span data-i18n="play">Jogar</span></button>
-      <button class="btn btn-album" id="btn-go-album">📒 <span data-i18n="album">Álbum de Figurinhas</span></button>
-      <button class="btn btn-records" id="btn-go-records">🏆 <span data-i18n="records">Recordes</span></button>
+      <button class="btn btn-menu btn-play" id="btn-go-setup">
+        <span class="btn-ico">▶️</span>
+        <span class="btn-label" data-i18n="play">Jogar</span>
+        <span class="btn-chev">›</span>
+      </button>
+      <button class="btn btn-menu btn-album" id="btn-go-album">
+        <span class="btn-ico">📒</span>
+        <span class="btn-label" data-i18n="album">Álbum de Figurinhas</span>
+        <span class="btn-chev">›</span>
+      </button>
+      <button class="btn btn-menu btn-records" id="btn-go-records">
+        <span class="btn-ico">🏆</span>
+        <span class="btn-label" data-i18n="records">Recordes</span>
+        <span class="btn-chev">›</span>
+      </button>
     </div>
 
     <p class="credit">
@@ -320,11 +317,11 @@
   <!-- Aviso flutuante (ex.: conexão caiu) -->
   <div class="toast" id="toast" hidden></div>
 
-  <script src="js/vendor/qrcode.js?v=18"></script>
-  <script src="js/vendor/peerjs.min.js?v=18"></script>
-  <script src="js/art.js?v=18"></script>
-  <script src="js/characters.js?v=18"></script>
-  <script src="js/avatars.js?v=18"></script>
-  <script src="js/app.js?v=18"></script>
+  <script src="js/vendor/qrcode.js?v=19"></script>
+  <script src="js/vendor/peerjs.min.js?v=19"></script>
+  <script src="js/art.js?v=19"></script>
+  <script src="js/characters.js?v=19"></script>
+  <script src="js/avatars.js?v=19"></script>
+  <script src="js/app.js?v=19"></script>
 </body>
 </html>

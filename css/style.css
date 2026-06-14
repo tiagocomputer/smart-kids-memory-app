@@ -8,9 +8,9 @@
 
 /* ---------- Paletas (tema escuro = padrão) ---------- */
 :root {
-  --bg-1: #4c1d95;
-  --bg-2: #5b21b6;
-  --bg-3: #1e1b4b;
+  --bg-1: #44178f;
+  --bg-2: #5d22b8;
+  --bg-3: #7b2cae;
   --on-bg: #ffffff;
   --on-bg-soft: rgba(255, 255, 255, 0.86);
   --title-shadow: rgba(0, 0, 0, 0.28);
@@ -48,7 +48,9 @@ html, body { height: 100%; }
 
 body {
   font-family: 'Fredoka', 'Comic Sans MS', 'Segoe UI', sans-serif;
-  background: linear-gradient(160deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+  background:
+    radial-gradient(125% 65% at 50% 118%, rgba(196, 86, 224, 0.55), rgba(196, 86, 224, 0) 60%),
+    linear-gradient(168deg, var(--bg-1), var(--bg-2) 52%, var(--bg-3));
   background-attachment: fixed;
   color: var(--on-bg);
   min-height: 100vh;
@@ -355,8 +357,10 @@ body {
 /* Balão de fala */
 .speech {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: 2px;
+  left: 8%;
+  right: auto;
+  z-index: 2;
   background: #fff;
   color: var(--text-dark);
   font-weight: 600;
@@ -380,17 +384,79 @@ body {
 }
 
 /* ============================================================
+   Tela inicial — mascote (imagem) e botões grandes (skin nova)
+   ============================================================ */
+.home-owl { isolation: isolate; }
+/* brilho violeta atrás da coruja para a medalha se fundir ao fundo */
+.home-owl::before {
+  content: "";
+  position: absolute;
+  width: 118%;
+  height: 122%;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at center, rgba(124, 64, 196, 0.62), rgba(124, 64, 196, 0) 66%);
+  z-index: -1;
+  pointer-events: none;
+}
+.owl-mascot {
+  display: block;
+  width: clamp(200px, 56vw, 290px);
+  height: auto;
+  filter: drop-shadow(0 14px 12px rgba(20, 0, 45, 0.4));
+}
+.owl-mascot.floating { animation: mascot-bob 3.6s ease-in-out infinite; transform-origin: 50% 80%; }
+@keyframes mascot-bob {
+  0%, 100% { transform: translateY(0) rotate(-2deg) scale(1); }
+  50% { transform: translateY(-14px) rotate(2deg) scale(1.015); }
+}
+
+/* Botões do menu inicial: círculo de ícone + rótulo + seta */
+.btn-menu {
+  width: 100%;
+  max-width: 360px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 16px 11px 11px;
+  border-radius: 24px;
+  font-size: clamp(1.05rem, 4.6vw, 1.28rem);
+  box-shadow: var(--shadow), inset 0 2px 0 rgba(255, 255, 255, 0.6);
+}
+.btn-menu .btn-ico {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  font-size: 1.45rem;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.14), 0 2px 0 rgba(0, 0, 0, 0.08);
+}
+.btn-menu .btn-label { text-align: center; line-height: 1.05; }
+.btn-menu .btn-chev {
+  font-size: 1.7rem;
+  font-weight: 700;
+  opacity: 0.65;
+  width: 24px;
+  text-align: center;
+}
+
+/* ============================================================
    Início
    ============================================================ */
 .title {
-  font-size: clamp(2.4rem, 12vw, 3.4rem);
+  font-size: clamp(2.6rem, 13vw, 3.8rem);
   font-weight: 700;
-  line-height: 1;
+  line-height: 0.98;
+  letter-spacing: 0.5px;
   text-align: center;
-  margin: 16px 0 8px;
-  text-shadow: 0 4px 0 var(--title-shadow);
+  margin: 6px 0 8px;
+  text-shadow: 0 3px 0 rgba(91, 33, 182, 0.55), 0 5px 0 var(--title-shadow), 0 8px 14px rgba(0, 0, 0, 0.32);
 }
-.title .accent { color: var(--yellow); }
+.title .accent { color: var(--yellow); text-shadow: 0 3px 0 #b45309, 0 5px 0 rgba(0,0,0,0.2), 0 8px 14px rgba(0,0,0,0.3); }
 
 .subtitle {
   font-size: clamp(0.95rem, 3.6vw, 1.15rem);
@@ -439,7 +505,7 @@ body {
 .btn:active { transform: scale(0.94); }
 .btn-big { font-size: clamp(1.2rem, 5vw, 1.5rem); padding: 16px 30px; width: 100%; max-width: 340px; }
 .btn-play { background: linear-gradient(180deg, #fde047, var(--yellow)); box-shadow: var(--shadow), inset 0 2px 0 rgba(255,255,255,0.6); }
-.btn-album { background: linear-gradient(180deg, #6ee7b7, var(--green)); box-shadow: var(--shadow), inset 0 2px 0 rgba(255,255,255,0.6); font-size: clamp(1.05rem, 4.4vw, 1.2rem); padding: 14px 26px; }
+.btn-album { background: linear-gradient(180deg, #6ee7b7, var(--green)); box-shadow: var(--shadow), inset 0 2px 0 rgba(255,255,255,0.6); }
 .btn-small { background: var(--chip-bg); font-size: 1rem; padding: 10px 18px; box-shadow: 0 4px 0 rgba(0,0,0,0.2); }
 
 /* ============================================================
@@ -571,8 +637,6 @@ body {
 .btn-records {
   background: linear-gradient(180deg, #fda4af, #fb7185);
   box-shadow: var(--shadow), inset 0 2px 0 rgba(255, 255, 255, 0.6);
-  font-size: clamp(1.05rem, 4.4vw, 1.2rem);
-  padding: 14px 26px;
   color: #7f1d1d;
 }
 

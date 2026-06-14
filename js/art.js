@@ -191,69 +191,104 @@
   //  DINOSSAUROS — cartoon fofo (contorno preto, cores vivas)
   // =====================================================
   const D = {};
-  function eyeBig(x, y, dark) {
-    return `<ellipse cx="${x}" cy="${y}" rx="13" ry="15" fill="#fff" stroke="${dark}" stroke-width="2.4"/>` +
-      `<circle cx="${x + 1}" cy="${y + 2}" r="8.5" fill="#23202e"/>` +
-      `<circle cx="${x + 4.5}" cy="${y - 2.5}" r="3.6" fill="#fff"/>` +
-      `<circle cx="${x - 3}" cy="${y + 5}" r="1.8" fill="#fff"/>`;
+  function sh() { return `<ellipse cx="50" cy="95" rx="28" ry="3.5" fill="#000" opacity=".10"/>`; }
+  function eyeBig(x, y, dark, r) {
+    r = r || 11;
+    return `<ellipse cx="${x}" cy="${y}" rx="${r}" ry="${r * 1.12}" fill="#fff" stroke="${dark}" stroke-width="2.2"/>` +
+      `<circle cx="${x + 1}" cy="${y + 1.5}" r="${r * 0.62}" fill="#23202e"/>` +
+      `<circle cx="${x + r * 0.35}" cy="${y - r * 0.25}" r="${r * 0.28}" fill="#fff"/>` +
+      `<circle cx="${x - r * 0.28}" cy="${y + r * 0.42}" r="${r * 0.15}" fill="#fff"/>`;
   }
-  function dinoHead(kind, col, dark) {
+  function gmouth(x, y, w) {
+    w = w || 7;
+    return `<path d="M${x - w} ${y} C${x - w * 0.4} ${y + w} ${x + w * 0.4} ${y + w} ${x + w} ${y} C${x + w * 0.4} ${y + w * 0.45} ${x - w * 0.4} ${y + w * 0.45} ${x - w} ${y} Z" fill="#7a2433"/>` +
+      `<path d="M${x - w * 0.4} ${y + w * 0.45} C${x - w * 0.15} ${y + w * 0.85} ${x + w * 0.15} ${y + w * 0.85} ${x + w * 0.4} ${y + w * 0.45} Z" fill="#ef8a9a"/>` +
+      `<path d="M${x - w * 0.7} ${y} l${w * 0.22} ${w * 0.4} l${w * 0.22} ${-w * 0.4}" fill="#fff"/><path d="M${x + w * 0.26} ${y} l${w * 0.22} ${w * 0.4} l${w * 0.22} ${-w * 0.4}" fill="#fff"/>`;
+  }
+  function feat(kind, col, dark, cx) {
+    cx = cx == null ? 56 : cx;
+    const T = `fill="${col}"`;
     switch (kind) {
-      case 'spots': return `<g fill="${dark}" opacity=".5" stroke="none"><circle cx="40" cy="16" r="2.4"/><circle cx="50" cy="12" r="2.8"/><circle cx="60" cy="15" r="2.4"/><circle cx="33" cy="26" r="2"/><circle cx="67" cy="26" r="2"/></g>`;
-      case 'spikes': return `<g fill="${col}"><path d="M37 17 l3.5 -10 l3.5 10 z"/><path d="M47 14 l4 -12 l4 12 z"/><path d="M59 17 l3.5 -10 l3.5 10 z"/></g>`;
-      case 'horn': return `<path d="M47 12 l3 -10 l3 10 z" fill="#fff7e6"/>`;
-      case 'hornsTwo': return `<path d="M40 14 l-2 -9 l6 6 z" fill="#fff7e6"/><path d="M60 14 l2 -9 l-6 6 z" fill="#fff7e6"/>`;
-      case 'dome': return `<path d="M33 18 C32 4 68 4 67 18 Z" fill="${col}"/><circle cx="50" cy="9" r="2" fill="${dark}" opacity=".4" stroke="none"/>`;
-      case 'fin': return `<path d="M38 17 C42 3 58 3 62 17 Z" fill="${col}"/><path d="M44 14 V5 M50 13 V3 M56 14 V5" stroke="${dark}" stroke-width="1.6"/>`;
-      default: return `<circle cx="40" cy="15" r="3.5" fill="${col}"/><circle cx="50" cy="11" r="4" fill="${col}"/><circle cx="60" cy="15" r="3.5" fill="${col}"/>`;
+      case 'bumps': return `<circle cx="${cx - 10}" cy="13" r="3.5" ${T}/><circle cx="${cx}" cy="9" r="4" ${T}/><circle cx="${cx + 10}" cy="13" r="3.5" ${T}/>`;
+      case 'spikes': return `<path d="M${cx - 12} 14 l3.5 -10 l3.5 10 z M${cx - 1} 11 l4 -12 l4 12 z M${cx + 9} 14 l3.5 -10 l3.5 10 z" ${T}/>`;
+      case 'horn': return `<path d="M${cx - 2} 10 l3 -10 l3 10 z" fill="#fff7e6"/>`;
+      case 'hornsTwo': return `<path d="M${cx - 10} 12 l-2 -9 l6 6 z M${cx + 10} 12 l2 -9 l-6 6 z" fill="#fff7e6"/>`;
+      case 'dome': return `<path d="M${cx - 16} 16 C${cx - 17} 3 ${cx + 17} 3 ${cx + 16} 16 Z" ${T}/><circle cx="${cx}" cy="8" r="2" fill="${dark}" opacity=".35" stroke="none"/>`;
+      case 'fin': return `<path d="M${cx - 12} 15 C${cx - 8} 2 ${cx + 8} 2 ${cx + 12} 15 Z" ${T}/><path d="M${cx - 6} 12 V3 M${cx} 11 V1 M${cx + 6} 12 V3" stroke="${dark}" stroke-width="1.6"/>`;
+      case 'spots': return `<g fill="${dark}" opacity=".45" stroke="none"><circle cx="${cx - 10}" cy="14" r="2.4"/><circle cx="${cx}" cy="10" r="2.8"/><circle cx="${cx + 10}" cy="14" r="2.4"/></g>`;
+      default: return '';
     }
   }
-  // bebê dino chibi: corpo gordinho, OLHOS ENORMES e brilhantes, sorriso com língua
-  function baby(col, dark, belly, opts) {
-    opts = opts || {};
-    const ey = 43;
-    const tail = opts.longtail
-      ? `<path d="M76 66 C95 64 99 44 90 32 C95 48 88 58 74 60 Z" fill="${col}"/>`
-      : `<path d="M78 70 C92 66 94 52 88 44 C90 54 84 60 76 60 Z" fill="${col}"/>`;
-    return svg(
-      `<ellipse cx="50" cy="95" rx="26" ry="3.5" fill="#000" opacity=".10"/>` +
-      `<g stroke="${dark}" stroke-width="2.6" ${S}>` +
-        tail +
-        `<ellipse cx="38" cy="86" rx="11" ry="7" fill="${col}"/>` +
-        `<ellipse cx="62" cy="86" rx="11" ry="7" fill="${col}"/>` +
-        `<ellipse cx="20" cy="62" rx="7" ry="9" fill="${col}"/>` +
-        `<ellipse cx="80" cy="62" rx="7" ry="9" fill="${col}"/>` +
-        `<path d="M50 13 C77 13 85 36 83 55 C81 77 68 88 50 88 C32 88 19 77 17 55 C15 36 23 13 50 13 Z" fill="${col}"/>` +
-        `<path d="M50 13 C70 13 80 28 81 44 C70 36 30 36 19 44 C20 28 30 13 50 13 Z" fill="${dark}" opacity=".12" stroke="none"/>` +
-        `<path d="M50 50 C63 50 68 64 64 74 C60 82 54 84 50 84 C46 84 40 82 36 74 C32 64 37 50 50 50 Z" fill="${belly}"/>` +
-        dinoHead(opts.head, col, dark) +
+  // bebê dino EM PÉ (com focinho)
+  function bipedBaby(col, dark, belly, head) {
+    return svg(sh() + `<g stroke="${dark}" stroke-width="2.6" ${S}>` +
+      `<path d="M26 60 C8 58 2 72 8 84 C10 74 18 70 30 70 Z" fill="${col}"/>` +
+      `<path d="M38 70 C35 84 36 92 42 93 C48 94 52 92 53 86 C54 78 52 70 48 68 Z" fill="${col}"/>` +
+      `<path d="M52 72 C49 86 50 93 56 94 C62 95 66 93 67 87 C68 79 66 71 62 69 Z" fill="${col}"/>` +
+      `<path d="M38 90 l-3 3 m9 -3 l0 4 m6 -4 l3 3 M52 91 l-3 3 m9 -3 l0 4 m6 -4 l3 3" stroke-width="2.2"/>` +
+      `<path d="M28 56 C26 38 40 30 52 32 C70 31 78 44 75 60 C73 76 60 82 48 80 C34 78 30 72 28 56 Z" fill="${col}"/>` +
+      `<ellipse cx="49" cy="62" rx="14" ry="15" fill="${belly}"/>` +
+      `<ellipse cx="28" cy="54" rx="6" ry="8" fill="${col}"/>` +
+      `<circle cx="56" cy="30" r="22" fill="${col}"/>` +
+      `<path d="M70 26 C86 24 91 35 85 42 C79 47 70 45 67 38 C66 33 67 28 70 26 Z" fill="${col}"/>` +
+      (head || '') +
       `</g>` +
-      `<ellipse cx="26" cy="56" rx="5" ry="3.5" fill="#ff9bb0" opacity=".5"/>` +
-      `<ellipse cx="74" cy="56" rx="5" ry="3.5" fill="#ff9bb0" opacity=".5"/>` +
-      eyeBig(36, ey, dark) + eyeBig(64, ey, dark) +
-      `<ellipse cx="45" cy="58" rx="1.6" ry="2" fill="${dark}"/><ellipse cx="55" cy="58" rx="1.6" ry="2" fill="${dark}"/>` +
-      `<path d="M40 62 C44 70 56 70 60 62 C56 65 44 65 40 62 Z" fill="#7a2433"/>` +
-      `<path d="M45 65 C47 69 53 69 55 65 C52 67 48 67 45 65 Z" fill="#ef8a9a"/>` +
-      `<path d="M41 62 l2 3 l2 -3" fill="#fff"/><path d="M55 62 l2 3 l2 -3" fill="#fff"/>`
-    );
+      eyeBig(49, 28, dark, 11) + eyeBig(64, 29, dark, 9.5) +
+      gmouth(80, 39, 6) +
+      `<ellipse cx="83" cy="31" rx="1.5" ry="1.9" fill="${dark}"/>` +
+      `<ellipse cx="40" cy="41" rx="4" ry="3" fill="#ff9bb0" opacity=".5"/>`);
   }
-  const DSPECS = [
-    ['dteal', '#7fb8c4', '#3f7d8c', '#eaf6ef', 'bumps'],
-    ['dgreen', '#86c66a', '#4a8a3a', '#eef7df', 'spots'],
-    ['dblue', '#5fb0d8', '#2f6f96', '#e7f3fb', 'spikes'],
-    ['dyellow', '#f3c24a', '#bf8f1e', '#fdf3cf', 'horn'],
-    ['dorange', '#f0934a', '#bf6322', '#fde6cf', 'dome'],
-    ['dpurple', '#a98ad6', '#6f53a8', '#ece4f7', 'hornsTwo'],
-    ['dred', '#e0726a', '#b2453d', '#fbe0dc', 'fin'],
-    ['dpink', '#ef9bc0', '#c45f8c', '#ffe6f1', 'bumps'],
-    ['dlime', '#a6cf5a', '#6f9a2a', '#f1f7d8', 'spikes'],
-    ['dsky', '#8fc8e8', '#4f8fb8', '#eaf6fb', 'spots'],
-    ['dmint', '#7fceb0', '#3f9a78', '#e3f7ee', 'spikes'],
-    ['dcoral', '#f0a05a', '#bf6f2a', '#fde6cf', 'hornsTwo'],
-    ['dlav', '#b6a6e0', '#7a66b8', '#efeafa', 'dome'],
-    ['dolive', '#b0b85a', '#7a843a', '#f1f3d8', 'horn'],
-  ];
-  DSPECS.forEach(([id, c, d, b, h], i) => { D[id] = baby(c, d, b, { head: h, longtail: i % 3 === 0 }); });
+  // bebê dino PESCOÇO LONGO
+  function longneck(col, dark, belly) {
+    return svg(sh() + `<g stroke="${dark}" stroke-width="2.6" ${S}>` +
+      `<path d="M24 70 C6 66 0 80 8 90 C10 80 18 76 30 78 Z" fill="${col}"/>` +
+      `<path d="M30 74 C28 86 30 92 36 93 C42 94 46 92 46 86 C46 80 44 74 40 72 Z" fill="${col}"/>` +
+      `<path d="M52 74 C50 86 52 92 58 93 C64 94 68 92 68 86 C68 80 66 74 62 72 Z" fill="${col}"/>` +
+      `<ellipse cx="44" cy="62" rx="26" ry="18" fill="${col}"/>` +
+      `<ellipse cx="42" cy="66" rx="17" ry="11" fill="${belly}"/>` +
+      `<path d="M56 56 C58 32 66 16 78 12 C88 12 86 26 79 32 C71 38 68 52 68 62 Z" fill="${col}"/>` +
+      `<circle cx="80" cy="16" r="12" fill="${col}"/>` +
+      `<path d="M88 12 C97 12 98 23 89 24 C85 24 83 18 86 14 Z" fill="${col}"/>` +
+      `</g>` +
+      eyeBig(80, 15, dark, 7) + gmouth(90, 19, 4) + `<ellipse cx="91" cy="15" rx="1.3" ry="1.7" fill="${dark}"/>`);
+  }
+  // bebê dino QUATRO PATAS
+  function quadBaby(col, dark, belly, back, hornHead) {
+    return svg(sh() + `<g stroke="${dark}" stroke-width="2.6" ${S}>` +
+      `<path d="M18 58 C4 54 -2 64 4 74 C8 66 14 64 22 66 Z" fill="${col}"/>` +
+      `<path d="M26 64 C24 78 25 86 30 87 C35 88 39 86 39 80 C39 73 37 66 33 64 Z" fill="${col}"/>` +
+      `<path d="M58 64 C56 78 57 86 62 87 C67 88 71 86 71 80 C71 73 69 66 65 64 Z" fill="${col}"/>` +
+      `<ellipse cx="44" cy="58" rx="30" ry="20" fill="${col}"/>` +
+      `<path d="M32 66 C30 80 31 88 36 89 C41 90 45 88 45 82 C45 75 43 68 39 66 Z" fill="${col}"/>` +
+      `<path d="M52 66 C50 80 51 88 56 89 C61 90 65 88 65 82 C65 75 63 68 59 66 Z" fill="${col}"/>` +
+      `<ellipse cx="44" cy="64" rx="22" ry="9" fill="${belly}"/>` +
+      (back || '') +
+      `<circle cx="80" cy="50" r="15" fill="${col}"/>` +
+      `<path d="M92 46 C100 46 100 58 91 58 C87 58 85 52 88 47 Z" fill="${col}"/>` +
+      (hornHead || '') +
+      `</g>` +
+      eyeBig(78, 48, dark, 8) + gmouth(92, 53, 4.5) + `<ellipse cx="93" cy="49" rx="1.5" ry="1.9" fill="${dark}"/>` +
+      `<ellipse cx="68" cy="55" rx="4" ry="2.6" fill="#ff9bb0" opacity=".5"/>`);
+  }
+  [['d1', '#86c66a', '#4a8a3a', '#eef7df', 'spikes'],
+   ['d2', '#7fb8c4', '#3f7d8c', '#eaf6ef', 'bumps'],
+   ['d3', '#f0934a', '#bf6322', '#fde6cf', 'dome'],
+   ['d4', '#f3c24a', '#bf8f1e', '#fdf3cf', 'horn'],
+   ['d5', '#e0726a', '#b2453d', '#fbe0dc', 'fin'],
+   ['d6', '#a98ad6', '#6f53a8', '#ece4f7', 'hornsTwo'],
+   ['d7', '#ef9bc0', '#c45f8c', '#ffe6f1', 'spots'],
+   ['d8', '#a6cf5a', '#6f9a2a', '#f1f7d8', 'bumps']
+  ].forEach(([id, c, d, b, h]) => { D[id] = bipedBaby(c, d, b, feat(h, c, d)); });
+  [['d9', '#5fb0d8', '#2f6f96', '#e7f3fb'],
+   ['d10', '#7fceb0', '#3f9a78', '#e3f7ee'],
+   ['d11', '#b6a6e0', '#7a66b8', '#efeafa']
+  ].forEach(([id, c, d, b]) => { D[id] = longneck(c, d, b); });
+  D.d12 = quadBaby('#5fb0d8', '#2f6f96', '#e7f3fb',
+    `<g fill="#f3c24a" stroke="#2f6f96" stroke-width="2"><path d="M28 40 l5 -12 l5 12 z"/><path d="M42 36 l6 -14 l6 14 z"/><path d="M57 40 l5 -12 l5 12 z"/></g>`);
+  D.d13 = quadBaby('#f0934a', '#bf6322', '#fde6cf', '',
+    `<path d="M74 40 l-3 -10 l8 8 z M86 40 l3 -10 l-8 8 z" fill="#fff7e6"/>`);
+  D.d14 = quadBaby('#b0b85a', '#7a843a', '#f1f3d8',
+    `<g fill="#cdd47a" stroke="#7a843a" stroke-width="2"><circle cx="32" cy="46" r="4"/><circle cx="44" cy="42" r="4.5"/><circle cx="56" cy="46" r="4"/></g><circle cx="6" cy="56" r="7" fill="#b0b85a" stroke="#7a843a" stroke-width="2.6"/>`);
 
   // =====================================================
   //  MUNDO DOS COGUMELOS — toadstools fofos (estilo storybook)

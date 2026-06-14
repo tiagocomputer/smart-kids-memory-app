@@ -756,6 +756,20 @@ let conn = null;
 let netGuestProfile = null;
 const remoteQueue = [];
 
+// STUN + TURN (relay) para conectar mesmo em redes de celular (CGNAT),
+// onde a conexão direta entre os aparelhos costuma falhar só com STUN.
+const PEER_CONFIG = {
+  config: {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' },
+    ],
+  },
+};
+
 function netDestroy() {
   try { if (conn) conn.close(); } catch { /* já fechada */ }
   try { if (peer) peer.destroy(); } catch { /* já destruído */ }
@@ -801,11 +815,12 @@ function hostInvite() {
   $('#qr-box').innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2 });
   $('#invite-status').textContent = t('connecting');
 
-  peer = new Peer(roomId);
+  peer = new Peer(roomId, PEER_CONFIG);
   peer.on('open', () => {
     clearTimeout(inviteTimeout);
     if (currentScreen() === 'invite') $('#invite-status').textContent = t('waitingPlayer');
   });
+  peer.on('disconnected', () => { try { peer.reconnect(); } catch { /* ignora */ } });
   peer.on('connection', (c) => {
     if (conn) { try { c.close(); } catch { /* lotado */ } return; }
     conn = c;
@@ -816,7 +831,7 @@ function hostInvite() {
   peer.on('error', inviteFailed);
   inviteTimeout = setTimeout(() => {
     if (currentScreen() === 'invite' && (!peer || !peer.open)) inviteFailed();
-  }, 12000);
+  }, 20000);
 }
 
 async function shareInviteLink() {
@@ -836,7 +851,8 @@ function joinGame() {
   btn.disabled = true;
   $('#join-status').textContent = t('connecting');
   netDestroy();
-  peer = new Peer();
+  peer = new Peer(PEER_CONFIG);
+  peer.on('disconnected', () => { try { peer.reconnect(); } catch { /* ignora */ } });
   peer.on('open', () => {
     conn = peer.connect(joinHostId, { reliable: true });
     conn.on('open', () => {

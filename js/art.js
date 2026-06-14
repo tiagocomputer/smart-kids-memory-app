@@ -19,16 +19,17 @@
            `<circle cx="${x}" cy="${(y + r * 0.18).toFixed(1)}" r="${(r * 0.6).toFixed(1)}" fill="#23170c"/>` +
            `<circle cx="${(x + r * 0.28).toFixed(1)}" cy="${(y - r * 0.32).toFixed(1)}" r="${(r * 0.22).toFixed(1)}" fill="#fff"/>`;
   }
+  const O = '#27201c'; // contorno dos dinossauros
   // olho grande e fofo (cartoon) para os dinossauros
   function bigEye(x, y, r) {
-    r = r || 7;
-    return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${OUT}" stroke-width="1.6"/>` +
-           `<circle cx="${x}" cy="${y + 0.6}" r="${(r * 0.55).toFixed(1)}" fill="#1b1208"/>` +
-           `<circle cx="${(x + r * 0.32).toFixed(1)}" cy="${(y - r * 0.34).toFixed(1)}" r="${(r * 0.26).toFixed(1)}" fill="#fff"/>`;
+    r = r || 8;
+    return `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${O}" stroke-width="2"/>` +
+           `<circle cx="${x + 1}" cy="${y + 1}" r="${(r * 0.5).toFixed(1)}" fill="${O}"/>` +
+           `<circle cx="${(x + 1 + r * 0.2).toFixed(1)}" cy="${(y + 1 - r * 0.25).toFixed(1)}" r="${(r * 0.18).toFixed(1)}" fill="#fff"/>`;
   }
   function smile(x, y, w) {
-    w = w || 7;
-    return `<path d="M${x - w} ${y} Q${x} ${y + w * 0.9} ${x + w} ${y}" fill="none" stroke="${OUT}" stroke-width="2" ${S}/>`;
+    w = w || 8;
+    return `<path d="M${x - w} ${y} Q${x} ${y + w} ${x + w} ${y}" fill="none" stroke="${O}" stroke-width="2.4" ${S}/>`;
   }
 
   // =====================================================
@@ -190,126 +191,126 @@
   //  DINOSSAUROS — cartoon fofo (contorno preto, cores vivas)
   // =====================================================
   const D = {};
-  // helper: corpo padrão de dino bípede (cabeça à direita) — chunky/fofo
-  function biped(col, belly, head) {
-    return `<ellipse cx="50" cy="93" rx="22" ry="4.5" fill="#000" opacity=".12"/>` +
-      `<g stroke="${OUT}" stroke-width="3.4" ${S}>` +
-      `<path d="M42 56 Q10 52 6 76 Q24 66 46 68 Z" fill="${col}"/>` +
-      `<path d="M36 60 Q32 84 40 90 L52 90 Q56 74 52 60 Z" fill="${col}"/>` +
-      `<path d="M33 46 Q24 82 54 84 Q80 84 78 50 Q76 34 52 34 Q40 36 33 46 Z" fill="${col}"/>` +
-      `<path d="M58 62 Q54 86 62 92 L74 92 Q78 76 74 62 Z" fill="${col}"/>` +
-      `<path d="M37 90 l-4 4 m9 -4 l0 4 m7 -4 l4 4 M59 92 l-4 4 m9 -4 l0 4 m7 -4 l4 4" stroke-width="2.4"/>` +
-      `<ellipse cx="52" cy="66" rx="16" ry="13" fill="${belly}"/>` +
-      head +
-      `<path d="M54 56 q7 1 9 6" fill="none" stroke-width="3"/>` +
+  const shadow = `<ellipse cx="52" cy="93" rx="30" ry="4.5" fill="#000" opacity=".13"/>`;
+  // BÍPEDE base (cabeça grande à direita, 2 pernas grossas, cauda)
+  function biped(col, dark, belly, snout) {
+    return shadow +
+      `<g stroke="${O}" stroke-width="3" ${S}>` +
+        `<path d="M44 56 C22 56 8 60 5 76 C18 72 32 68 48 68 Z" fill="${col}"/>` +
+        `<path d="M40 60 L36 87 L52 87 L55 62 Z" fill="${dark}"/>` +
+        `<ellipse cx="50" cy="60" rx="23" ry="21" fill="${col}"/>` +
+        `<path d="M58 66 L54 89 L70 89 L71 66 Z" fill="${col}"/>` +
+        `<path d="M37 87 l-3 4 m9 -4 l0 4 m7 -4 l3 4 M55 89 l-3 4 m9 -4 l0 4 m7 -4 l3 4" stroke-width="2.2"/>` +
+        `<circle cx="68" cy="34" r="20" fill="${col}"/>` +
+        (snout || '') +
+        `<ellipse cx="52" cy="66" rx="13" ry="13" fill="${belly}"/>` +
+        `<path d="M60 52 q6 3 6 9" fill="none" stroke-width="2.6"/>` +
       `</g>`;
   }
-  D.trex = svg(biped('#c451c4', '#ecc0ec',
-    `<path d="M64 48 Q64 26 84 24 L97 30 Q99 41 88 41 L88 45 L80 46 Q70 46 64 48 Z" fill="#c451c4"/>` +
-    `<path d="M84 41 L84 45 M88 40 L88 44 M92 40 L92 43" stroke="#fff" stroke-width="1.6"/>`
-  ) + bigEye(80, 33) + smile(86, 44, 5));
-  D.estegossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M22 60 Q42 42 66 46 Q86 48 94 60 Q86 70 66 70 Q42 72 22 60 Z" fill="#33b6a6"/>
-       <path d="M10 68 Q3 60 6 52 Q14 58 20 64 Z" fill="#33b6a6"/>
-       <path d="M32 66 L30 86 L41 86 L43 66 Z" fill="#33b6a6"/><path d="M62 66 L60 86 L71 86 L73 66 Z" fill="#33b6a6"/>
-       <g fill="#f5a623"><path d="M30 46 L36 28 L42 46 Z"/><path d="M44 42 L50 22 L56 42 Z"/><path d="M58 44 L64 26 L70 44 Z"/></g>
-       <ellipse cx="58" cy="62" rx="20" ry="9" fill="#bdeee6"/>
-       <path d="M84 50 Q96 46 98 54 Q94 60 84 58 Z" fill="#33b6a6"/>
-     </g>` + bigEye(90, 54, 5.5) + smile(91, 60, 4)
-  );
-  D.velociraptor = svg(biped('#9b6ad0', '#dcc6f0',
-    `<path d="M62 48 Q62 30 80 30 L96 35 Q98 44 88 44 L82 45 Q70 46 62 48 Z" fill="#9b6ad0"/>` +
-    `<path d="M84 41 L84 44 M88 40 L88 43 M92 39 L92 42" stroke="#fff" stroke-width="1.4"/>`
-  ) + bigEye(78, 36) + smile(86, 44, 5));
-  D.braquiossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M26 64 Q8 62 4 78 Q18 70 32 70 Z" fill="#5fc36a"/>
-       <ellipse cx="44" cy="62" rx="24" ry="17" fill="#5fc36a"/>
-       <ellipse cx="44" cy="68" rx="19" ry="9" fill="#c4eec8"/>
-       <path d="M32 76 L30 90 L41 90 L42 76 Z" fill="#4ea659"/><path d="M50 76 L50 90 L61 90 L60 76 Z" fill="#4ea659"/>
-       <path d="M56 56 Q58 22 74 12 Q83 14 78 27 Q72 40 70 60 Z" fill="#5fc36a"/>
-       <path d="M74 12 Q85 8 87 15 Q85 22 76 22 Z" fill="#5fc36a"/>
-     </g>` + bigEye(80, 16, 5.5) + smile(83, 20, 4)
-  );
+  // QUADRÚPEDE base
+  function quad(col, dark, belly, headR, hx, hy) {
+    headR = headR || 14; hx = hx || 82; hy = hy || 52;
+    return shadow +
+      `<g stroke="${O}" stroke-width="3" ${S}>` +
+        `<path d="M30 60 L28 86 L41 86 L41 60 Z" fill="${dark}"/>` +
+        `<path d="M62 60 L61 86 L74 86 L73 60 Z" fill="${dark}"/>` +
+        `<path d="M24 56 C8 54 2 58 2 70 C12 68 20 66 28 66 Z" fill="${col}"/>` +
+        `<ellipse cx="48" cy="56" rx="31" ry="21" fill="${col}"/>` +
+        `<path d="M34 62 L32 88 L45 88 L46 62 Z" fill="${col}"/>` +
+        `<path d="M58 62 L57 88 L70 88 L71 62 Z" fill="${col}"/>` +
+        `<path d="M32 88 l-3 4 m9 -4 l0 4 m7 -4 l3 4 M56 88 l-3 4 m9 -4 l0 4 m7 -4 l3 4" stroke-width="2.2"/>` +
+        `<circle cx="${hx}" cy="${hy}" r="${headR}" fill="${col}"/>` +
+        `<path d="M${hx + headR - 2} ${hy - 4} Q${hx + headR + 10} ${hy - 3} ${hx + headR + 10} ${hy + 4} Q${hx + headR + 10} ${hy + 10} ${hx + headR - 2} ${hy + 8} Z" fill="${col}"/>` +
+        `<ellipse cx="48" cy="64" rx="22" ry="10" fill="${belly}"/>` +
+      `</g>`;
+  }
+  D.trex = svg(biped('#cf4ec9', '#b23bad', '#f2c4ef',
+    `<path d="M82 28 Q97 30 97 41 Q97 52 82 49 Z" fill="#cf4ec9"/>` +
+    `<path d="M84 41 L97 41" stroke="${O}" stroke-width="2"/>` +
+    `<path d="M86 41 l1.5 4 l1.5 -4 M91 41 l1.5 4 l1.5 -4" fill="#fff"/>`
+  ) + bigEye(71, 30, 8) + `<circle cx="93" cy="35" r="1.6" fill="${O}"/>`);
+  D.estegossauro = svg(quad('#36b6b0', '#2a928d', '#bfeeeb', 12, 84, 54) +
+    `<g stroke="${O}" stroke-width="2.6" stroke-linejoin="round" fill="#f5a623"><path d="M30 40 l7 -16 l8 16 z"/><path d="M45 37 l8 -18 l8 18 z"/><path d="M61 40 l7 -16 l7 16 z"/></g>` +
+    `<path d="M6 60 l-5 -4 M5 64 l-6 1" stroke="${O}" stroke-width="2.6"/>` +
+    bigEye(88, 52, 5));
+  D.velociraptor = svg(biped('#9b6ad0', '#7e4fb0', '#dcc6f0',
+    `<path d="M82 30 Q99 31 99 40 Q99 49 82 47 Z" fill="#9b6ad0"/>` +
+    `<path d="M84 40 L99 40" stroke="${O}" stroke-width="2"/>`
+  ) + bigEye(71, 30, 7) + `<circle cx="94" cy="35" r="1.5" fill="${O}"/>`);
+  D.braquiossauro = svg(shadow +
+    `<g stroke="${O}" stroke-width="3" ${S}>` +
+      `<path d="M26 64 C10 62 4 66 3 78 C14 74 22 72 30 72 Z" fill="#67c06a"/>` +
+      `<path d="M30 72 L28 90 L41 90 L42 72 Z" fill="#4ea659"/><path d="M48 72 L48 90 L61 90 L60 72 Z" fill="#4ea659"/>` +
+      `<ellipse cx="40" cy="64" rx="24" ry="18" fill="#67c06a"/>` +
+      `<path d="M52 56 C56 30 64 14 76 10 C86 10 84 22 78 28 C70 36 66 52 64 62 Z" fill="#67c06a"/>` +
+      `<circle cx="80" cy="14" r="11" fill="#67c06a"/>` +
+      `<path d="M89 11 Q97 12 97 18 Q97 23 89 21 Z" fill="#67c06a"/>` +
+      `<ellipse cx="40" cy="68" rx="18" ry="11" fill="#c4eec8"/>` +
+    `</g>` + bigEye(82, 12, 6) + smile(90, 17, 4));
   D.triceratops = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M30 60 Q12 58 8 74 Q20 68 34 66 Z" fill="#f0863c"/>
-       <path d="M34 66 L32 86 L43 86 L44 66 Z" fill="#d96f28"/><path d="M56 66 L54 86 L65 86 L66 66 Z" fill="#d96f28"/>
-       <path d="M30 50 Q24 78 50 80 Q72 80 70 54 Q68 42 50 42 Q38 42 30 50 Z" fill="#f59b54"/>
-       <path d="M62 56 Q58 28 88 30 Q94 48 84 60 Q76 64 62 56 Z" fill="#f6b07a"/>
-       <ellipse cx="48" cy="64" rx="14" ry="10" fill="#fcdcc0"/>
-       <path d="M70 44 L68 28 L78 40 Z" fill="#fff" stroke="${OUT}"/><path d="M82 48 L84 32 L90 46 Z" fill="#fff" stroke="${OUT}"/>
-       <path d="M40 44 L38 34 L46 42 Z" fill="#fff" stroke="${OUT}"/>
-     </g>` + bigEye(54, 52) + smile(40, 60, 4)
-  );
-  D.pterodactilo = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M48 42 Q18 24 6 46 Q26 44 44 56 Z" fill="#f5b942"/>
-       <path d="M52 42 Q82 24 94 46 Q74 44 56 56 Z" fill="#f5b942"/>
-       <ellipse cx="50" cy="52" rx="11" ry="15" fill="#f7c965"/>
-       <ellipse cx="50" cy="56" rx="6" ry="9" fill="#fde6b0"/>
-       <path d="M50 66 Q50 82 56 88 Q52 80 54 66 Z" fill="#f5b942"/>
-       <path d="M44 42 Q40 28 52 26 Q64 26 60 38 L76 32 L58 46 Z" fill="#f5b942"/>
-     </g>` + bigEye(45, 48, 5) + bigEye(58, 47, 4) + smile(52, 58, 4)
-  );
-  D.espinossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M30 60 Q34 40 56 40 Q82 40 86 60 Q80 70 56 70 Q34 70 30 60 Z" fill="#4a90d9"/>
-       <path d="M30 60 Q12 58 6 74 Q20 68 34 66 Z" fill="#4a90d9"/>
-       <path d="M34 42 Q40 22 46 42 Z M48 40 Q56 18 62 40 Z M64 42 Q72 22 76 44 Z" fill="#9b6ad0"/>
-       <path d="M40 66 L38 86 L49 86 L50 66 Z" fill="#3a78b8"/><path d="M62 66 L61 86 L72 86 L72 66 Z" fill="#3a78b8"/>
-       <ellipse cx="56" cy="64" rx="18" ry="8" fill="#bcd9f4"/>
-       <path d="M84 54 Q98 50 99 58 Q96 64 86 62 L82 58 Z" fill="#4a90d9"/>
-       <path d="M90 56 L90 60 M94 56 L94 60" stroke="#fff" stroke-width="1.4"/>
-     </g>` + bigEye(86, 54, 5) + smile(90, 60, 4)
-  );
-  D.anquilossauro = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <circle cx="13" cy="62" r="10" fill="#8aa84a"/>
-       <path d="M24 64 Q40 44 64 48 Q86 50 92 64 Q86 72 64 72 Q40 74 24 64 Z" fill="#8aa84a"/>
-       <path d="M40 70 L38 86 L49 86 L50 70 Z" fill="#74903a"/><path d="M64 70 L63 86 L74 86 L74 70 Z" fill="#74903a"/>
-       <path d="M86 58 Q98 54 99 62 Q92 68 84 64 Z" fill="#9bb95a"/>
-       <g fill="#c6dd7a" stroke="${OUT}" stroke-width="1.6"><path d="M36 52 l5 -6 l5 6 z"/><path d="M50 49 l5 -6 l5 6 z"/><path d="M64 50 l5 -6 l5 6 z"/></g>
-     </g>` + bigEye(90, 60, 5) + smile(90, 66, 4)
-  );
-  D.parassaurolofo = svg(biped('#7ac74f', '#cdeeb6',
-    `<path d="M64 50 Q66 32 80 30 L94 20 Q98 27 89 33 L80 44 Q72 48 64 50 Z" fill="#7ac74f"/>` +
-    `<path d="M80 30 Q92 22 94 20" fill="none" stroke="${OUT}"/>`
-  ) + bigEye(74, 46) + smile(82, 46, 5));
-  D.diplodoco = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M50 60 Q22 54 4 64 Q22 62 50 66 Z" fill="#5bbf9a"/>
-       <ellipse cx="56" cy="62" rx="21" ry="13" fill="#5bbf9a"/>
-       <ellipse cx="56" cy="66" rx="16" ry="7" fill="#c2eedd"/>
-       <path d="M46 72 L45 86 L54 86 L54 72 Z" fill="#4aa686"/><path d="M62 72 L62 86 L71 86 L70 72 Z" fill="#4aa686"/>
-       <path d="M70 58 Q84 42 96 46 Q90 52 82 54 L74 62 Z" fill="#5bbf9a"/>
-       <path d="M90 47 Q98 45 98 50 Q93 53 89 50 Z" fill="#5bbf9a"/>
-     </g>` + bigEye(90, 48, 5) + smile(92, 53, 4)
-  );
-  D.dimetrodon = svg(
-    `<g stroke="${OUT}" stroke-width="3.4" ${S}>
-       <path d="M24 64 Q40 36 56 36 Q80 36 90 60 Q80 68 56 66 Q36 68 24 64 Z" fill="#e87040"/>
-       <path d="M16 66 Q6 64 4 72 Q12 70 20 70 Z" fill="#e87040"/>
-       <path d="M26 50 Q46 20 80 48 Q66 40 56 40 Q42 40 26 50 Z" fill="#f5a06a"/>
-       <path d="M28 50 V36 M38 44 V26 M48 42 V22 M58 42 V24 M68 44 V28 M78 48 V34" stroke="${OUT}" stroke-width="2"/>
-       <path d="M34 64 L33 80 L42 80 L42 64 Z" fill="#c95a2e"/><path d="M64 64 L64 80 L73 80 L72 64 Z" fill="#c95a2e"/>
-       <path d="M84 58 Q96 54 97 62 Q90 68 82 62 Z" fill="#e87040"/>
-     </g>` + bigEye(87, 60, 5) + smile(90, 66, 4)
-  );
-  D.paquicefalo = svg(biped('#a06ad0', '#ddc6f0',
-    `<path d="M64 50 Q60 28 86 30 Q95 32 92 46 Q86 52 74 52 Q68 52 64 50 Z" fill="#a06ad0"/>` +
-    `<path d="M70 32 Q80 26 88 34 Q82 38 72 36 Z" fill="#c2a0e6"/>` +
-    `<g fill="#7a5a8a"><circle cx="68" cy="48" r="1.8"/><circle cx="75" cy="49" r="1.8"/><circle cx="82" cy="47" r="1.8"/></g>`
-  ) + bigEye(76, 44) + smile(84, 48, 4));
-  D.iguanodonte = svg(biped('#6abf6a', '#cdeeb6',
-    `<path d="M64 50 Q64 34 82 34 L95 39 Q97 47 87 47 Q73 49 64 50 Z" fill="#6abf6a"/>`
-  ) + bigEye(78, 40) + smile(86, 46, 5) +
-    `<path d="M60 54 L55 47" stroke="${OUT}" stroke-width="3.4" ${S}/>`);
-  D.carnotauro = svg(biped('#e0594a', '#f6c0b6',
-    `<path d="M64 50 Q64 32 84 32 L96 37 Q98 45 88 45 L82 46 Q72 48 64 50 Z" fill="#e0594a"/>` +
-    `<path d="M70 34 L68 24 L75 32 Z" fill="#fff" stroke="${OUT}"/><path d="M80 34 L83 25 L85 33 Z" fill="#fff" stroke="${OUT}"/>`
-  ) + bigEye(78, 40) + smile(86, 46, 5));
+    `<path d="M62 56 C52 20 102 22 99 54 C97 70 78 72 64 62 Z" fill="#f6a868" stroke="${O}" stroke-width="3" stroke-linejoin="round"/>` +
+    quad('#f0863c', '#cf6f28', '#fcdcc0', 14, 80, 56) +
+    `<g stroke="${O}" stroke-width="2.8" stroke-linejoin="round" fill="#fff">` +
+      `<path d="M74 44 L68 26 L84 39 Z"/><path d="M88 44 L94 26 L97 43 Z"/><path d="M90 52 L96 46 L98 53 Z"/>` +
+    `</g>` +
+    bigEye(78, 55, 5) + `<path d="M92 58 Q96 59 98 57" stroke="${O}" stroke-width="2" fill="none"/>`);
+  D.pterodactilo = svg(shadow +
+    `<g stroke="${O}" stroke-width="3" ${S}>` +
+      `<path d="M48 44 C24 26 8 30 4 48 C24 46 40 54 50 60 Z" fill="#f5c542"/>` +
+      `<path d="M52 44 C76 26 92 30 96 48 C76 46 60 54 50 60 Z" fill="#f5c542"/>` +
+      `<ellipse cx="50" cy="50" rx="12" ry="15" fill="#f5c542"/>` +
+      `<path d="M50 64 Q50 80 56 88 Q52 78 55 64 Z" fill="#f5c542"/>` +
+      `<path d="M42 42 Q38 28 50 26 Q62 26 58 40 L74 34 L56 46 Z" fill="#f5c542"/>` +
+    `</g>` + bigEye(45, 48, 6) + bigEye(58, 47, 5) + smile(52, 58, 4));
+  D.espinossauro = svg(shadow +
+    `<path d="M28 58 Q40 24 56 24 Q78 24 84 58 Z" fill="#9b6ad0" stroke="${O}" stroke-width="3" ${S}/>` +
+    `<path d="M34 40 Q40 22 46 40 M48 36 Q56 18 62 38 M64 40 Q72 24 76 44" fill="#7e4fb0" stroke="${O}" stroke-width="2.4" ${S}/>` +
+    biped('#4a90d9', '#3a78b8', '#bcd9f4',
+      `<path d="M82 30 Q100 31 100 40 Q100 50 82 47 Z" fill="#4a90d9"/>` +
+      `<path d="M84 40 L100 40" stroke="${O}" stroke-width="2"/>` +
+      `<path d="M86 40 l1.5 4 l1.5 -4 M91 40 l1.5 4 l1.5 -4" fill="#fff"/>`
+    ).replace(shadow, '') + bigEye(71, 30, 7) + `<circle cx="95" cy="35" r="1.5" fill="${O}"/>`);
+  D.anquilossauro = svg(quad('#8aa84a', '#6f8a3a', '#d4e89a', 12, 84, 56) +
+    `<circle cx="6" cy="60" r="9" fill="#8aa84a" stroke="${O}" stroke-width="3"/>` +
+    `<g fill="#c6dd7a" stroke="${O}" stroke-width="2"><path d="M32 46 l5 -7 l5 7 z"/><path d="M46 43 l5.5 -8 l5.5 8 z"/><path d="M61 45 l5 -7 l5 7 z"/></g>` +
+    bigEye(88, 54, 5));
+  D.parassaurolofo = svg(biped('#7ac74f', '#62a83c', '#cdeeb6',
+    `<path d="M80 30 Q96 31 96 40 Q96 49 80 47 Z" fill="#7ac74f"/>` +
+    `<path d="M58 22 Q74 18 84 14 Q90 18 82 24 Q72 30 64 36 Z" fill="#7ac74f"/>`
+  ) + bigEye(71, 30, 7) + smile(89, 38, 4));
+  D.diplodoco = svg(shadow +
+    `<g stroke="${O}" stroke-width="3" ${S}>` +
+      `<path d="M48 60 C24 54 6 56 2 66 C20 64 36 64 50 66 Z" fill="#5bbf9a"/>` +
+      `<ellipse cx="50" cy="60" rx="22" ry="15" fill="#5bbf9a"/>` +
+      `<path d="M40 72 L39 88 L50 88 L50 72 Z" fill="#4aa686"/><path d="M58 72 L58 88 L69 88 L68 72 Z" fill="#4aa686"/>` +
+      `<path d="M62 58 C76 36 92 34 99 44 C92 50 82 52 72 62 Z" fill="#5bbf9a"/>` +
+      `<circle cx="94" cy="40" r="9" fill="#5bbf9a"/>` +
+      `<ellipse cx="50" cy="64" rx="17" ry="9" fill="#c2eedd"/>` +
+    `</g>` + bigEye(95, 40, 5) + smile(96, 45, 3));
+  D.dimetrodon = svg(shadow +
+    `<path d="M22 60 Q40 18 78 54 Z" fill="#e0b878" stroke="${O}" stroke-width="3" ${S}/>` +
+    `<path d="M28 50 V34 M38 44 V24 M48 42 V20 M58 42 V22 M68 46 V28" stroke="${O}" stroke-width="2.4"/>` +
+    `<g stroke="${O}" stroke-width="3" ${S}>` +
+      `<path d="M22 64 L20 84 L31 84 L32 64 Z" fill="#c9924a"/><path d="M58 64 L58 84 L69 84 L68 64 Z" fill="#c9924a"/>` +
+      `<path d="M16 62 C4 60 0 64 0 72 C8 70 14 68 22 68 Z" fill="#e8a050"/>` +
+      `<ellipse cx="48" cy="62" rx="30" ry="14" fill="#e8a050"/>` +
+      `<path d="M30 68 L28 84 L39 84 L40 68 Z" fill="#e8a050"/><path d="M50 68 L50 84 L61 84 L60 68 Z" fill="#e8a050"/>` +
+      `<circle cx="80" cy="58" r="13" fill="#e8a050"/>` +
+      `<path d="M90 54 Q99 55 99 61 Q99 67 90 65 Z" fill="#e8a050"/>` +
+      `<ellipse cx="46" cy="66" rx="20" ry="8" fill="#f5d49a"/>` +
+    `</g>` + bigEye(82, 56, 5) + smile(94, 61, 3));
+  D.paquicefalo = svg(biped('#a06ad0', '#8453b0', '#ddc6f0',
+    `<path d="M50 22 Q68 14 86 24 Q70 30 60 34 Z" fill="#b88ae0"/>` +
+    `<path d="M80 32 Q96 33 96 42 Q96 50 80 48 Z" fill="#a06ad0"/>`
+  ) + bigEye(72, 34, 7) + smile(89, 41, 4));
+  D.iguanodonte = svg(biped('#69bf6a', '#52a052', '#cdeeb6',
+    `<path d="M82 30 Q98 31 98 40 Q98 49 82 47 Z" fill="#69bf6a"/>`
+  ) + bigEye(71, 30, 7) + smile(90, 39, 4) + `<path d="M58 56 L52 49" stroke="${O}" stroke-width="3" ${S}/>`);
+  D.carnotauro = svg(biped('#e0594a', '#c4493a', '#f6c0b6',
+    `<path d="M82 30 Q98 31 98 40 Q98 50 82 47 Z" fill="#e0594a"/>` +
+    `<path d="M60 22 L57 12 L66 20 Z" fill="#fff" stroke="${O}" stroke-width="2.4" stroke-linejoin="round"/>` +
+    `<path d="M74 20 L78 11 L82 20 Z" fill="#fff" stroke="${O}" stroke-width="2.4" stroke-linejoin="round"/>`
+  ) + bigEye(71, 30, 7) + `<circle cx="94" cy="35" r="1.5" fill="${O}"/>` + smile(89, 40, 4));
 
   // =====================================================
   //  MUNDO DOS COGUMELOS — toadstools fofos (estilo storybook)

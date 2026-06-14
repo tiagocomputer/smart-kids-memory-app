@@ -245,19 +245,9 @@ const DINO_SPECIES = [];
   DINO_SPECIES.push({ face: `🦕#${hue}`, emoji: '🦕', hue });
 });
 
-// Fases com IMAGENS (arquivos fornecidos): dinossauros e aventureiros.
-// Os dinos vêm 8 imagens; completo até 14 com variações de cor (hue) para
-// caber no nível Difícil (12 pares).
+// Fases com IMAGENS (arquivos fornecidos): dinossauros (8) e aventureiros (12).
 const IMG_THEMES = {
-  dinos: [
-    { id: 'd1', img: 'img/dinos/d1.webp' }, { id: 'd2', img: 'img/dinos/d2.webp' },
-    { id: 'd3', img: 'img/dinos/d3.webp' }, { id: 'd4', img: 'img/dinos/d4.webp' },
-    { id: 'd5', img: 'img/dinos/d5.webp' }, { id: 'd6', img: 'img/dinos/d6.webp' },
-    { id: 'd7', img: 'img/dinos/d7.webp' }, { id: 'd8', img: 'img/dinos/d8.webp' },
-    { id: 'd1b', img: 'img/dinos/d1.webp', hue: 150 }, { id: 'd3b', img: 'img/dinos/d3.webp', hue: 210 },
-    { id: 'd5b', img: 'img/dinos/d5.webp', hue: 90 }, { id: 'd7b', img: 'img/dinos/d7.webp', hue: 280 },
-    { id: 'd2b', img: 'img/dinos/d2.webp', hue: 300 }, { id: 'd8b', img: 'img/dinos/d8.webp', hue: 60 },
-  ],
+  dinos: Array.from({ length: 8 }, (_, i) => ({ id: 'd' + (i + 1), img: 'img/dinos/d' + (i + 1) + '.webp' })),
   aventureiros: Array.from({ length: 12 }, (_, i) => ({ id: 'v' + (i + 1), img: 'img/adv/v' + (i + 1) + '.webp' })),
 };
 
@@ -903,7 +893,8 @@ function joinGame() {
 function hostStartMatch() {
   const level = LEVELS[config.level];
   const faces = themeFaces(config.theme);
-  const idxs = shuffle([...faces.keys()]).slice(0, level.pairs);
+  const need = Math.min(level.pairs, faces.length);
+  const idxs = shuffle([...faces.keys()]).slice(0, need);
   const deckIdx = shuffle([...idxs, ...idxs]);
   const profiles = [sanitizeProfile(myProfile()), netGuestProfile];
   netSend({ type: 'start', theme: config.theme, level: config.level, deck: deckIdx, profiles });
@@ -973,9 +964,9 @@ function handleNetData(data) {
     case 'start': {
       if (!THEME_IDS.has(data.theme) || !LEVELS[data.level] || !Array.isArray(data.deck)) return;
       const faces = themeFaces(data.theme);
-      const nPairs = LEVELS[data.level].pairs;
+      const maxPairs = Math.min(LEVELS[data.level].pairs, faces.length);
       const deck = data.deck.map((i) => parseInt(i, 10)).filter((i) => i >= 0 && i < faces.length);
-      if (deck.length !== nPairs * 2) return;
+      if (deck.length < 4 || deck.length % 2 !== 0 || deck.length > maxPairs * 2) return;
       config.theme = data.theme;
       config.level = data.level;
       const profiles = (Array.isArray(data.profiles) ? data.profiles : []).slice(0, 2).map(sanitizeProfile);
@@ -1050,12 +1041,14 @@ function startGame(opts = {}) {
   remoteQueue.length = 0;
   resetRematch();
 
+  // Algumas fases têm menos figuras que o nível pede (ex.: 8 dinossauros);
+  // nesses casos a rodada usa só o que a fase tem.
+  const need = Math.min(level.pairs, faces.length);
   let deckFaces;
   if (opts.deck) {
     deckFaces = opts.deck.map((i) => faces[i]);
   } else {
-    // Embaralha e pega um subconjunto diferente a cada rodada
-    const picked = shuffle(faces.slice()).slice(0, level.pairs);
+    const picked = shuffle(faces.slice()).slice(0, need);
     deckFaces = shuffle([...picked, ...picked]);
   }
 
@@ -1080,7 +1073,7 @@ function startGame(opts = {}) {
   game.finishing = false;
   game.moves = 0;
   game.matchedPairs = 0;
-  game.totalPairs = level.pairs;
+  game.totalPairs = opts.deck ? opts.deck.length / 2 : need;
   game.startTime = Date.now();
 
   closeRematchModal();

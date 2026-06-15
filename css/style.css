@@ -390,7 +390,10 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  cursor: pointer;   /* toque na coruja -> ela fala */
 }
+.home-owl:active .owl-mascot { transform: scale(0.97); }
+.home-owl .owl-mascot { transition: transform 0.12s; }
 /* brilho violeta atrás da coruja para a animação se fundir ao fundo */
 .home-owl::before {
   content: "";

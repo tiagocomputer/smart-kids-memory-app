@@ -575,6 +575,36 @@ const MUSIC_CHOICES = [
 ];
 const MUSIC_IDS = new Set(MUSIC_CHOICES.map((m) => m.id));
 
+// ---------- Voz da coruja (fala "Vamos treinar a memória" no idioma atual) ----------
+const owlVoice = (() => {
+  const synth = window.speechSynthesis || null;
+  let voices = [];
+  function load() { try { voices = synth ? synth.getVoices() : []; } catch { voices = []; } }
+  if (synth) { load(); try { synth.onvoiceschanged = load; } catch { /* ignora */ } }
+  const BCP = { pt: 'pt-BR', en: 'en-US', fr: 'fr-FR' };
+  function pickVoice(code) {
+    const pref = BCP[code] || 'pt-BR';
+    return voices.find((v) => v.lang === pref)
+      || voices.find((v) => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(code))
+      || null;
+  }
+  function speak() {
+    if (!synth || !storage.sound) return;
+    try {
+      synth.cancel();
+      const u = new SpeechSynthesisUtterance(t('owlGreeting'));
+      u.lang = BCP[lang] || 'pt-BR';
+      const v = pickVoice(lang);
+      if (v) u.voice = v;
+      u.pitch = 1.35;   // tom agudo -> voz fofa de coruja
+      u.rate = 0.98;
+      u.volume = 1;
+      synth.speak(u);
+    } catch { /* voz indisponível no aparelho */ }
+  }
+  return { speak, supported: !!synth };
+})();
+
 // ---------- Elementos e telas ----------
 
 const $ = (sel) => document.querySelector(sel);
@@ -628,6 +658,7 @@ function setLang(next) {
   if (cur === 'album') renderAlbum();
   if (cur === 'records') renderRecords();
   if (cur === 'win') { renderWinTexts(); if (game.online) updateRematchUI(); }
+  if (cur === 'home') owlVoice.speak();   // troca de idioma -> coruja fala no novo idioma
 }
 
 function applyTheme() {
@@ -1757,6 +1788,11 @@ function renderMusicMenu() {
 // ---------- Navegação ----------
 
 $('#btn-go-setup').addEventListener('click', () => { sound.play('click'); showScreen('profile'); });
+// Toque na coruja (ou no balão) -> ela fala "Vamos treinar a memória" no idioma atual
+(function () {
+  const stage = document.querySelector('.home-owl');
+  if (stage) stage.addEventListener('click', () => owlVoice.speak());
+})();
 $('#btn-profile-continue').addEventListener('click', () => {
   if (!requireName('profile-name-input')) return;
   sound.play('click');

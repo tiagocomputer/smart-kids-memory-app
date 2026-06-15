@@ -356,17 +356,15 @@ body {
 
 /* Balão de fala */
 .speech {
-  position: absolute;
-  top: -6px;
-  left: 50%;
-  right: auto;
+  position: relative;
   z-index: 2;
+  margin-bottom: 2px;
   background: #fff;
   color: var(--text-dark);
   font-weight: 600;
   font-size: clamp(0.8rem, 3.2vw, 1rem);
-  padding: 8px 14px;
-  border-radius: 16px 16px 16px 4px;
+  padding: 8px 16px;
+  border-radius: 18px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
   animation: speech-pop 3s ease-in-out infinite;
   white-space: nowrap;
@@ -379,71 +377,41 @@ body {
   border-top-color: #fff;
 }
 @keyframes speech-pop {
-  0%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
-  50% { transform: translateX(-50%) translateY(-4px) scale(1.04); }
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-4px) scale(1.04); }
 }
 
 /* ============================================================
    Tela inicial — mascote (imagem) e botões grandes (skin nova)
    ============================================================ */
-.home-owl { isolation: isolate; }
-/* brilho violeta atrás da coruja para a medalha se fundir ao fundo */
+/* tela inicial: balão ACIMA da coruja (em coluna), nunca tampa o rosto */
+.home-owl {
+  isolation: isolate;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* brilho violeta atrás da coruja para a animação se fundir ao fundo */
 .home-owl::before {
   content: "";
   position: absolute;
-  width: 118%;
-  height: 122%;
+  width: 96%;
+  height: 62%;
   left: 50%;
-  top: 47%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(ellipse at center, rgba(124, 64, 196, 0.62), rgba(124, 64, 196, 0) 66%);
+  bottom: 2%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse at center, rgba(124, 64, 196, 0.58), rgba(124, 64, 196, 0) 68%);
   z-index: -1;
   pointer-events: none;
 }
-/* Mascote parada (sem flutuar) — só asas, bico e olhos se mexem, como no vídeo */
+/* Mascote = animação (WebP) feita a partir do vídeo do usuário: asas, bico e
+   olhos se mexem; a coruja fica parada no lugar (sem flutuar). */
 .owl-mascot {
-  position: relative;
-  width: clamp(200px, 56vw, 290px);
-  aspect-ratio: 384 / 326;
-  filter: drop-shadow(0 14px 12px rgba(20, 0, 45, 0.4));
-}
-/* camadas já recortadas (sem máscara em runtime -> robusto em qualquer device) */
-.owl-layer { position: absolute; inset: 0; background-position: center; background-size: contain; background-repeat: no-repeat; }
-.owl-base   { background-image: url('../img/owl-body.webp?v=21'); }
-.owl-wing-l { background-image: url('../img/owl-wing-l.webp?v=21'); transform-origin: 27% 42%; animation: owl-wing-l 1.6s ease-in-out infinite; }
-.owl-wing-r { background-image: url('../img/owl-wing-r.webp?v=21'); transform-origin: 70% 46%; animation: owl-wing-r 1.6s ease-in-out infinite; }
-.owl-beak   { background-image: url('../img/owl-beak.webp?v=21'); transform-origin: 46% 36%; animation: owl-beak 2.6s ease-in-out infinite; }
-/* pálpebras (piscar) — elipses da cor do rosto que descem sobre os olhos */
-.owl-lid {
-  position: absolute;
-  width: 17%;
-  height: 23%;
-  top: 15.5%;
-  background: #f9eaf4;
-  border-radius: 50% 50% 46% 46%;
-  transform: scaleY(0);
-  transform-origin: top center;
-}
-.owl-lid-l { left: 24%; animation: owl-blink 4s ease-in-out infinite; }
-.owl-lid-r { left: 50%; animation: owl-blink 4s ease-in-out infinite; }
-@keyframes owl-wing-r {
-  0%, 100% { transform: rotate(0deg); }
-  45% { transform: rotate(13deg); }
-}
-@keyframes owl-wing-l {
-  0%, 100% { transform: rotate(0deg); }
-  45% { transform: rotate(-13deg); }
-}
-@keyframes owl-beak {
-  0%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(1.07); }
-}
-@keyframes owl-blink {
-  0%, 88%, 100% { transform: scaleY(0); }
-  92%, 96% { transform: scaleY(1); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .owl-wing-l, .owl-wing-r, .owl-beak, .owl-lid { animation: none; }
+  display: block;
+  width: clamp(168px, 50vw, 248px);
+  aspect-ratio: 330 / 225;
+  height: auto;
+  filter: drop-shadow(0 12px 12px rgba(20, 0, 45, 0.38));
 }
 
 /* Botões do menu inicial: círculo de ícone + rótulo + seta */
@@ -573,37 +541,49 @@ body {
 .opt-emoji { font-size: 1.5rem; }
 .opt small { font-size: 0.72rem; font-weight: 500; opacity: 0.7; }
 
-/* Seleção de 1 ou 2 jogadores — cartões grandes e convidativos */
+/* Seleção de 1 ou 2 jogadores — cartões grandes, com selo de ícone */
 .player-pick { gap: 14px; align-items: stretch; }
 .opt-player {
+  --accent: #38bdf8;
   flex: 1 1 0;
   max-width: 210px;
-  padding: 16px 14px 14px;
-  gap: 5px;
+  padding: 18px 14px 16px;
+  gap: 6px;
   border-radius: 24px;
+  border-width: 3px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(165deg, var(--card-surface), color-mix(in srgb, var(--card-surface) 84%, var(--purple) 16%));
+  background: #fff;
+  transition: transform 0.14s, border-color 0.14s, box-shadow 0.14s;
 }
+.opt-player[data-players="2"] { --accent: #fb7185; }
+/* faixa colorida no topo */
 .opt-player::before {
   content: "";
-  position: absolute; inset: 0 0 auto 0; height: 6px;
-  background: linear-gradient(90deg, var(--pink), var(--yellow), var(--green));
-  opacity: 0.55; transition: opacity 0.12s;
+  position: absolute; inset: 0 0 auto 0; height: 7px;
+  background: var(--accent);
+  opacity: 0.9;
 }
+/* selo do ícone (círculo) */
 .opt-player .opt-player-ico {
-  font-size: 2.3rem; line-height: 1;
-  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.18));
+  width: 60px; height: 60px;
+  display: grid; place-items: center;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 22%, #fff);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.12);
+  font-size: 2rem; line-height: 1;
   transition: transform 0.18s;
 }
-.opt-player .opt-player-title { font-size: clamp(1rem, 4vw, 1.18rem); font-weight: 700; }
-.opt-player small { opacity: 0.72; }
+.opt-player .opt-player-title { font-size: clamp(1rem, 4vw, 1.18rem); font-weight: 700; color: var(--text-dark); }
+.opt-player small { opacity: 0.7; color: var(--text-dark); }
 .opt-player.selected {
-  border-color: var(--yellow);
-  background: linear-gradient(165deg, color-mix(in srgb, var(--card-surface) 80%, var(--yellow) 20%), color-mix(in srgb, var(--card-surface) 80%, var(--pink) 20%));
+  border-color: var(--accent);
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 8px 0 rgba(0, 0, 0, 0.14), 0 0 0 4px color-mix(in srgb, var(--accent) 35%, transparent);
 }
-.opt-player.selected::before { opacity: 1; height: 7px; }
-.opt-player.selected .opt-player-ico { transform: scale(1.12) rotate(-4deg); }
+.opt-player.selected::before { height: 8px; }
+.opt-player.selected .opt-player-ico { transform: scale(1.14) rotate(-5deg); }
 
 /* Nome e avatar do jogador */
 .name-input {

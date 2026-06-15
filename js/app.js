@@ -57,6 +57,7 @@ const I18N = {
     albumProgress: '{a} de {b} figurinhas coletadas', albumPlay: 'Jogar para ganhar mais!',
     catAnimais: 'Animais', catMar: 'Animais Marinhos', catComida: 'Comida', catFantasia: 'Fantasia',
     catDiversao: 'Diversão', catLendarias: 'Lendárias Douradas',
+    catOceano: 'Oceano', catDinos: 'Dinossauros', catMonstros: 'Monstrinhos',
     recordsTitle: 'Seus Recordes 🏆', rankLabel: 'Seu nível', nextRank: 'Faltam {n} pares para {r}',
     maxRank: 'Você é o melhor de todos! 👑', bestTimes: 'Melhores tempos ⏱️', bestSpeed: 'Velocidade recorde ⚡',
     stickersOwned: 'Figurinhas', gamesWon: 'Vitórias', noRecord: '—', ppmUnit: '{n}/min',
@@ -73,6 +74,7 @@ const I18N = {
       unicornio:'Unicórnio', dragao:'Dragão', sereia:'Sereia', fada:'Fada', robo:'Robô', mago:'Mago', castelo:'Castelo', arcoiris:'Arco-íris', estrela:'Estrela', pocao:'Poção',
       bola:'Bola', guitarra:'Guitarra', balao:'Balão', pipa:'Pipa', jogo:'Videogame', circo:'Circo', medalha:'Medalha', coroa:'Coroa', dado:'Dado', alvo:'Alvo',
       genio:'Gênio', fenix:'Fênix', pavao:'Pavão', cisne:'Cisne', varinha:'Varinha Mágica', estrelacadente:'Estrela Cadente', diamante:'Diamante', trofeu:'Troféu',
+      lcoroa:'Coroa Real', lunicornio:'Unicórnio', ldragao:'Dragão', larcoiris:'Arco-íris', lcastelo:'Castelo Mágico', lfada:'Fada',
     },
   },
   en: {
@@ -127,6 +129,7 @@ const I18N = {
     albumProgress: '{a} of {b} stickers collected', albumPlay: 'Play to win more!',
     catAnimais: 'Animals', catMar: 'Sea Animals', catComida: 'Food', catFantasia: 'Fantasy',
     catDiversao: 'Fun', catLendarias: 'Golden Legendaries',
+    catOceano: 'Ocean', catDinos: 'Dinosaurs', catMonstros: 'Lil Monsters',
     recordsTitle: 'Your Records 🏆', rankLabel: 'Your rank', nextRank: '{n} more pairs to {r}',
     maxRank: "You're the best of all! 👑", bestTimes: 'Best times ⏱️', bestSpeed: 'Record speed ⚡',
     stickersOwned: 'Stickers', gamesWon: 'Wins', noRecord: '—', ppmUnit: '{n}/min',
@@ -143,6 +146,7 @@ const I18N = {
       unicornio:'Unicorn', dragao:'Dragon', sereia:'Mermaid', fada:'Fairy', robo:'Robot', mago:'Wizard', castelo:'Castle', arcoiris:'Rainbow', estrela:'Star', pocao:'Potion',
       bola:'Ball', guitarra:'Guitar', balao:'Balloon', pipa:'Kite', jogo:'Game', circo:'Circus', medalha:'Medal', coroa:'Crown', dado:'Dice', alvo:'Target',
       genio:'Genie', fenix:'Phoenix', pavao:'Peacock', cisne:'Swan', varinha:'Magic Wand', estrelacadente:'Shooting Star', diamante:'Diamond', trofeu:'Trophy',
+      lcoroa:'Royal Crown', lunicornio:'Unicorn', ldragao:'Dragon', larcoiris:'Rainbow', lcastelo:'Magic Castle', lfada:'Fairy',
     },
   },
   fr: {
@@ -197,6 +201,7 @@ const I18N = {
     albumProgress: '{a} sur {b} autocollants collectés', albumPlay: 'Joue pour en gagner plus!',
     catAnimais: 'Animaux', catMar: 'Animaux Marins', catComida: 'Nourriture', catFantasia: 'Fantaisie',
     catDiversao: 'Amusement', catLendarias: 'Légendaires Dorés',
+    catOceano: 'Océan', catDinos: 'Dinosaures', catMonstros: 'Petits Monstres',
     recordsTitle: 'Tes Records 🏆', rankLabel: 'Ton niveau', nextRank: '{n} paires pour {r}',
     maxRank: 'Tu es le meilleur de tous! 👑', bestTimes: 'Meilleurs temps ⏱️', bestSpeed: 'Vitesse record ⚡',
     stickersOwned: 'Autocollants', gamesWon: 'Victoires', noRecord: '—', ppmUnit: '{n}/min',
@@ -213,6 +218,7 @@ const I18N = {
       unicornio:'Licorne', dragao:'Dragon', sereia:'Sirène', fada:'Fée', robo:'Robot', mago:'Magicien', castelo:'Château', arcoiris:'Arc-en-ciel', estrela:'Étoile', pocao:'Potion',
       bola:'Ballon', guitarra:'Guitare', balao:'Ballon', pipa:'Cerf-volant', jogo:'Jeu', circo:'Cirque', medalha:'Médaille', coroa:'Couronne', dado:'Dé', alvo:'Cible',
       genio:'Génie', fenix:'Phénix', pavao:'Paon', cisne:'Cygne', varinha:'Baguette Magique', estrelacadente:'Étoile Filante', diamante:'Diamant', trofeu:'Trophée',
+      lcoroa:'Couronne Royale', lunicornio:'Licorne', ldragao:'Dragon', larcoiris:'Arc-en-ciel', lcastelo:'Château Magique', lfada:'Fée',
     },
   },
 };
@@ -339,46 +345,36 @@ function avatarSVG(id, skinIdx) {
 }
 const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 
-// Figurinhas colecionáveis (rarity 'legendary' = dourada e rara)
+// Figurinhas colecionáveis — usam a MESMA arte das cartas (coerentes com o jogo).
+// Figurinhas de imagem não têm nome (a figura é a identidade); lendárias = douradas/raras.
+function stickerSet(cat, dir, prefix, n) {
+  return Array.from({ length: n }, (_, i) => ({ id: `${cat}${i + 1}`, cat, img: `img/${dir}/${prefix}${i + 1}.webp` }));
+}
 const STICKERS = [
-  { id:'dino', emoji:'🦕', cat:'animais' }, { id:'panda', emoji:'🐼', cat:'animais' },
-  { id:'gato', emoji:'😺', cat:'animais' }, { id:'pinguim', emoji:'🐧', cat:'animais' },
-  { id:'tartaruga', emoji:'🐢', cat:'animais' }, { id:'leao', emoji:'🦁', cat:'animais' },
-  { id:'raposa', emoji:'🦊', cat:'animais' }, { id:'coala', emoji:'🐨', cat:'animais' },
-  { id:'cavalo', emoji:'🐴', cat:'animais' }, { id:'vaca', emoji:'🐮', cat:'animais' },
-  { id:'polvo', emoji:'🐙', cat:'mar' }, { id:'baleia', emoji:'🐳', cat:'mar' },
-  { id:'tubarao', emoji:'🦈', cat:'mar' }, { id:'golfinho', emoji:'🐬', cat:'mar' },
-  { id:'peixe', emoji:'🐠', cat:'mar' }, { id:'caranguejo', emoji:'🦀', cat:'mar' },
-  { id:'baiacu', emoji:'🐡', cat:'mar' }, { id:'concha', emoji:'🐚', cat:'mar' },
-  { id:'foca', emoji:'🦭', cat:'mar' }, { id:'medusa', emoji:'🪼', cat:'mar' },
-  { id:'sorvete', emoji:'🍦', cat:'comida' }, { id:'bolo', emoji:'🎂', cat:'comida' },
-  { id:'pizza', emoji:'🍕', cat:'comida' }, { id:'hamburguer', emoji:'🍔', cat:'comida' },
-  { id:'pirulito', emoji:'🍭', cat:'comida' }, { id:'donut', emoji:'🍩', cat:'comida' },
-  { id:'morango', emoji:'🍓', cat:'comida' }, { id:'cupcake', emoji:'🧁', cat:'comida' },
-  { id:'taco', emoji:'🌮', cat:'comida' }, { id:'cookie', emoji:'🍪', cat:'comida' },
-  { id:'unicornio', emoji:'🦄', cat:'fantasia' }, { id:'dragao', emoji:'🐉', cat:'fantasia' },
-  { id:'sereia', emoji:'🧜‍♀️', cat:'fantasia' }, { id:'fada', emoji:'🧚', cat:'fantasia' },
-  { id:'robo', emoji:'🤖', cat:'fantasia' }, { id:'mago', emoji:'🎩', cat:'fantasia' },
-  { id:'castelo', emoji:'🏰', cat:'fantasia' }, { id:'arcoiris', emoji:'🌈', cat:'fantasia' },
-  { id:'estrela', emoji:'🌟', cat:'fantasia' }, { id:'pocao', emoji:'🧪', cat:'fantasia' },
-  { id:'bola', emoji:'⚽', cat:'diversao' }, { id:'guitarra', emoji:'🎸', cat:'diversao' },
-  { id:'balao', emoji:'🎈', cat:'diversao' }, { id:'pipa', emoji:'🪁', cat:'diversao' },
-  { id:'jogo', emoji:'🎮', cat:'diversao' }, { id:'circo', emoji:'🎪', cat:'diversao' },
-  { id:'medalha', emoji:'🏅', cat:'diversao' }, { id:'coroa', emoji:'👑', cat:'diversao' },
-  { id:'dado', emoji:'🎲', cat:'diversao' }, { id:'alvo', emoji:'🎯', cat:'diversao' },
+  ...stickerSet('animais', 'animais', 'an', 13),
+  ...stickerSet('oceano', 'oceano', 'oc', 12),
+  ...stickerSet('dinos', 'dinos', 'd', 12),
+  ...stickerSet('comida', 'comida', 'co', 12),
+  ...stickerSet('fantasia', 'fantasia', 'fa', 12),
+  ...stickerSet('monstros', 'monstrinhos', 'mo', 12),
   // Lendárias douradas (raras)
   { id:'genio', emoji:'🧞', cat:'lendarias', legendary:true }, { id:'fenix', emoji:'🐲', cat:'lendarias', legendary:true },
   { id:'pavao', emoji:'🦚', cat:'lendarias', legendary:true }, { id:'cisne', emoji:'🦢', cat:'lendarias', legendary:true },
   { id:'varinha', emoji:'🪄', cat:'lendarias', legendary:true }, { id:'estrelacadente', emoji:'🌠', cat:'lendarias', legendary:true },
   { id:'diamante', emoji:'💎', cat:'lendarias', legendary:true }, { id:'trofeu', emoji:'🏆', cat:'lendarias', legendary:true },
+  { id:'lcoroa', emoji:'👑', cat:'lendarias', legendary:true }, { id:'lunicornio', emoji:'🦄', cat:'lendarias', legendary:true },
+  { id:'ldragao', emoji:'🐉', cat:'lendarias', legendary:true }, { id:'larcoiris', emoji:'🌈', cat:'lendarias', legendary:true },
+  { id:'lcastelo', emoji:'🏰', cat:'lendarias', legendary:true }, { id:'lfada', emoji:'🧚', cat:'lendarias', legendary:true },
 ];
+const STICKER_IDS = new Set(STICKERS.map((s) => s.id));
 
 const CATEGORIES = [
   { id: 'animais', key: 'catAnimais', emoji: '🐾' },
-  { id: 'mar', key: 'catMar', emoji: '🌊' },
-  { id: 'comida', key: 'catComida', emoji: '🍔' },
-  { id: 'fantasia', key: 'catFantasia', emoji: '🦄' },
-  { id: 'diversao', key: 'catDiversao', emoji: '🎉' },
+  { id: 'oceano',  key: 'catOceano',  emoji: '🌊' },
+  { id: 'dinos',   key: 'catDinos',   emoji: '🦖' },
+  { id: 'comida',  key: 'catComida',  emoji: '🍔' },
+  { id: 'fantasia',key: 'catFantasia',emoji: '🏰' },
+  { id: 'monstros',key: 'catMonstros',emoji: '👾' },
   { id: 'lendarias', key: 'catLendarias', emoji: '✨', legendary: true },
 ];
 
@@ -1576,7 +1572,8 @@ function endGame() {
   lastWin = {
     coinsEarned, timeBonus, speed,
     stickerId: newSticker ? newSticker.id : null,
-    stickerEmoji: newSticker ? newSticker.emoji : null,
+    stickerEmoji: newSticker ? (newSticker.emoji || null) : null,
+    stickerImg: newSticker ? (newSticker.img || null) : null,
     stickerLegendary: !!(newSticker && newSticker.legendary),
     bonusCoins, result, iWin, revealed: false,
   };
@@ -1655,8 +1652,13 @@ function fillReveal() {
   const reveal = $('#sticker-reveal');
   if (w.stickerId) {
     $('#reveal-label').textContent = w.stickerLegendary ? t('legendaryLabel') : t('newSticker');
-    $('#reveal-emoji').textContent = w.stickerEmoji;
-    $('#reveal-name').textContent = tSticker(w.stickerId);
+    if (w.stickerImg) {
+      $('#reveal-emoji').innerHTML = `<img class="reveal-img" src="${w.stickerImg}" alt="">`;
+      $('#reveal-name').textContent = '';
+    } else {
+      $('#reveal-emoji').textContent = w.stickerEmoji;
+      $('#reveal-name').textContent = tSticker(w.stickerId);
+    }
     reveal.classList.toggle('legendary', w.stickerLegendary);
   } else {
     $('#reveal-label').textContent = t('bonusLabel');
@@ -1689,8 +1691,9 @@ function openPack() {
 
 function renderAlbum(highlightId = null) {
   const owned = storage.stickers;
-  $('#album-progress').textContent = t('albumProgress', { a: owned.length, b: STICKERS.length });
-  $('#album-bar-fill').style.width = `${(owned.length / STICKERS.length) * 100}%`;
+  const ownedN = owned.filter((id) => STICKER_IDS.has(id)).length;
+  $('#album-progress').textContent = t('albumProgress', { a: ownedN, b: STICKERS.length });
+  $('#album-bar-fill').style.width = `${(ownedN / STICKERS.length) * 100}%`;
 
   const content = $('#album-content');
   content.innerHTML = CATEGORIES.map((cat) => {
@@ -1699,10 +1702,14 @@ function renderAlbum(highlightId = null) {
     const grid = items.map((s) => {
       const has = owned.includes(s.id);
       const isNew = s.id === highlightId;
+      const face = has
+        ? (s.img ? `<img class="s-img" src="${s.img}" alt="" draggable="false">` : `<span class="s-emoji">${s.emoji}</span>`)
+        : `<span class="s-emoji">${cat.legendary ? '✦' : '❔'}</span>`;
+      const name = !has ? '???' : (s.emoji ? tSticker(s.id) : '');
       return `
         <div class="sticker ${has ? '' : 'locked'} ${isNew ? 'new' : ''} ${cat.legendary ? 'legendary' : ''}">
-          <span class="s-emoji">${has ? s.emoji : (cat.legendary ? '✦' : '❔')}</span>
-          <span class="s-name">${has ? tSticker(s.id) : '???'}</span>
+          ${face}
+          ${name ? `<span class="s-name">${name}</span>` : '<span class="s-name"></span>'}
         </div>`;
     }).join('');
     return `

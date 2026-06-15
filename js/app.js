@@ -612,7 +612,7 @@ const owlVoice = (() => {
   }
   // Vozes GRAVADAS (extraídas do vídeo) por idioma — quando existe, usa o áudio
   // real (voz humana natural) no lugar da síntese do navegador.
-  const FILES = { pt: 'audio/owl-pt.mp3?v=27' };
+  const FILES = { pt: 'audio/owl-pt.mp3?v=28' };
   const clips = {};
   for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'auto'; clips[k] = a; } catch { /* ignora */ } }
   function speakTTS() {

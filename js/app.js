@@ -313,7 +313,6 @@ const THEME_LIST = [
   { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 320 },
   { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 360 },
   { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 420 },
-  { id: 'criaturas',  icon: '🐣', key: 'themeCriaturas',  cost: 480 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
@@ -612,7 +611,7 @@ const owlVoice = (() => {
   }
   // Vozes GRAVADAS (extraídas do vídeo) por idioma — quando existe, usa o áudio
   // real (voz humana natural) no lugar da síntese do navegador.
-  const FILES = { pt: 'audio/owl-pt.mp3?v=28' };
+  const FILES = { pt: 'audio/owl-pt.mp3?v=30', en: 'audio/owl-en.mp3?v=30', fr: 'audio/owl-fr.mp3?v=30' };
   const clips = {};
   for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'auto'; clips[k] = a; } catch { /* ignora */ } }
   function speakTTS() {
@@ -1824,10 +1823,22 @@ function renderMusicMenu() {
 // ---------- Navegação ----------
 
 $('#btn-go-setup').addEventListener('click', () => { sound.play('click'); showScreen('profile'); });
-// Toque na coruja (ou no balão) -> ela fala "Vamos treinar a memória" no idioma atual
+// Toque na coruja (ou no balão) -> ela fala no idioma atual; e fala AUTOMÁTICA
+// assim que o app abre (no 1º gesto do usuário, pois navegadores bloqueiam
+// áudio automático sem interação).
 (function () {
   const stage = document.querySelector('.home-owl');
   if (stage) stage.addEventListener('click', () => owlVoice.speak());
+  let greeted = false;
+  function autoGreet() {
+    if (greeted) return;
+    if (currentScreen() === 'home') { greeted = true; owlVoice.speak(); }
+  }
+  // tenta já na abertura (funciona em parte dos aparelhos)…
+  window.addEventListener('load', () => setTimeout(autoGreet, 350));
+  // …e garante no primeiro toque/tecla
+  ['pointerdown', 'touchstart', 'keydown'].forEach((ev) =>
+    document.addEventListener(ev, autoGreet, { once: false, passive: true, capture: true }));
 })();
 $('#btn-profile-continue').addEventListener('click', () => {
   if (!requireName('profile-name-input')) return;

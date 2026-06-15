@@ -610,19 +610,33 @@ const owlVoice = (() => {
     for (const v of voices) { const s = score(v, code); if (s > bestS) { bestS = s; best = v; } }
     return bestS > -900 ? best : null;
   }
-  function speak() {
-    if (!synth || !storage.sound) return;
+  // Vozes GRAVADAS (extraídas do vídeo) por idioma — quando existe, usa o áudio
+  // real (voz humana natural) no lugar da síntese do navegador.
+  const FILES = { pt: 'audio/owl-pt.mp3?v=26' };
+  const clips = {};
+  for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'auto'; clips[k] = a; } catch { /* ignora */ } }
+  function speakTTS() {
+    if (!synth) return;
     try {
       synth.cancel();
       const u = new SpeechSynthesisUtterance(t('owlGreeting'));
       u.lang = BCP[lang] || 'pt-BR';
       const v = pickVoice(lang);
       if (v) u.voice = v;
-      u.pitch = 1.06;   // quase natural (só um tiquinho acima), nada de robótico/chipmunk
+      u.pitch = 1.06;
       u.rate = 0.95;
       u.volume = 1;
       synth.speak(u);
     } catch { /* voz indisponível no aparelho */ }
+  }
+  function speak() {
+    if (!storage.sound) return;
+    const clip = clips[lang];
+    if (clip) {                              // voz gravada do vídeo
+      try { if (synth) synth.cancel(); clip.currentTime = 0; const p = clip.play(); if (p && p.catch) p.catch(speakTTS); return; }
+      catch { /* cai p/ síntese */ }
+    }
+    speakTTS();
   }
   return { speak, supported: !!synth };
 })();

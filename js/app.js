@@ -575,18 +575,40 @@ const MUSIC_CHOICES = [
 ];
 const MUSIC_IDS = new Set(MUSIC_CHOICES.map((m) => m.id));
 
-// ---------- Voz da coruja (fala "Vamos treinar a memória" no idioma atual) ----------
+// ---------- Voz da coruja: escolhe a melhor voz FEMININA e NATURAL do aparelho ----------
 const owlVoice = (() => {
   const synth = window.speechSynthesis || null;
   let voices = [];
   function load() { try { voices = synth ? synth.getVoices() : []; } catch { voices = []; } }
   if (synth) { load(); try { synth.onvoiceschanged = load; } catch { /* ignora */ } }
   const BCP = { pt: 'pt-BR', en: 'en-US', fr: 'fr-FR' };
+  // vozes femininas naturais conhecidas (iOS / Android / Windows / Chrome)
+  const FEMALE = {
+    pt: ['luciana', 'google português', 'maria', 'francisca', 'joana', 'fernanda', 'camila', 'vitória', 'helena', 'catarina'],
+    en: ['samantha', 'karen', 'victoria', 'moira', 'tessa', 'serena', 'allison', 'ava', 'susan', 'zira', 'aria', 'jenny', 'michelle', 'google us english', 'google uk english female', 'female'],
+    fr: ['amélie', 'amelie', 'audrey', 'aurelie', 'aurélie', 'marie', 'julie', 'hortense', 'denise', 'google français', 'female'],
+  };
+  const GOOD = ['natural', 'neural', 'enhanced', 'premium', 'google', 'siri'];
+  const BAD = ['compact', 'espeak', 'pico', 'robot'];
+  // nomes tipicamente masculinos — evitar
+  const MALE = ['daniel', 'thomas', 'felipe', 'ricardo', 'jorge', 'diego', 'paul', 'fred', 'alex', 'aaron', 'male', 'masculin', 'homme'];
+  function score(v, code) {
+    const n = (v.name || '').toLowerCase();
+    const vl = (v.lang || '').replace('_', '-').toLowerCase();
+    if (vl.slice(0, 2) !== code) return -999;
+    let s = 0;
+    if (vl === BCP[code].toLowerCase()) s += 2;                       // dialeto exato (pt-BR etc.)
+    if (FEMALE[code].some((f) => n.includes(f))) s += 8;             // feminina conhecida
+    if (GOOD.some((g) => n.includes(g))) s += 4;                      // qualidade alta
+    if (v.localService === false) s += 1;                            // voz de nuvem (costuma ser melhor)
+    if (BAD.some((b) => n.includes(b))) s -= 5;
+    if (MALE.some((m) => n.includes(m))) s -= 7;                      // evita voz masculina
+    return s;
+  }
   function pickVoice(code) {
-    const pref = BCP[code] || 'pt-BR';
-    return voices.find((v) => v.lang === pref)
-      || voices.find((v) => v.lang && v.lang.replace('_', '-').toLowerCase().startsWith(code))
-      || null;
+    let best = null, bestS = -1000;
+    for (const v of voices) { const s = score(v, code); if (s > bestS) { bestS = s; best = v; } }
+    return bestS > -900 ? best : null;
   }
   function speak() {
     if (!synth || !storage.sound) return;
@@ -596,8 +618,8 @@ const owlVoice = (() => {
       u.lang = BCP[lang] || 'pt-BR';
       const v = pickVoice(lang);
       if (v) u.voice = v;
-      u.pitch = 1.35;   // tom agudo -> voz fofa de coruja
-      u.rate = 0.98;
+      u.pitch = 1.06;   // quase natural (só um tiquinho acima), nada de robótico/chipmunk
+      u.rate = 0.95;
       u.volume = 1;
       synth.speak(u);
     } catch { /* voz indisponível no aparelho */ }

@@ -367,7 +367,9 @@ body {
   border-radius: 18px;
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
   animation: speech-pop 3s ease-in-out infinite;
-  white-space: nowrap;
+  max-width: min(86vw, 300px);
+  text-align: center;
+  line-height: 1.2;
 }
 .speech::after {
   content: '';

@@ -30,8 +30,8 @@ const I18N = {
     rematchPhase: 'Trocar de fase', waitingPhase: 'O outro está escolhendo a fase… 🗺️',
     waitingRematch: 'Esperando o outro jogador…', peerWantsRematch: 'O outro quer jogar de novo! 🔁',
     peerLeft: 'O outro jogador saiu 👋',
-    themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
-    themeDinos: 'Dinossauros', themeComida: 'Mundo das Comidas', themeBrinquedos: 'Mundo dos Brinquedos', themeHerois: 'Mundo dos Heróis',
+    themeAnimais: 'Mundo dos Animais', themeFrutas: 'Mundo das Frutas', themeEspaco: 'Mundo do Espaço', themeOceano: 'Mundo dos Oceanos',
+    themeDinos: 'Mundo dos Dinossauros', themeComida: 'Mundo das Comidas', themeBrinquedos: 'Mundo dos Brinquedos', themeHerois: 'Mundo dos Heróis',
     themeMario: 'Mundo dos Cogumelos', themeMonstrinhos: 'Mundo dos Monstrinhos',
     themeEncanadores: 'Mundo dos Encanadores', themeRobos: 'Mundo dos Robôs',
     themeFantasia: 'Mundo da Fantasia', themeEmocoes: 'Mundo das Emoções',
@@ -105,8 +105,8 @@ const I18N = {
     rematchPhase: 'Change stage', waitingPhase: 'The other is picking a stage… 🗺️',
     waitingRematch: 'Waiting for the other player…', peerWantsRematch: 'The other wants a rematch! 🔁',
     peerLeft: 'The other player left 👋',
-    themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
-    themeDinos: 'Dinosaurs', themeComida: 'Food World', themeBrinquedos: 'Toy World', themeHerois: 'Hero World',
+    themeAnimais: 'Animal World', themeFrutas: 'Fruit World', themeEspaco: 'Space World', themeOceano: 'Ocean World',
+    themeDinos: 'Dinosaur World', themeComida: 'Food World', themeBrinquedos: 'Toy World', themeHerois: 'Hero World',
     themeMario: 'Mushroom World', themeMonstrinhos: 'Monster World',
     themeEncanadores: 'Plumbers World', themeRobos: 'Robots World',
     themeFantasia: 'Fantasy World', themeEmocoes: 'Emotions World',
@@ -180,8 +180,8 @@ const I18N = {
     rematchPhase: 'Changer de phase', waitingPhase: "L'autre choisit la phase… 🗺️",
     waitingRematch: "En attente de l'autre joueur…", peerWantsRematch: "L'autre veut rejouer! 🔁",
     peerLeft: "L'autre joueur est parti 👋",
-    themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
-    themeDinos: 'Dinosaures', themeComida: 'Monde des Nourritures', themeBrinquedos: 'Monde des Jouets', themeHerois: 'Monde des Héros',
+    themeAnimais: 'Monde des Animaux', themeFrutas: 'Monde des Fruits', themeEspaco: "Monde de l'Espace", themeOceano: 'Monde des Océans',
+    themeDinos: 'Monde des Dinosaures', themeComida: 'Monde des Nourritures', themeBrinquedos: 'Monde des Jouets', themeHerois: 'Monde des Héros',
     themeMario: 'Monde des Champignons', themeMonstrinhos: 'Monde des Petits Monstres',
     themeEncanadores: 'Monde des Plombiers', themeRobos: 'Monde des Robots',
     themeFantasia: 'Monde de la Fantaisie', themeEmocoes: 'Monde des Émotions',
@@ -279,8 +279,9 @@ const DINO_SPECIES = [];
 });
 
 // Fases com IMAGENS (arquivos fornecidos). Cada item é uma figura recortada.
+const IMG_ASSET_VERSION = '42';
 const imgTheme = (prefix, dir, n) =>
-  Array.from({ length: n }, (_, i) => ({ id: prefix + (i + 1), img: 'img/' + dir + '/' + prefix + (i + 1) + '.webp' }));
+  Array.from({ length: n }, (_, i) => ({ id: prefix + (i + 1), img: 'img/' + dir + '/' + prefix + (i + 1) + `.webp?v=${IMG_ASSET_VERSION}` }));
 const IMG_THEMES = {
   animais: imgTheme('an', 'animais', 13),
   frutas: imgTheme('fr', 'frutas', 12),
@@ -320,22 +321,22 @@ const THEME_LIST = [
   { id: 'animais',    icon: '🐶', key: 'themeAnimais',    cost: 0 },
   { id: 'frutas',     icon: '🍎', key: 'themeFrutas',     cost: 0 },
   { id: 'espaco',     icon: '🚀', key: 'themeEspaco',     cost: 0 },
-  { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 0 },
-  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 30 },
-  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 50 },
-  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 80 },
-  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 120 },
-  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 160 },
-  { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 200 },
-  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 240 },
-  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 280 },
-  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 320 },
-  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 360 },
-  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 420 },
-  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 480 },
-  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 540 },
-  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 600 },
-  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 660 },
+  { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 140 },
+  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 260 },
+  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 420 },
+  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 620 },
+  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 860 },
+  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 1140 },
+  { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 1460 },
+  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 1820 },
+  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 2220 },
+  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 2660 },
+  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 3140 },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 3660 },
+  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 4220 },
+  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 4820 },
+  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 5460 },
+  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 6140 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 

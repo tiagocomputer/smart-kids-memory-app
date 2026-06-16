@@ -357,14 +357,8 @@ const STICKERS = [
   ...stickerSet('comida', 'comida', 'co', 12),
   ...stickerSet('fantasia', 'fantasia', 'fa', 12),
   ...stickerSet('monstros', 'monstrinhos', 'mo', 12),
-  // Lendárias douradas (raras)
-  { id:'genio', emoji:'🧞', cat:'lendarias', legendary:true }, { id:'fenix', emoji:'🐲', cat:'lendarias', legendary:true },
-  { id:'pavao', emoji:'🦚', cat:'lendarias', legendary:true }, { id:'cisne', emoji:'🦢', cat:'lendarias', legendary:true },
-  { id:'varinha', emoji:'🪄', cat:'lendarias', legendary:true }, { id:'estrelacadente', emoji:'🌠', cat:'lendarias', legendary:true },
-  { id:'diamante', emoji:'💎', cat:'lendarias', legendary:true }, { id:'trofeu', emoji:'🏆', cat:'lendarias', legendary:true },
-  { id:'lcoroa', emoji:'👑', cat:'lendarias', legendary:true }, { id:'lunicornio', emoji:'🦄', cat:'lendarias', legendary:true },
-  { id:'ldragao', emoji:'🐉', cat:'lendarias', legendary:true }, { id:'larcoiris', emoji:'🌈', cat:'lendarias', legendary:true },
-  { id:'lcastelo', emoji:'🏰', cat:'lendarias', legendary:true }, { id:'lfada', emoji:'🧚', cat:'lendarias', legendary:true },
+  // Lendárias douradas (raras) — 24 figuras épicas (imagens)
+  ...Array.from({ length: 24 }, (_, i) => ({ id: `leg${i + 1}`, cat: 'lendarias', img: `img/lendarias/l${i + 1}.webp`, legendary: true })),
 ];
 const STICKER_IDS = new Set(STICKERS.map((s) => s.id));
 

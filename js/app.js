@@ -31,11 +31,13 @@ const I18N = {
     waitingRematch: 'Esperando o outro jogador…', peerWantsRematch: 'O outro quer jogar de novo! 🔁',
     peerLeft: 'O outro jogador saiu 👋',
     themeAnimais: 'Animais', themeFrutas: 'Frutas', themeEspaco: 'Espaço', themeOceano: 'Oceano',
-    themeDinos: 'Dinossauros', themeComida: 'Comida', themeBrinquedos: 'Brinquedos', themeHerois: 'Heróis',
-    themeMario: 'Mundo dos Cogumelos', themeMonstrinhos: 'Monstrinhos',
+    themeDinos: 'Dinossauros', themeComida: 'Mundo das Comidas', themeBrinquedos: 'Mundo dos Brinquedos', themeHerois: 'Mundo dos Heróis',
+    themeMario: 'Mundo dos Cogumelos', themeMonstrinhos: 'Mundo dos Monstrinhos',
     themeEncanadores: 'Mundo dos Encanadores', themeRobos: 'Mundo dos Robôs',
     themeFantasia: 'Mundo da Fantasia', themeEmocoes: 'Mundo das Emoções',
     themeAventureiros: 'Mundo dos Aventureiros', themeCriaturas: 'Criaturinhas',
+    themeGelo: 'Mundo do Gelo', themeElementos: 'Mundo dos 4 Elementos',
+    themeDuendes: 'Mundo dos Duendes', themeFlores: 'Mundo das Flores',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
     pause: 'Pausar', paused: 'Jogo pausado ⏸️', resume: 'Continuar',
@@ -58,6 +60,7 @@ const I18N = {
     catAnimais: 'Animais', catMar: 'Animais Marinhos', catComida: 'Comida', catFantasia: 'Fantasia',
     catDiversao: 'Diversão', catLendarias: 'Lendárias Douradas',
     catOceano: 'Oceano', catDinos: 'Dinossauros', catMonstros: 'Monstrinhos',
+    catGelo: 'Gelo', catElementos: '4 Elementos', catDuendes: 'Duendes', catFlores: 'Flores',
     recordsTitle: 'Seus Recordes 🏆', rankLabel: 'Seu nível', nextRank: 'Faltam {n} pares para {r}',
     maxRank: 'Você é o melhor de todos! 👑', bestTimes: 'Melhores tempos ⏱️', bestSpeed: 'Velocidade recorde ⚡',
     stickersOwned: 'Figurinhas', gamesWon: 'Vitórias', noRecord: '—', ppmUnit: '{n}/min',
@@ -103,11 +106,13 @@ const I18N = {
     waitingRematch: 'Waiting for the other player…', peerWantsRematch: 'The other wants a rematch! 🔁',
     peerLeft: 'The other player left 👋',
     themeAnimais: 'Animals', themeFrutas: 'Fruits', themeEspaco: 'Space', themeOceano: 'Ocean',
-    themeDinos: 'Dinosaurs', themeComida: 'Food', themeBrinquedos: 'Toys', themeHerois: 'Heroes',
-    themeMario: 'Mushroom World', themeMonstrinhos: 'Lil Monsters',
+    themeDinos: 'Dinosaurs', themeComida: 'Food World', themeBrinquedos: 'Toy World', themeHerois: 'Hero World',
+    themeMario: 'Mushroom World', themeMonstrinhos: 'Monster World',
     themeEncanadores: 'Plumbers World', themeRobos: 'Robots World',
     themeFantasia: 'Fantasy World', themeEmocoes: 'Emotions World',
     themeAventureiros: 'Adventurers World', themeCriaturas: 'Lil Creatures',
+    themeGelo: 'Ice World', themeElementos: '4 Elements World',
+    themeDuendes: 'Elf World', themeFlores: 'Flower World',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     pause: 'Pause', paused: 'Game paused ⏸️', resume: 'Resume',
@@ -130,6 +135,7 @@ const I18N = {
     catAnimais: 'Animals', catMar: 'Sea Animals', catComida: 'Food', catFantasia: 'Fantasy',
     catDiversao: 'Fun', catLendarias: 'Golden Legendaries',
     catOceano: 'Ocean', catDinos: 'Dinosaurs', catMonstros: 'Lil Monsters',
+    catGelo: 'Ice', catElementos: '4 Elements', catDuendes: 'Elves', catFlores: 'Flowers',
     recordsTitle: 'Your Records 🏆', rankLabel: 'Your rank', nextRank: '{n} more pairs to {r}',
     maxRank: "You're the best of all! 👑", bestTimes: 'Best times ⏱️', bestSpeed: 'Record speed ⚡',
     stickersOwned: 'Stickers', gamesWon: 'Wins', noRecord: '—', ppmUnit: '{n}/min',
@@ -175,11 +181,13 @@ const I18N = {
     waitingRematch: "En attente de l'autre joueur…", peerWantsRematch: "L'autre veut rejouer! 🔁",
     peerLeft: "L'autre joueur est parti 👋",
     themeAnimais: 'Animaux', themeFrutas: 'Fruits', themeEspaco: 'Espace', themeOceano: 'Océan',
-    themeDinos: 'Dinosaures', themeComida: 'Nourriture', themeBrinquedos: 'Jouets', themeHerois: 'Héros',
-    themeMario: 'Monde des Champignons', themeMonstrinhos: 'Petits Monstres',
+    themeDinos: 'Dinosaures', themeComida: 'Monde des Nourritures', themeBrinquedos: 'Monde des Jouets', themeHerois: 'Monde des Héros',
+    themeMario: 'Monde des Champignons', themeMonstrinhos: 'Monde des Petits Monstres',
     themeEncanadores: 'Monde des Plombiers', themeRobos: 'Monde des Robots',
     themeFantasia: 'Monde de la Fantaisie', themeEmocoes: 'Monde des Émotions',
     themeAventureiros: 'Monde des Aventuriers', themeCriaturas: 'Petites Créatures',
+    themeGelo: 'Monde de Glace', themeElementos: 'Monde des 4 Éléments',
+    themeDuendes: 'Monde des Lutins', themeFlores: 'Monde des Fleurs',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
     pause: 'Pause', paused: 'Jeu en pause ⏸️', resume: 'Reprendre',
@@ -202,6 +210,7 @@ const I18N = {
     catAnimais: 'Animaux', catMar: 'Animaux Marins', catComida: 'Nourriture', catFantasia: 'Fantaisie',
     catDiversao: 'Amusement', catLendarias: 'Légendaires Dorés',
     catOceano: 'Océan', catDinos: 'Dinosaures', catMonstros: 'Petits Monstres',
+    catGelo: 'Glace', catElementos: '4 Éléments', catDuendes: 'Lutins', catFlores: 'Fleurs',
     recordsTitle: 'Tes Records 🏆', rankLabel: 'Ton niveau', nextRank: '{n} paires pour {r}',
     maxRank: 'Tu es le meilleur de tous! 👑', bestTimes: 'Meilleurs temps ⏱️', bestSpeed: 'Vitesse record ⚡',
     stickersOwned: 'Autocollants', gamesWon: 'Victoires', noRecord: '—', ppmUnit: '{n}/min',
@@ -288,6 +297,10 @@ const IMG_THEMES = {
   encanadores: imgTheme('en', 'encanadores', 12),
   robos: imgTheme('ro', 'robos', 12),
   aventureiros: imgTheme('v', 'adv', 12),
+  gelo: imgTheme('ge', 'gelo', 12),
+  elementos: imgTheme('el', 'elementos', 12),
+  duendes: imgTheme('du', 'duendes', 12),
+  flores: imgTheme('fl', 'flores', 12),
 };
 
 const THEME_FACES = {};
@@ -319,13 +332,17 @@ const THEME_LIST = [
   { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 320 },
   { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 360 },
   { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 420 },
+  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 480 },
+  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 540 },
+  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 600 },
+  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 660 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
 const LEVELS = {
   facil:   { pairs: 8,  cols: 4, bonus: 5,  time: 100, key: 'levelFacil' },
-  medio:   { pairs: 10, cols: 5, bonus: 10, time: 130, key: 'levelMedio' },
-  dificil: { pairs: 12, cols: 6, bonus: 20, time: 160, key: 'levelDificil' },
+  medio:   { pairs: 10, cols: 4, bonus: 10, time: 130, key: 'levelMedio' },
+  dificil: { pairs: 12, cols: 4, bonus: 20, time: 160, key: 'levelDificil' },
 };
 const EXTRA_TIME_PER_PLAYER = 40;
 const CONSOLATION_COINS = 3;
@@ -357,6 +374,10 @@ const STICKERS = [
   ...stickerSet('comida', 'comida', 'co', 12),
   ...stickerSet('fantasia', 'fantasia', 'fa', 12),
   ...stickerSet('monstros', 'monstrinhos', 'mo', 12),
+  ...stickerSet('gelo', 'gelo', 'ge', 12),
+  ...stickerSet('elementos', 'elementos', 'el', 12),
+  ...stickerSet('duendes', 'duendes', 'du', 12),
+  ...stickerSet('flores', 'flores', 'fl', 12),
   // Lendárias douradas (raras) — 24 figuras épicas (imagens)
   ...Array.from({ length: 24 }, (_, i) => ({ id: `leg${i + 1}`, cat: 'lendarias', img: `img/lendarias/l${i + 1}.webp`, legendary: true })),
 ];
@@ -369,6 +390,10 @@ const CATEGORIES = [
   { id: 'comida',  key: 'catComida',  emoji: '🍔' },
   { id: 'fantasia',key: 'catFantasia',emoji: '🏰' },
   { id: 'monstros',key: 'catMonstros',emoji: '👾' },
+  { id: 'gelo',    key: 'catGelo',    emoji: '❄️' },
+  { id: 'elementos', key: 'catElementos', emoji: '🔥' },
+  { id: 'duendes', key: 'catDuendes', emoji: '🍄' },
+  { id: 'flores',  key: 'catFlores',  emoji: '🌸' },
   { id: 'lendarias', key: 'catLendarias', emoji: '✨', legendary: true },
 ];
 
@@ -1311,7 +1336,7 @@ function fitBoard() {
   if (availW <= 0 || availH <= 0) return;
 
   let best = { cols: 2, size: 0 };
-  const maxCols = Math.min(n, 8);
+  const maxCols = Math.min(n, 4);
   for (let cols = 2; cols <= maxCols; cols++) {
     const rows = Math.ceil(n / cols);
     const w = (availW - gap * (cols - 1)) / cols;

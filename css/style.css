@@ -357,30 +357,39 @@ body {
 /* Balão de fala */
 .speech {
   position: relative;
-  z-index: 2;
-  margin-bottom: 2px;
+  z-index: 3;
+  margin-bottom: -4px;
   background: #fff;
   color: var(--text-dark);
-  font-weight: 600;
-  font-size: clamp(0.8rem, 3.2vw, 1rem);
-  padding: 8px 16px;
-  border-radius: 18px;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
-  animation: speech-pop 3s ease-in-out infinite;
-  max-width: min(86vw, 300px);
+  font-weight: 800;
+  font-size: clamp(0.76rem, 3vw, 0.92rem);
+  padding: 9px 20px 10px;
+  border-radius: 16px 16px 18px 18px;
+  box-shadow: 0 5px 0 rgba(255, 255, 255, 0.35), 0 7px 14px rgba(26, 7, 75, 0.22);
+  animation: home-owl-float 3.4s ease-in-out infinite;
+  width: min(78vw, 300px);
+  min-height: 54px;
+  display: grid;
+  place-items: center;
   text-align: center;
-  line-height: 1.2;
+  line-height: 1.16;
 }
 .speech::after {
-  content: '';
+  content: "";
   position: absolute;
-  bottom: -8px; left: 50%; margin-left: -7px;
-  border: 7px solid transparent;
-  border-top-color: #fff;
+  left: 52%;
+  bottom: -11px;
+  width: 22px;
+  height: 18px;
+  background: #fff;
+  border-bottom-left-radius: 18px;
+  clip-path: polygon(0 0, 100% 0, 28% 100%);
+  filter: drop-shadow(0 5px 3px rgba(26, 7, 75, 0.12));
+  transform: translateX(-50%) rotate(5deg);
 }
-@keyframes speech-pop {
-  0%, 100% { transform: translateY(0) scale(1); }
-  50% { transform: translateY(-4px) scale(1.04); }
+@keyframes home-owl-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 /* ============================================================
@@ -392,21 +401,44 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  width: min(92vw, 420px);
+  margin-inline: auto;
   cursor: pointer;   /* toque na coruja -> ela fala */
 }
 .home-owl:active .owl-mascot { transform: scale(0.97); }
-.home-owl .owl-mascot { transition: transform 0.12s; }
+.home-owl .owl-mascot {
+  width: clamp(176px, 52vw, 266px);
+  aspect-ratio: 446 / 282;
+  position: relative;
+  z-index: 1;
+  animation: home-owl-float 3.4s ease-in-out infinite;
+  transition: transform 0.12s;
+}
 /* brilho violeta atrás da coruja para a animação se fundir ao fundo */
 .home-owl::before {
   content: "";
   position: absolute;
-  width: 96%;
-  height: 62%;
+  width: 74%;
+  height: 50%;
   left: 50%;
-  bottom: 2%;
+  bottom: 0;
   transform: translateX(-50%);
   background: radial-gradient(ellipse at center, rgba(124, 64, 196, 0.58), rgba(124, 64, 196, 0) 68%);
   z-index: -1;
+  pointer-events: none;
+}
+.home-owl::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  bottom: clamp(10px, 3vw, 18px);
+  width: clamp(92px, 26vw, 146px);
+  height: clamp(18px, 5vw, 28px);
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(43, 12, 83, 0.42), rgba(43, 12, 83, 0.18) 48%, rgba(43, 12, 83, 0) 72%);
+  filter: blur(1px);
   pointer-events: none;
 }
 /* Mascote = animação (WebP) feita a partir do vídeo do usuário: asas, bico e
@@ -665,25 +697,61 @@ body {
 .opt-player.selected .opt-player-ico { transform: scale(1.14) rotate(-5deg); }
 
 /* Nome e avatar do jogador */
-.name-input {
+.name-field {
   width: 100%;
   max-width: 280px;
+  min-height: 58px;
+  margin-inline: auto;
+  position: relative;
+  display: block;
+  color: var(--text-dark);
+  background: var(--card-surface);
+  border: 4px solid transparent;
+  border-radius: 999px;
+  padding: 5px 14px;
+  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
+  transition: border-color 0.15s, transform 0.12s;
+}
+.name-field:focus-within { border-color: var(--yellow); }
+.name-field-avatar {
+  width: 42px;
+  height: 42px;
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 0 0 2px rgba(124, 58, 237, 0.12), 0 3px 0 rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+}
+.name-field-avatar svg,
+.name-field-avatar img.avatar-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.name-input {
+  width: 100%;
+  height: 44px;
+  min-width: 0;
   font-family: inherit;
   font-size: 1.1rem;
   font-weight: 600;
   text-align: center;
   color: var(--text-dark);
-  background: var(--card-surface);
-  border: 4px solid transparent;
-  border-radius: 999px;
-  padding: 12px 18px;
-  box-shadow: 0 5px 0 rgba(0, 0, 0, 0.18);
+  background: transparent;
+  border: 0;
+  padding: 0 46px;
   outline: none;
-  transition: border-color 0.15s;
 }
-.name-input:focus { border-color: var(--yellow); }
 .name-input::placeholder { color: #a78bfa; opacity: 0.8; }
-.name-input.shake { animation: shake 0.4s; border-color: #ef4444; }
+.name-field:has(.name-input.shake) { animation: shake 0.4s; border-color: #ef4444; }
+.name-input.shake { animation: shake 0.4s; }
 .avatar-row {
   display: flex;
   flex-wrap: wrap;
@@ -1269,6 +1337,7 @@ body {
 @media (max-height: 560px) and (orientation: landscape) {
   .owl { --owl-size: clamp(80px, 18vh, 120px); }
   .owl-stage { margin-top: 6px; }
+  .home-owl .owl-mascot { width: clamp(132px, 34vh, 190px); }
   .title { font-size: clamp(1.8rem, 8vh, 2.6rem); margin: 8px 0 4px; }
   .subtitle { margin-bottom: 12px; }
   .board[data-cols="5"],

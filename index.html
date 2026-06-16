@@ -58,7 +58,7 @@
       <span class="sparkle s2">⭐</span>
       <span class="sparkle s3">💫</span>
       <div class="speech" id="owl-speech" data-i18n="owlGreeting">Vamos aprender a memorizar juntos?</div>
-      <img class="owl-mascot" src="img/owl-anim.webp?v=33" alt="Coruja Memória Mágica" draggable="false" />
+      <img class="owl-mascot" src="img/owl-home.webp?v=41" data-anim-src="img/owl-home.webp" alt="Coruja Memória Mágica" draggable="false" />
     </div>
 
     <h1 class="title"><span data-i18n="appName1">Memória</span><br/><span class="accent" data-i18n="appName2">Mágica</span></h1>
@@ -93,7 +93,10 @@
 
     <section class="setup-block">
       <h3 data-i18n="yourName">Seu nome</h3>
-      <input type="text" id="profile-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
+      <label class="name-field" for="profile-name-input">
+        <span class="name-field-avatar" id="profile-name-avatar" aria-hidden="true"></span>
+        <input type="text" id="profile-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
+      </label>
     </section>
 
     <section class="setup-block">
@@ -166,7 +169,10 @@
     <h2 class="screen-title" data-i18n="joinTitle">Entrar no jogo 🎮</h2>
     <section class="setup-block">
       <h3 data-i18n="yourName">Seu nome</h3>
-      <input type="text" id="join-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
+      <label class="name-field" for="join-name-input">
+        <span class="name-field-avatar" id="join-name-avatar" aria-hidden="true"></span>
+        <input type="text" id="join-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
+      </label>
       <h3 data-i18n="chooseSkin">Cor da pele</h3>
       <div class="skin-row" id="join-skin-options"></div>
       <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>

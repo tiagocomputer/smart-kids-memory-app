@@ -626,7 +626,7 @@ const owlVoice = (() => {
   }
   // Vozes GRAVADAS (extraídas do vídeo) por idioma — quando existe, usa o áudio
   // real (voz humana natural) no lugar da síntese do navegador.
-  const FILES = { pt: 'audio/owl-pt.mp3?v=30', en: 'audio/owl-en.mp3?v=30', fr: 'audio/owl-fr.mp3?v=30' };
+  const FILES = { pt: 'audio/owl-home.m4a?v=40', en: 'audio/owl-en.mp3?v=30', fr: 'audio/owl-fr.mp3?v=30' };
   const clips = {};
   for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'auto'; clips[k] = a; } catch { /* ignora */ } }
   function speakTTS() {
@@ -643,8 +643,16 @@ const owlVoice = (() => {
       synth.speak(u);
     } catch { /* voz indisponível no aparelho */ }
   }
+  function restartHomeOwl() {
+    const img = document.querySelector('.home-owl .owl-mascot');
+    if (!img) return;
+    const base = img.dataset.animSrc || img.src.split('?')[0];
+    img.dataset.animSrc = base;
+    img.src = `${base}?v=41&talk=${Date.now()}`;
+  }
   function speak() {
     if (!storage.sound) return;
+    restartHomeOwl();
     const clip = clips[lang];
     if (clip) {                              // voz gravada do vídeo
       try { if (synth) synth.cancel(); clip.currentTime = 0; const p = clip.play(); if (p && p.catch) p.catch(speakTTS); return; }
@@ -745,6 +753,13 @@ function renderSkinPicker(id) {
 function renderAllPickers() {
   AVATAR_PICKERS.forEach(renderAvatarPicker);
   SKIN_PICKERS.forEach(renderSkinPicker);
+  renderNameAvatars();
+}
+function renderNameAvatars() {
+  ['profile-name-avatar', 'join-name-avatar'].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = avatarSVG(storage.avatar, storage.skin);
+  });
 }
 
 function setupProfileControls() {
@@ -757,6 +772,7 @@ function setupProfileControls() {
       storage.avatar = b.dataset.avatar;
       sound.play('click');
       AVATAR_PICKERS.forEach(renderAvatarPicker);
+      renderNameAvatars();
     });
   });
   // Sem tom de pele (avatares são imagens prontas): esconde o seletor
@@ -778,6 +794,7 @@ function setupProfileControls() {
       renderAllPickers();
     });
   });
+  renderNameAvatars();
   const inputs = ['profile-name-input', 'join-name-input'].map((id) => document.getElementById(id));
   inputs.forEach((el) => {
     el.value = storage.name;

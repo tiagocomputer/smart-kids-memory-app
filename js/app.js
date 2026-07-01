@@ -1590,14 +1590,18 @@ function endGame() {
 
   // XP/ranking: solo conta os pares do nível; online conta os meus pares
   let speed = null;
+  let xpGained = 0;
   if (!game.online && config.players === 1) {
     const rec = updateSoloRecords(secondsUsed, game.totalPairs);
     speed = { ppm: rec.ppm, beat: rec.beat };
-    addXp(game.totalPairs, true);
+    xpGained = game.totalPairs;
+    addXp(xpGained, true);
   } else if (game.online) {
-    addXp(game.players[game.myIndex].pairs, iWin);
+    xpGained = game.players[game.myIndex].pairs;
+    addXp(xpGained, iWin);
   } else {
-    addXp(game.players[0].pairs, true);
+    xpGained = game.players[0].pairs;
+    addXp(xpGained, true);
   }
 
   let newSticker = null;
@@ -1609,10 +1613,15 @@ function endGame() {
   }
   updateCoinChip();
 
-  // Publica pontos no ranking mundial e salva o progresso na nuvem (se logado).
+  // Publica pontos nos rankings (geral, semanal, por mundo) e salva na nuvem.
   if (cloud.enabled && cloud.isSignedIn()) {
-    cloud.submitScore(getRecords(), rankingProfile());
+    const prof = rankingProfile();
+    cloud.submitScore(getRecords(), prof);
     cloud.saveState(localSnapshot());
+    if (xpGained > 0) {
+      cloud.bumpBoard('weekly/' + cloud.weekId(), xpGained, prof);
+      cloud.bumpBoard('world/' + config.theme, xpGained, prof);
+    }
   }
 
   lastWin = {
@@ -1819,6 +1828,8 @@ function renderRecords() {
 const CLOUD_STR = {
   pt: {
     worldRanking: 'Ranking Mundial 🌍', rankLoading: 'Carregando ranking…',
+    rankingTitle: 'Ranking 🏆', tabAll: 'Geral', tabWeek: 'Semana', tabWorld: 'Mundos',
+    weekNote: '🔄 Renova toda segunda-feira',
     rankEmpty: 'Ainda não há jogadores. Seja o primeiro a entrar no ranking!',
     you: 'Você',
     loginTitle: 'Salve seu progresso! ✨',
@@ -1834,6 +1845,8 @@ const CLOUD_STR = {
   },
   en: {
     worldRanking: 'World Ranking 🌍', rankLoading: 'Loading ranking…',
+    rankingTitle: 'Ranking 🏆', tabAll: 'All-time', tabWeek: 'Weekly', tabWorld: 'Worlds',
+    weekNote: '🔄 Resets every Monday',
     rankEmpty: 'No players yet. Be the first on the ranking!',
     you: 'You',
     loginTitle: 'Save your progress! ✨',
@@ -1849,6 +1862,8 @@ const CLOUD_STR = {
   },
   fr: {
     worldRanking: 'Classement Mondial 🌍', rankLoading: 'Chargement…',
+    rankingTitle: 'Classement 🏆', tabAll: 'Général', tabWeek: 'Semaine', tabWorld: 'Mondes',
+    weekNote: '🔄 Réinitialisé chaque lundi',
     rankEmpty: "Aucun joueur pour l'instant. Sois le premier du classement !",
     you: 'Toi',
     loginTitle: 'Sauvegarde ta progression ! ✨',
@@ -2015,19 +2030,93 @@ function wireCloudUI() {
   });
 }
 
+let rankTab = 'all';        // 'all' | 'week' | 'world'
+let rankWorld = null;       // id do mundo selecionado na aba Mundos
+let rankLoadToken = 0;      // evita renderizar resultado de uma aba antiga
+
 function renderCloudSection() {
   const box = $('#cloud-section');
   if (!box || !cloud.enabled) { if (box) box.hidden = true; return; }
   box.hidden = false;
+  if (!rankWorld) rankWorld = config.theme || THEME_LIST[0].id;
   const entrar = cloud.isSignedIn() ? ''
     : `<button class="btn btn-small cloud-enter" id="cloud-enter">🔑 ${cstr('saveProgress')}</button>`;
   box.innerHTML = `
-    <h3 class="records-sub">${cstr('worldRanking')}</h3>
+    <h3 class="records-sub">${cstr('rankingTitle')}</h3>
     ${entrar}
-    <div class="cloud-rank" id="cloud-rank"><p class="cloud-muted">${cstr('rankLoading')}</p></div>`;
+    <div class="rank-tabs" id="rank-tabs">
+      <button class="rank-tab" data-tab="all">🌍 ${cstr('tabAll')}</button>
+      <button class="rank-tab" data-tab="week">📅 ${cstr('tabWeek')}</button>
+      <button class="rank-tab" data-tab="world">🗺️ ${cstr('tabWorld')}</button>
+    </div>
+    <div class="rank-worlds" id="rank-worlds" hidden>${THEME_LIST.map((th) =>
+      `<button class="rank-world-chip" data-world="${th.id}"><span class="rw-ico">${th.icon}</span><span>${t(th.key)}</span></button>`
+    ).join('')}</div>
+    <p class="rank-note" id="rank-note" hidden></p>
+    <div class="cloud-rank" id="cloud-rank"></div>`;
+
   const enterBtn = $('#cloud-enter');
   if (enterBtn) enterBtn.addEventListener('click', () => { sound.play('click'); openLoginModal(() => renderRecords()); });
-  loadWorldRanking();
+  $('#rank-tabs').addEventListener('click', (e) => {
+    const b = e.target.closest('.rank-tab'); if (!b) return;
+    sound.play('click'); rankTab = b.dataset.tab; refreshRankTabs(); loadRanking();
+  });
+  $('#rank-worlds').addEventListener('click', (e) => {
+    const b = e.target.closest('.rank-world-chip'); if (!b) return;
+    sound.play('click'); rankWorld = b.dataset.world; refreshRankTabs(); loadRanking();
+  });
+  refreshRankTabs();
+  loadRanking();
+}
+
+function refreshRankTabs() {
+  document.querySelectorAll('#rank-tabs .rank-tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === rankTab));
+  const wbox = $('#rank-worlds');
+  if (wbox) {
+    wbox.hidden = rankTab !== 'world';
+    wbox.querySelectorAll('.rank-world-chip').forEach((b) => {
+      const on = b.dataset.world === rankWorld;
+      b.classList.toggle('active', on);
+      // Centraliza o chip ativo rolando SÓ a faixa horizontal (sem mexer no
+      // scroll vertical da página, que scrollIntoView faria).
+      if (on && rankTab === 'world') {
+        const cr = wbox.getBoundingClientRect();
+        const br = b.getBoundingClientRect();
+        wbox.scrollLeft += (br.left - cr.left) - (cr.width - br.width) / 2;
+      }
+    });
+  }
+  const note = $('#rank-note');
+  if (note) {
+    if (rankTab === 'week') { note.hidden = false; note.textContent = cstr('weekNote'); }
+    else if (rankTab === 'world') { const th = THEME_LIST.find((x) => x.id === rankWorld); note.hidden = false; note.textContent = th ? `${th.icon} ${t(th.key)}` : ''; }
+    else note.hidden = true;
+  }
+}
+
+async function loadRanking() {
+  const el = $('#cloud-rank');
+  if (!el) return;
+  el.innerHTML = `<p class="cloud-muted">${cstr('rankLoading')}</p>`;
+  let path = 'leaderboard';
+  if (rankTab === 'week') path = 'weekly/' + cloud.weekId();
+  else if (rankTab === 'world') path = 'world/' + rankWorld;
+  const token = ++rankLoadToken;
+  const rows = await cloud.topBoard(path, 20);
+  if (token !== rankLoadToken) return; // trocou de aba enquanto carregava
+  if (!rows.length) { el.innerHTML = `<p class="cloud-muted">${cstr('rankEmpty')}</p>`; return; }
+  const meUid = cloud.uid();
+  el.innerHTML = `<ol class="rank-list">${rows.map((row, i) => {
+    const me = row.uid === meUid;
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+    const ava = (row.avatarId && AVATAR_MAP[row.avatarId]) ? avatarSVG(row.avatarId, row.skin) : '<span class="rank-ava-ico">👤</span>';
+    return `<li class="rank-row${me ? ' rank-me' : ''}">
+      <span class="rank-pos">${medal}</span>
+      <span class="rank-ava">${ava}</span>
+      <span class="rank-who">${esc(row.name || cstr('you'))}${me ? ` (${cstr('you')})` : ''}</span>
+      <span class="rank-xp">${row.xp || 0} XP</span>
+    </li>`;
+  }).join('')}</ol>`;
 }
 
 // Ao entrar: adota o nome do Google (se não houver nome), funde progresso
@@ -2083,23 +2172,6 @@ function mergeCloudIntoLocal(remote) {
   // Coleções: união
   if (Array.isArray(remote.stickers)) storage.stickers = Array.from(new Set([...storage.stickers, ...remote.stickers]));
   if (Array.isArray(remote.unlocked)) storage.unlocked = Array.from(new Set([...storage.unlocked, ...remote.unlocked]));
-}
-
-async function loadWorldRanking() {
-  const el = $('#cloud-rank');
-  if (!el) return;
-  const rows = await cloud.topScores(20);
-  if (!rows.length) { el.innerHTML = `<p class="cloud-muted">${cstr('rankEmpty')}</p>`; return; }
-  const meUid = cloud.uid();
-  el.innerHTML = `<ol class="rank-list">${rows.map((row, i) => {
-    const me = row.uid === meUid;
-    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
-    return `<li class="rank-row${me ? ' rank-me' : ''}">
-      <span class="rank-pos">${medal}</span>
-      <span class="rank-who">${esc(row.name || cstr('you'))}${me ? ` (${cstr('you')})` : ''}</span>
-      <span class="rank-xp">${row.xp || 0} XP</span>
-    </li>`;
-  }).join('')}</ol>`;
 }
 
 // ---------- Confete ----------

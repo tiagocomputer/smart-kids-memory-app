@@ -12,6 +12,30 @@
         "$other": { ".validate": true }
       }
     },
+    "weekly": {
+      "$week": {
+        ".read": true,
+        ".indexOn": ["xp"],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+          "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
+          "$other": { ".validate": true }
+        }
+      }
+    },
+    "world": {
+      "$world": {
+        ".read": true,
+        ".indexOn": ["xp"],
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
+          "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
+          "$other": { ".validate": true }
+        }
+      }
+    },
     "users": {
       "$uid": {
         ".read":  "auth != null && auth.uid === $uid",

@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "leaderboard": {
+      ".read": true,
+      ".indexOn": ["xp"],
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
+        "wins": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
+        "ppm":  { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000" },
+        "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
+        "$other": { ".validate": true }
+      }
+    },
+    "users": {
+      "$uid": {
+        ".read":  "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    }
+  }
+}

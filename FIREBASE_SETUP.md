@@ -40,12 +40,20 @@ Em **Authentication → Sign-in method**, ative:
 Em **Authentication → Settings → Authorized domains**, adicione o domínio do seu
 site (ex.: `memoria-magica.vercel.app`). O `localhost` já vem liberado para testes.
 
-## 4. Criar o banco (Firestore) e aplicar as regras
+## 4. Criar o banco (Realtime Database) e aplicar as regras
 
-1. Em **Firestore Database → Criar banco de dados** → comece em modo produção.
-2. Vá em **Regras** e cole o conteúdo de **`firestore.rules`** (neste repositório).
-   Essas regras deixam o ranking ser lido por todos, mas cada jogador só escreve
-   no próprio registro — e limitam pontos por atualização (anti-cheat básico).
+Usamos o **Realtime Database** (e não o Firestore), porque ele funciona no plano
+gratuito **Spark sem precisar cadastrar cartão de crédito**.
+
+1. Em **Criação → Realtime Database → Criar banco de dados**.
+2. Escolha a localização e comece em **modo bloqueado** (locked).
+3. Copie a **URL do banco** que aparece no topo (ex.:
+   `https://memoria-magica-b8ce2-default-rtdb.firebaseio.com`) e cole em
+   `FIREBASE_CONFIG.databaseURL` no topo de **`js/cloud.js`**.
+4. Vá na aba **Regras**, apague tudo e cole o conteúdo de
+   **`database.rules.json`** (neste repositório). Elas deixam o ranking ser lido
+   por todos, mas cada jogador só escreve no próprio registro — e validam os
+   pontos (anti-cheat básico). Clique em **Publicar**.
 
 ## 5. Pronto
 

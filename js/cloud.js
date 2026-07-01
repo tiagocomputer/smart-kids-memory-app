@@ -18,10 +18,13 @@ const cloud = (() => {
     storageBucket: 'memoria-magica-b8ce2.firebasestorage.app',
     messagingSenderId: '376835253719',
     appId: '1:376835253719:web:92a25d45f0aefef9a31792',
+    // URL do Realtime Database — cole aqui a URL que o Firebase mostra ao criar
+    // o banco (ex.: https://memoria-magica-b8ce2-default-rtdb.firebaseio.com).
+    databaseURL: '',
   };
 
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';
-  const enabled = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.projectId);
+  const enabled = !!(FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.databaseURL);
 
   const state = { ready: false, user: null };
   const readyCbs = [];
@@ -71,11 +74,11 @@ const cloud = (() => {
       const [appMod, authApi, dbApi] = await Promise.all([
         import(`${SDK}/firebase-app.js`),
         import(`${SDK}/firebase-auth.js`),
-        import(`${SDK}/firebase-firestore.js`),
+        import(`${SDK}/firebase-database.js`),
       ]);
       const app = appMod.initializeApp(FIREBASE_CONFIG);
       const auth = authApi.getAuth(app);
-      const db = dbApi.getFirestore(app);
+      const db = dbApi.getDatabase(app);
       fb = { auth, db, authApi, dbApi };
       authApi.onAuthStateChanged(auth, (user) => {
         const was = state.user && state.user.uid;
@@ -115,16 +118,16 @@ const cloud = (() => {
   async function loadState() {
     if (!fb || !isSignedIn()) return null;
     try {
-      const ref = fb.dbApi.doc(fb.db, 'users', uid());
-      const snap = await fb.dbApi.getDoc(ref);
-      return snap.exists() ? snap.data() : null;
+      const snap = await fb.dbApi.get(fb.dbApi.ref(fb.db, `users/${uid()}`));
+      return snap.exists() ? snap.val() : null;
     } catch (e) { console.warn('[cloud] loadState', e); return null; }
   }
   async function saveState(snapshot) {
     if (!fb || !isSignedIn()) return;
     try {
-      const ref = fb.dbApi.doc(fb.db, 'users', uid());
-      await fb.dbApi.setDoc(ref, { ...snapshot, updatedAt: fb.dbApi.serverTimestamp() }, { merge: true });
+      await fb.dbApi.update(fb.dbApi.ref(fb.db, `users/${uid()}`), {
+        ...snapshot, updatedAt: fb.dbApi.serverTimestamp(),
+      });
     } catch (e) { console.warn('[cloud] saveState', e); }
   }
 
@@ -132,8 +135,7 @@ const cloud = (() => {
   async function submitScore(rec, profile) {
     if (!fb || !isSignedIn()) return; // só publica quem tem conta
     try {
-      const ref = fb.dbApi.doc(fb.db, 'leaderboard', uid());
-      await fb.dbApi.setDoc(ref, {
+      await fb.dbApi.set(fb.dbApi.ref(fb.db, `leaderboard/${uid()}`), {
         name: (profile && profile.name) || 'Jogador',
         avatarId: (profile && profile.avatarId) || null,
         skin: (profile && profile.skin) != null ? profile.skin : null,
@@ -141,16 +143,19 @@ const cloud = (() => {
         wins: rec.wins || 0,
         ppm: rec.ppm || 0,
         updatedAt: fb.dbApi.serverTimestamp(),
-      }, { merge: true });
+      });
     } catch (e) { console.warn('[cloud] submitScore', e); }
   }
   async function topScores(n = 20) {
     if (!fb) return [];
     try {
-      const { collection, query, orderBy, limit, getDocs } = fb.dbApi;
-      const q = query(collection(fb.db, 'leaderboard'), orderBy('xp', 'desc'), limit(n));
-      const snap = await getDocs(q);
-      return snap.docs.map((d) => ({ uid: d.id, ...d.data() }));
+      const { ref, query, orderByChild, limitToLast, get } = fb.dbApi;
+      const q = query(ref(fb.db, 'leaderboard'), orderByChild('xp'), limitToLast(n));
+      const snap = await get(q);
+      const rows = [];
+      snap.forEach((child) => { rows.push({ uid: child.key, ...child.val() }); });
+      // RTDB devolve em ordem crescente de xp; invertemos para o maior primeiro.
+      return rows.reverse();
     } catch (e) { console.warn('[cloud] topScores', e); return []; }
   }
 

@@ -1606,6 +1606,12 @@ function endGame() {
   }
   updateCoinChip();
 
+  // Publica pontos no ranking mundial e salva o progresso na nuvem (se logado).
+  if (cloud.enabled && cloud.isSignedIn()) {
+    cloud.submitScore(getRecords(), myProfile());
+    cloud.saveState(localSnapshot());
+  }
+
   lastWin = {
     coinsEarned, timeBonus, speed,
     stickerId: newSticker ? newSticker.id : null,
@@ -1800,7 +1806,190 @@ function renderRecords() {
       ${['facil', 'medio', 'dificil'].map((lv) => `
         <div class="record-box"><div class="record-ico">${LEVELS[lv].pairs}🃏</div><div class="record-num">${fmtTime(r.fast[lv])}</div><div class="record-cap">${t(LEVELS[lv].key)}</div></div>
       `).join('')}
-    </div>`;
+    </div>
+    <div id="cloud-section"></div>`;
+  renderCloudSection();
+}
+
+// ---------- Nuvem: conta + ranking mundial (opcional) ----------
+// Textos próprios do módulo de nuvem (não dependem do bloco I18N principal).
+const CLOUD_STR = {
+  pt: {
+    worldRanking: 'Ranking Mundial 🌍', rankLoading: 'Carregando ranking…',
+    rankEmpty: 'Ainda não há jogadores. Seja o primeiro a entrar no ranking!',
+    you: 'Você', guestMsg: 'Você está jogando como convidado.',
+    signedAs: 'Conectado como {n} ✅', syncHint: 'Entre para salvar seus pontos em qualquer aparelho e aparecer no ranking mundial!',
+    withGoogle: 'Entrar com Google', withEmail: 'Entrar com e-mail', logout: 'Sair da conta',
+    email: 'E-mail', pass: 'Senha (6+ caracteres)', doLogin: 'Entrar', doRegister: 'Criar conta',
+    haveAccount: 'Já tenho conta', noAccount: 'Criar uma conta', cancel: 'Cancelar',
+    syncing: 'Sincronizando…', synced: 'Progresso sincronizado! 🎉', authErr: 'Não deu certo. Confira e tente de novo.',
+  },
+  en: {
+    worldRanking: 'World Ranking 🌍', rankLoading: 'Loading ranking…',
+    rankEmpty: 'No players yet. Be the first on the ranking!',
+    you: 'You', guestMsg: 'You are playing as a guest.',
+    signedAs: 'Signed in as {n} ✅', syncHint: 'Sign in to save your points on any device and appear on the world ranking!',
+    withGoogle: 'Sign in with Google', withEmail: 'Sign in with email', logout: 'Sign out',
+    email: 'Email', pass: 'Password (6+ chars)', doLogin: 'Sign in', doRegister: 'Create account',
+    haveAccount: 'I have an account', noAccount: 'Create an account', cancel: 'Cancel',
+    syncing: 'Syncing…', synced: 'Progress synced! 🎉', authErr: "That didn't work. Check and try again.",
+  },
+  fr: {
+    worldRanking: 'Classement Mondial 🌍', rankLoading: 'Chargement…',
+    rankEmpty: "Aucun joueur pour l'instant. Sois le premier du classement !",
+    you: 'Toi', guestMsg: 'Tu joues en tant qu\'invité.',
+    signedAs: 'Connecté en tant que {n} ✅', syncHint: 'Connecte-toi pour sauvegarder tes points sur tout appareil et apparaître au classement mondial !',
+    withGoogle: 'Se connecter avec Google', withEmail: 'Se connecter par e-mail', logout: 'Se déconnecter',
+    email: 'E-mail', pass: 'Mot de passe (6+ caractères)', doLogin: 'Se connecter', doRegister: 'Créer un compte',
+    haveAccount: "J'ai un compte", noAccount: 'Créer un compte', cancel: 'Annuler',
+    syncing: 'Synchronisation…', synced: 'Progression synchronisée ! 🎉', authErr: "Échec. Vérifie et réessaie.",
+  },
+};
+function cstr(key, vars) {
+  const dict = CLOUD_STR[lang] || CLOUD_STR.pt;
+  let s = dict[key] != null ? dict[key] : CLOUD_STR.pt[key] || key;
+  if (vars) for (const k in vars) s = s.replace(`{${k}}`, vars[k]);
+  return s;
+}
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function renderCloudSection() {
+  const box = $('#cloud-section');
+  if (!box || !cloud.enabled) return; // desativado => nada aparece (jogo offline)
+  box.innerHTML = `
+    <div class="cloud-account" id="cloud-account"></div>
+    <h3 class="records-sub">${cstr('worldRanking')}</h3>
+    <div class="cloud-rank" id="cloud-rank"><p class="cloud-muted">${cstr('rankLoading')}</p></div>`;
+  renderAccountCard();
+  loadWorldRanking();
+}
+
+function renderAccountCard() {
+  const el = $('#cloud-account');
+  if (!el) return;
+  const u = cloud.currentUser();
+  if (cloud.isSignedIn()) {
+    const nm = esc(u.name || u.email || cstr('you'));
+    el.innerHTML = `
+      <p class="cloud-signed">${cstr('signedAs', { n: nm })}</p>
+      <button class="btn btn-small" id="cloud-logout">${cstr('logout')}</button>`;
+    $('#cloud-logout').addEventListener('click', async () => {
+      sound.play('click');
+      try { await cloud.signOut(); } catch (e) { /* ignora */ }
+      renderRecords();
+    });
+  } else {
+    el.innerHTML = `
+      <p class="cloud-muted">${cstr('guestMsg')}</p>
+      <p class="cloud-hint">${cstr('syncHint')}</p>
+      <button class="btn btn-small cloud-google" id="cloud-google">🔵 ${cstr('withGoogle')}</button>
+      <button class="btn btn-small" id="cloud-email">✉️ ${cstr('withEmail')}</button>
+      <form class="cloud-emailform" id="cloud-emailform" hidden>
+        <input type="email" id="cloud-in-email" class="name-input" autocomplete="email" placeholder="${cstr('email')}" />
+        <input type="password" id="cloud-in-pass" class="name-input" autocomplete="current-password" placeholder="${cstr('pass')}" />
+        <p class="cloud-status" id="cloud-status" hidden></p>
+        <button type="submit" class="btn btn-small btn-play" id="cloud-do">${cstr('doLogin')}</button>
+        <button type="button" class="btn-link" id="cloud-toggle">${cstr('noAccount')}</button>
+      </form>`;
+    wireAuthButtons();
+  }
+}
+
+let cloudRegisterMode = false;
+function wireAuthButtons() {
+  const gBtn = $('#cloud-google');
+  if (gBtn) gBtn.addEventListener('click', async () => {
+    sound.play('click');
+    try { await cloud.signInGoogle(); await afterSignIn(); }
+    catch (e) { showToast(cstr('authErr')); }
+  });
+  const eBtn = $('#cloud-email');
+  const form = $('#cloud-emailform');
+  if (eBtn && form) eBtn.addEventListener('click', () => { sound.play('click'); form.hidden = !form.hidden; });
+  const toggle = $('#cloud-toggle');
+  const doBtn = $('#cloud-do');
+  if (toggle) toggle.addEventListener('click', () => {
+    cloudRegisterMode = !cloudRegisterMode;
+    doBtn.textContent = cloudRegisterMode ? cstr('doRegister') : cstr('doLogin');
+    toggle.textContent = cloudRegisterMode ? cstr('haveAccount') : cstr('noAccount');
+  });
+  if (form) form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const email = $('#cloud-in-email').value.trim();
+    const pass = $('#cloud-in-pass').value;
+    const status = $('#cloud-status');
+    if (!email || pass.length < 6) { status.hidden = false; status.textContent = cstr('authErr'); return; }
+    status.hidden = false; status.textContent = cstr('syncing');
+    try {
+      if (cloudRegisterMode) await cloud.registerEmail(email, pass);
+      else await cloud.signInEmail(email, pass);
+      await afterSignIn();
+    } catch (e) { status.hidden = false; status.textContent = cstr('authErr'); }
+  });
+}
+
+// Ao entrar: funde progresso local + nuvem (pega o melhor dos dois) e publica.
+async function afterSignIn() {
+  showToast(cstr('syncing'));
+  try {
+    const remote = await cloud.loadState();
+    if (remote) mergeCloudIntoLocal(remote);
+    await cloud.saveState(localSnapshot());
+    await cloud.submitScore(getRecords(), myProfile());
+    updateCoinChip();
+    showToast(cstr('synced'));
+  } catch (e) { /* ignora — segue com o que tem local */ }
+  renderRecords();
+}
+
+function localSnapshot() {
+  const r = getRecords();
+  return {
+    name: storage.name, avatarId: storage.avatar, skin: storage.skin,
+    coins: storage.coins, xp: r.xp, wins: r.wins, ppm: r.ppm,
+    fast: r.fast, stickers: storage.stickers, unlocked: storage.unlocked,
+  };
+}
+
+function mergeCloudIntoLocal(remote) {
+  const r = getRecords();
+  // Recordes: pega o melhor dos dois lados
+  r.xp = Math.max(r.xp || 0, remote.xp || 0);
+  r.wins = Math.max(r.wins || 0, remote.wins || 0);
+  r.ppm = Math.max(r.ppm || 0, remote.ppm || 0);
+  const fast = { ...(remote.fast || {}), ...(r.fast || {}) };
+  for (const lv in (remote.fast || {})) {
+    if (r.fast[lv] == null || remote.fast[lv] < r.fast[lv]) fast[lv] = remote.fast[lv];
+  }
+  r.fast = fast;
+  storage.records = r;
+  // Moedas: mantém o maior saldo
+  if ((remote.coins || 0) > storage.coins) storage.coins = remote.coins;
+  // Coleções: união
+  if (Array.isArray(remote.stickers)) storage.stickers = Array.from(new Set([...storage.stickers, ...remote.stickers]));
+  if (Array.isArray(remote.unlocked)) storage.unlocked = Array.from(new Set([...storage.unlocked, ...remote.unlocked]));
+}
+
+async function loadWorldRanking() {
+  const el = $('#cloud-rank');
+  if (!el) return;
+  const rows = await cloud.topScores(20);
+  if (!rows.length) { el.innerHTML = `<p class="cloud-muted">${cstr('rankEmpty')}</p>`; return; }
+  const meUid = cloud.uid();
+  el.innerHTML = `<ol class="rank-list">${rows.map((row, i) => {
+    const me = row.uid === meUid;
+    const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : `${i + 1}`;
+    return `<li class="rank-row${me ? ' rank-me' : ''}">
+      <span class="rank-pos">${medal}</span>
+      <span class="rank-who">${esc(row.name || cstr('you'))}${me ? ` (${cstr('you')})` : ''}</span>
+      <span class="rank-xp">${row.xp || 0} XP</span>
+    </li>`;
+  }).join('')}</ol>`;
 }
 
 // ---------- Confete ----------
@@ -2003,6 +2192,10 @@ renderMusicMenu();
 updateStartButton();
 updateCoinChip();
 updateSoundButton();
+
+// Nuvem (opcional): login + ranking. Inerte se FIREBASE_CONFIG estiver vazio.
+cloud.init();
+cloud.onAuthChange(() => { if (currentScreen() === 'records') renderRecords(); });
 
 joinHostId = new URLSearchParams(location.search).get('join');
 if (joinHostId) {

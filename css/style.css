@@ -1361,3 +1361,39 @@ body {
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001s !important; animation-iteration-count: 1 !important; }
 }
+
+/* ---------- Nuvem: conta + ranking mundial ---------- */
+.cloud-account {
+  background: var(--card-surface);
+  color: var(--text-dark);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 18px 0 8px;
+  text-align: center;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.14);
+}
+.cloud-signed { font-weight: 800; margin: 0 0 10px; }
+.cloud-muted { opacity: 0.75; margin: 0 0 6px; }
+.cloud-hint { font-size: 0.9rem; opacity: 0.9; margin: 0 0 12px; }
+.cloud-account .btn { margin: 5px 4px 0; }
+.cloud-google { background: #4285f4 !important; color: #fff !important; }
+.cloud-emailform { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.cloud-emailform .name-input { width: 100%; }
+.cloud-status { font-size: 0.85rem; margin: 0; color: var(--pink); }
+.btn-link {
+  background: none; border: none; color: inherit; opacity: 0.7;
+  text-decoration: underline; cursor: pointer; font: inherit; padding: 4px;
+}
+
+.cloud-rank { margin-top: 6px; }
+.rank-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.rank-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card-surface); color: var(--text-dark);
+  border-radius: 14px; padding: 10px 14px;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.12);
+}
+.rank-row.rank-me { outline: 3px solid var(--yellow); }
+.rank-pos { font-weight: 800; min-width: 34px; text-align: center; font-size: 1.1rem; }
+.rank-who { flex: 1; font-weight: 700; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rank-xp { font-weight: 800; color: var(--card-back2); white-space: nowrap; }

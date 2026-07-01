@@ -20,7 +20,7 @@ const cloud = (() => {
     appId: '1:376835253719:web:92a25d45f0aefef9a31792',
     // URL do Realtime Database — cole aqui a URL que o Firebase mostra ao criar
     // o banco (ex.: https://memoria-magica-b8ce2-default-rtdb.firebaseio.com).
-    databaseURL: '',
+    databaseURL: 'https://memoria-magica-b8ce2-default-rtdb.firebaseio.com',
   };
 
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';

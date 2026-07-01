@@ -241,7 +241,8 @@ if (!I18N[lang]) {
 function t(key, vars) {
   let s = I18N[lang][key];
   if (s == null) s = I18N.pt[key] ?? key;
-  if (vars) for (const k in vars) s = s.replace(`{${k}}`, vars[k]);
+  // Função de substituição evita que '$' no valor vire sequência especial ($&, $1…).
+  if (vars) for (const k in vars) s = s.replace(`{${k}}`, () => String(vars[k]));
   return s;
 }
 function tSticker(id) { return (I18N[lang].sticker[id] || I18N.pt.sticker[id] || id); }
@@ -680,6 +681,7 @@ function showScreen(name) {
   screens[name].classList.add('active');
   window.scrollTo(0, 0);
   if (name === 'setup') renderProfileChip();
+  if (name === 'home') renderHomeAccount();
   if (MENU_SCREENS.has(name)) music.playMenu();
 }
 function currentScreen() {
@@ -709,6 +711,7 @@ function setLang(next) {
   lang = next;
   localStorage.setItem('mm_lang', lang);
   applyI18n();
+  applyCloudTexts();       // textos dos modais de login/conta no novo idioma
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -717,7 +720,7 @@ function setLang(next) {
   if (cur === 'album') renderAlbum();
   if (cur === 'records') renderRecords();
   if (cur === 'win') { renderWinTexts(); if (game.online) updateRematchUI(); }
-  if (cur === 'home') owlVoice.speak();   // troca de idioma -> coruja fala no novo idioma
+  if (cur === 'home') { owlVoice.speak(); renderHomeAccount(); }   // troca de idioma
 }
 
 function applyTheme() {
@@ -1608,7 +1611,7 @@ function endGame() {
 
   // Publica pontos no ranking mundial e salva o progresso na nuvem (se logado).
   if (cloud.enabled && cloud.isSignedIn()) {
-    cloud.submitScore(getRecords(), myProfile());
+    cloud.submitScore(getRecords(), rankingProfile());
     cloud.saveState(localSnapshot());
   }
 
@@ -1817,38 +1820,54 @@ const CLOUD_STR = {
   pt: {
     worldRanking: 'Ranking Mundial 🌍', rankLoading: 'Carregando ranking…',
     rankEmpty: 'Ainda não há jogadores. Seja o primeiro a entrar no ranking!',
-    you: 'Você', guestMsg: 'Você está jogando como convidado.',
-    signedAs: 'Conectado como {n} ✅', syncHint: 'Entre para salvar seus pontos em qualquer aparelho e aparecer no ranking mundial!',
+    you: 'Você',
+    loginTitle: 'Salve seu progresso! ✨',
+    loginSub: 'Entre para guardar seus pontos em qualquer aparelho e disputar o ranking mundial.',
     withGoogle: 'Entrar com Google', withEmail: 'Entrar com e-mail', logout: 'Sair da conta',
     email: 'E-mail', pass: 'Senha (6+ caracteres)', doLogin: 'Entrar', doRegister: 'Criar conta',
-    haveAccount: 'Já tenho conta', noAccount: 'Criar uma conta', cancel: 'Cancelar',
-    syncing: 'Sincronizando…', synced: 'Progresso sincronizado! 🎉', authErr: 'Não deu certo. Confira e tente de novo.',
+    haveAccount: 'Já tenho conta', noAccount: 'Criar uma conta',
+    continueGuest: 'Jogar como convidado', saveProgress: 'Entrar / Salvar progresso',
+    helloName: 'Olá, {n}!', accountSynced: 'Seu progresso está salvo na nuvem ✅',
+    syncing: 'Sincronizando…', synced: 'Progresso sincronizado! 🎉',
+    loading: 'Carregando… tente de novo em instantes.',
+    loggedOut: 'Você saiu da conta.', authErr: 'Não deu certo. Confira e tente de novo.',
   },
   en: {
     worldRanking: 'World Ranking 🌍', rankLoading: 'Loading ranking…',
     rankEmpty: 'No players yet. Be the first on the ranking!',
-    you: 'You', guestMsg: 'You are playing as a guest.',
-    signedAs: 'Signed in as {n} ✅', syncHint: 'Sign in to save your points on any device and appear on the world ranking!',
+    you: 'You',
+    loginTitle: 'Save your progress! ✨',
+    loginSub: 'Sign in to keep your points on any device and compete on the world ranking.',
     withGoogle: 'Sign in with Google', withEmail: 'Sign in with email', logout: 'Sign out',
     email: 'Email', pass: 'Password (6+ chars)', doLogin: 'Sign in', doRegister: 'Create account',
-    haveAccount: 'I have an account', noAccount: 'Create an account', cancel: 'Cancel',
-    syncing: 'Syncing…', synced: 'Progress synced! 🎉', authErr: "That didn't work. Check and try again.",
+    haveAccount: 'I have an account', noAccount: 'Create an account',
+    continueGuest: 'Play as guest', saveProgress: 'Sign in / Save progress',
+    helloName: 'Hi, {n}!', accountSynced: 'Your progress is saved in the cloud ✅',
+    syncing: 'Syncing…', synced: 'Progress synced! 🎉',
+    loading: 'Loading… please try again in a moment.',
+    loggedOut: 'You signed out.', authErr: "That didn't work. Check and try again.",
   },
   fr: {
     worldRanking: 'Classement Mondial 🌍', rankLoading: 'Chargement…',
     rankEmpty: "Aucun joueur pour l'instant. Sois le premier du classement !",
-    you: 'Toi', guestMsg: 'Tu joues en tant qu\'invité.',
-    signedAs: 'Connecté en tant que {n} ✅', syncHint: 'Connecte-toi pour sauvegarder tes points sur tout appareil et apparaître au classement mondial !',
+    you: 'Toi',
+    loginTitle: 'Sauvegarde ta progression ! ✨',
+    loginSub: 'Connecte-toi pour garder tes points sur tout appareil et jouer au classement mondial.',
     withGoogle: 'Se connecter avec Google', withEmail: 'Se connecter par e-mail', logout: 'Se déconnecter',
     email: 'E-mail', pass: 'Mot de passe (6+ caractères)', doLogin: 'Se connecter', doRegister: 'Créer un compte',
-    haveAccount: "J'ai un compte", noAccount: 'Créer un compte', cancel: 'Annuler',
-    syncing: 'Synchronisation…', synced: 'Progression synchronisée ! 🎉', authErr: "Échec. Vérifie et réessaie.",
+    haveAccount: "J'ai un compte", noAccount: 'Créer un compte',
+    continueGuest: 'Jouer en tant qu\'invité', saveProgress: 'Se connecter / Sauvegarder',
+    helloName: 'Salut, {n} !', accountSynced: 'Ta progression est sauvegardée dans le cloud ✅',
+    syncing: 'Synchronisation…', synced: 'Progression synchronisée ! 🎉',
+    loading: 'Chargement… réessaie dans un instant.',
+    loggedOut: 'Tu t\'es déconnecté.', authErr: 'Échec. Vérifie et réessaie.',
   },
 };
 function cstr(key, vars) {
   const dict = CLOUD_STR[lang] || CLOUD_STR.pt;
   let s = dict[key] != null ? dict[key] : CLOUD_STR.pt[key] || key;
-  if (vars) for (const k in vars) s = s.replace(`{${k}}`, vars[k]);
+  // Função de substituição evita que '$' no valor vire sequência especial ($&, $1…).
+  if (vars) for (const k in vars) s = s.replace(`{${k}}`, () => String(vars[k]));
   return s;
 }
 
@@ -1858,99 +1877,190 @@ function esc(s) {
   ));
 }
 
-function renderCloudSection() {
-  const box = $('#cloud-section');
-  if (!box || !cloud.enabled) return; // desativado => nada aparece (jogo offline)
-  box.innerHTML = `
-    <div class="cloud-account" id="cloud-account"></div>
-    <h3 class="records-sub">${cstr('worldRanking')}</h3>
-    <div class="cloud-rank" id="cloud-rank"><p class="cloud-muted">${cstr('rankLoading')}</p></div>`;
-  renderAccountCard();
-  loadWorldRanking();
+// Nome mostrado no ranking: nome do perfil e, se vazio, o nome/e-mail da conta.
+function accountFirstName() {
+  const u = cloud.currentUser && cloud.currentUser();
+  if (!u) return '';
+  if (u.name) return u.name.trim().split(/\s+/)[0];
+  if (u.email) return u.email.split('@')[0];
+  return '';
+}
+function rankingName() {
+  return (storage.name || '').trim() || accountFirstName() || cstr('you');
+}
+function rankingProfile() {
+  return { name: rankingName(), avatarId: storage.avatar, skin: storage.skin };
 }
 
-function renderAccountCard() {
-  const el = $('#cloud-account');
+// Preenche os textos dos modais conforme o idioma atual.
+function applyCloudTexts() {
+  const set = (id, txt) => { const el = $(id); if (el) el.textContent = txt; };
+  set('#login-title', cstr('loginTitle'));
+  set('#login-sub', cstr('loginSub'));
+  set('#login-google-label', cstr('withGoogle'));
+  set('#login-email-label', cstr('withEmail'));
+  set('#login-submit-label', cloudRegisterMode ? cstr('doRegister') : cstr('doLogin'));
+  set('#login-toggle-mode', cloudRegisterMode ? cstr('haveAccount') : cstr('noAccount'));
+  set('#login-guest', cstr('continueGuest'));
+  set('#account-synced', cstr('accountSynced'));
+  set('#account-logout-label', cstr('logout'));
+  const em = $('#login-email'); if (em) em.placeholder = cstr('email');
+  const pw = $('#login-pass'); if (pw) pw.placeholder = cstr('pass');
+}
+
+// ----- Selo de conta na tela inicial -----
+function renderHomeAccount() {
+  const el = $('#home-account');
   if (!el) return;
-  const u = cloud.currentUser();
+  if (!cloud.enabled) { el.hidden = true; return; }
+  el.hidden = false;
   if (cloud.isSignedIn()) {
-    const nm = esc(u.name || u.email || cstr('you'));
-    el.innerHTML = `
-      <p class="cloud-signed">${cstr('signedAs', { n: nm })}</p>
-      <button class="btn btn-small" id="cloud-logout">${cstr('logout')}</button>`;
-    $('#cloud-logout').addEventListener('click', async () => {
-      sound.play('click');
-      try { await cloud.signOut(); } catch (e) { /* ignora */ }
-      renderRecords();
-    });
+    const nm = esc(rankingName());
+    el.innerHTML = `<button class="account-pill signed" id="account-open">
+      <span class="account-ava">${avatarSVG(storage.avatar, storage.skin)}</span>
+      <span class="account-pill-name">${cstr('helloName', { n: nm })}</span>
+      <span class="account-gear">⚙️</span>
+    </button>`;
+    $('#account-open').addEventListener('click', () => { sound.play('click'); openAccountModal(); });
   } else {
-    el.innerHTML = `
-      <p class="cloud-muted">${cstr('guestMsg')}</p>
-      <p class="cloud-hint">${cstr('syncHint')}</p>
-      <button class="btn btn-small cloud-google" id="cloud-google">🔵 ${cstr('withGoogle')}</button>
-      <button class="btn btn-small" id="cloud-email">✉️ ${cstr('withEmail')}</button>
-      <form class="cloud-emailform" id="cloud-emailform" hidden>
-        <input type="email" id="cloud-in-email" class="name-input" autocomplete="email" placeholder="${cstr('email')}" />
-        <input type="password" id="cloud-in-pass" class="name-input" autocomplete="current-password" placeholder="${cstr('pass')}" />
-        <p class="cloud-status" id="cloud-status" hidden></p>
-        <button type="submit" class="btn btn-small btn-play" id="cloud-do">${cstr('doLogin')}</button>
-        <button type="button" class="btn-link" id="cloud-toggle">${cstr('noAccount')}</button>
-      </form>`;
-    wireAuthButtons();
+    el.innerHTML = `<button class="account-pill guest" id="account-open">
+      <span class="account-ava-ico">👤</span>
+      <span class="account-pill-name">${cstr('saveProgress')}</span>
+    </button>`;
+    $('#account-open').addEventListener('click', () => { sound.play('click'); openLoginModal(); });
   }
 }
 
+// ----- Modais de login e conta -----
 let cloudRegisterMode = false;
-function wireAuthButtons() {
-  const gBtn = $('#cloud-google');
-  if (gBtn) gBtn.addEventListener('click', async () => {
+let loginDone = null;
+
+function openLoginModal(onDone) {
+  if (!cloud.enabled) { if (onDone) onDone(); return; }
+  loginDone = typeof onDone === 'function' ? onDone : null;
+  cloudRegisterMode = false;
+  const form = $('#login-form'); if (form) form.hidden = true;
+  const em = $('#login-email'); if (em) em.value = '';
+  const pw = $('#login-pass'); if (pw) pw.value = '';
+  const st = $('#login-status'); if (st) { st.hidden = true; st.textContent = ''; }
+  applyCloudTexts();
+  $('#login-modal').hidden = false;
+}
+function closeLoginModal() {
+  $('#login-modal').hidden = true;
+  const done = loginDone; loginDone = null;
+  if (done) done();
+}
+function openAccountModal() {
+  const u = cloud.currentUser();
+  if (!u) return;
+  $('#account-avatar-big').innerHTML = avatarSVG(storage.avatar, storage.skin);
+  $('#account-name-big').textContent = rankingName();
+  $('#account-email').textContent = u.email || '';
+  applyCloudTexts();
+  $('#account-modal').hidden = false;
+}
+function closeAccountModal() { $('#account-modal').hidden = true; }
+
+// Liga os botões dos modais uma única vez (elementos fixos no HTML).
+function wireCloudUI() {
+  if (!cloud.enabled) return;
+  $('#login-close').addEventListener('click', () => { sound.play('click'); closeLoginModal(); });
+  $('#login-guest').addEventListener('click', () => { sound.play('click'); closeLoginModal(); });
+
+  $('#login-google').addEventListener('click', async () => {
     sound.play('click');
-    try { await cloud.signInGoogle(); await afterSignIn(); }
-    catch (e) { showToast(cstr('authErr')); }
+    const btn = $('#login-google'); btn.disabled = true;
+    try { await cloud.signInGoogle(); await afterSignIn(); closeLoginModal(); }
+    catch (e) { showToast(cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr')); }
+    finally { btn.disabled = false; }
   });
-  const eBtn = $('#cloud-email');
-  const form = $('#cloud-emailform');
-  if (eBtn && form) eBtn.addEventListener('click', () => { sound.play('click'); form.hidden = !form.hidden; });
-  const toggle = $('#cloud-toggle');
-  const doBtn = $('#cloud-do');
-  if (toggle) toggle.addEventListener('click', () => {
+
+  $('#login-email-toggle').addEventListener('click', () => {
+    sound.play('click');
+    const form = $('#login-form');
+    form.hidden = !form.hidden;
+    if (!form.hidden) $('#login-email').focus();
+  });
+
+  $('#login-toggle-mode').addEventListener('click', () => {
     cloudRegisterMode = !cloudRegisterMode;
-    doBtn.textContent = cloudRegisterMode ? cstr('doRegister') : cstr('doLogin');
-    toggle.textContent = cloudRegisterMode ? cstr('haveAccount') : cstr('noAccount');
+    $('#login-submit-label').textContent = cloudRegisterMode ? cstr('doRegister') : cstr('doLogin');
+    $('#login-toggle-mode').textContent = cloudRegisterMode ? cstr('haveAccount') : cstr('noAccount');
   });
-  if (form) form.addEventListener('submit', async (ev) => {
+
+  $('#login-form').addEventListener('submit', async (ev) => {
     ev.preventDefault();
-    const email = $('#cloud-in-email').value.trim();
-    const pass = $('#cloud-in-pass').value;
-    const status = $('#cloud-status');
-    if (!email || pass.length < 6) { status.hidden = false; status.textContent = cstr('authErr'); return; }
-    status.hidden = false; status.textContent = cstr('syncing');
+    const email = $('#login-email').value.trim();
+    const pass = $('#login-pass').value;
+    const st = $('#login-status');
+    if (!email || pass.length < 6) { st.hidden = false; st.textContent = cstr('authErr'); return; }
+    st.hidden = false; st.textContent = cstr('syncing');
     try {
       if (cloudRegisterMode) await cloud.registerEmail(email, pass);
       else await cloud.signInEmail(email, pass);
       await afterSignIn();
-    } catch (e) { status.hidden = false; status.textContent = cstr('authErr'); }
+      closeLoginModal();
+    } catch (e) { st.hidden = false; st.textContent = cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr'); }
+  });
+
+  $('#account-close').addEventListener('click', () => { sound.play('click'); closeAccountModal(); });
+  $('#account-logout').addEventListener('click', async () => {
+    sound.play('click');
+    try { await cloud.signOut(); } catch (e) { /* ignora */ }
+    closeAccountModal();
+    renderHomeAccount();
+    if (currentScreen() === 'records') renderRecords();
+    showToast(cstr('loggedOut'));
   });
 }
 
-// Ao entrar: funde progresso local + nuvem (pega o melhor dos dois) e publica.
+function renderCloudSection() {
+  const box = $('#cloud-section');
+  if (!box || !cloud.enabled) { if (box) box.hidden = true; return; }
+  box.hidden = false;
+  const entrar = cloud.isSignedIn() ? ''
+    : `<button class="btn btn-small cloud-enter" id="cloud-enter">🔑 ${cstr('saveProgress')}</button>`;
+  box.innerHTML = `
+    <h3 class="records-sub">${cstr('worldRanking')}</h3>
+    ${entrar}
+    <div class="cloud-rank" id="cloud-rank"><p class="cloud-muted">${cstr('rankLoading')}</p></div>`;
+  const enterBtn = $('#cloud-enter');
+  if (enterBtn) enterBtn.addEventListener('click', () => { sound.play('click'); openLoginModal(() => renderRecords()); });
+  loadWorldRanking();
+}
+
+// Ao entrar: adota o nome do Google (se não houver nome), funde progresso
+// local + nuvem (pega o melhor dos dois) e publica no ranking.
 async function afterSignIn() {
+  if (!(storage.name || '').trim()) {
+    const fn = accountFirstName();
+    if (fn) {
+      storage.name = fn;
+      // Atualiza os dois campos de nome (perfil e entrar) e ambos os avatares.
+      ['profile-name-input', 'join-name-input'].forEach((id) => {
+        const el = document.getElementById(id); if (el) el.value = storage.name;
+      });
+      renderNameAvatars();
+    }
+  }
   showToast(cstr('syncing'));
   try {
     const remote = await cloud.loadState();
     if (remote) mergeCloudIntoLocal(remote);
     await cloud.saveState(localSnapshot());
-    await cloud.submitScore(getRecords(), myProfile());
+    await cloud.submitScore(getRecords(), rankingProfile());
     updateCoinChip();
     showToast(cstr('synced'));
   } catch (e) { /* ignora — segue com o que tem local */ }
-  renderRecords();
+  renderHomeAccount();
+  if (currentScreen() === 'records') renderRecords();
 }
 
 function localSnapshot() {
   const r = getRecords();
   return {
-    name: storage.name, avatarId: storage.avatar, skin: storage.skin,
+    name: rankingName(), avatarId: storage.avatar, skin: storage.skin,
     coins: storage.coins, xp: r.xp, wins: r.wins, ppm: r.ppm,
     fast: r.fast, stickers: storage.stickers, unlocked: storage.unlocked,
   };
@@ -2055,7 +2165,17 @@ function renderMusicMenu() {
 
 // ---------- Navegação ----------
 
-$('#btn-go-setup').addEventListener('click', () => { sound.play('click'); showScreen('profile'); });
+$('#btn-go-setup').addEventListener('click', () => {
+  sound.play('click');
+  // No primeiro "Jogar", convida para o login (podendo seguir como convidado).
+  if (cloud.enabled && !cloud.isSignedIn() && !localStorage.getItem('mm_login_prompted')) {
+    // Marca só ao concluir (entrar/convidado/fechar), não antes de exibir —
+    // assim um reload com o modal aberto não suprime o convite para sempre.
+    openLoginModal(() => { localStorage.setItem('mm_login_prompted', '1'); showScreen('profile'); });
+    return;
+  }
+  showScreen('profile');
+});
 // Toque na coruja (ou no balão) -> ela fala no idioma atual; e fala AUTOMÁTICA
 // assim que o app abre (no 1º gesto do usuário, pois navegadores bloqueiam
 // áudio automático sem interação).
@@ -2194,8 +2314,15 @@ updateCoinChip();
 updateSoundButton();
 
 // Nuvem (opcional): login + ranking. Inerte se FIREBASE_CONFIG estiver vazio.
+wireCloudUI();
+applyCloudTexts();
+renderHomeAccount();
 cloud.init();
-cloud.onAuthChange(() => { if (currentScreen() === 'records') renderRecords(); });
+cloud.onReady(() => renderHomeAccount());
+cloud.onAuthChange(() => {
+  renderHomeAccount();
+  if (currentScreen() === 'records') renderRecords();
+});
 
 joinHostId = new URLSearchParams(location.search).get('join');
 if (joinHostId) {

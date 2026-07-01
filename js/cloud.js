@@ -12,12 +12,12 @@ const cloud = (() => {
   // 1) COLE AQUI a config do seu projeto Firebase (veja FIREBASE_SETUP.md)
   // ------------------------------------------------------------------
   const FIREBASE_CONFIG = {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
+    apiKey: 'AIzaSyCMLttv3VqNfnuhh-IvCxjwcFGp0KN81uE',
+    authDomain: 'memoria-magica-b8ce2.firebaseapp.com',
+    projectId: 'memoria-magica-b8ce2',
+    storageBucket: 'memoria-magica-b8ce2.firebasestorage.app',
+    messagingSenderId: '376835253719',
+    appId: '1:376835253719:web:92a25d45f0aefef9a31792',
   };
 
   const SDK = 'https://www.gstatic.com/firebasejs/10.12.2';

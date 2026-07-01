@@ -146,23 +146,52 @@ const cloud = (() => {
       });
     } catch (e) { console.warn('[cloud] submitScore', e); }
   }
-  async function topScores(n = 20) {
+  // ID da semana atual (segunda-feira em UTC) — usado no ranking semanal, que
+  // "reinicia" naturalmente porque cada semana é um nó separado.
+  function weekId() {
+    const d = new Date();
+    const dow = (d.getUTCDay() + 6) % 7; // 0 = segunda
+    const mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dow));
+    const y = mon.getUTCFullYear();
+    const m = String(mon.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(mon.getUTCDate()).padStart(2, '0');
+    return `${y}${m}${day}`;
+  }
+
+  // Soma XP (delta) num placar incremental — usado por semana e por mundo.
+  async function bumpBoard(path, delta, profile) {
+    if (!fb || !isSignedIn() || !(delta > 0)) return;
+    try {
+      const { ref, update, increment, serverTimestamp } = fb.dbApi;
+      await update(ref(fb.db, `${path}/${uid()}`), {
+        name: (profile && profile.name) || 'Jogador',
+        avatarId: (profile && profile.avatarId) || null,
+        skin: (profile && profile.skin) != null ? profile.skin : null,
+        xp: increment(delta),
+        updatedAt: serverTimestamp(),
+      });
+    } catch (e) { console.warn('[cloud] bumpBoard', path, e); }
+  }
+
+  // Top N de um placar qualquer (leaderboard, weekly/<id>, world/<id>).
+  async function topBoard(path, n = 20) {
     if (!fb) return [];
     try {
       const { ref, query, orderByChild, limitToLast, get } = fb.dbApi;
-      const q = query(ref(fb.db, 'leaderboard'), orderByChild('xp'), limitToLast(n));
+      const q = query(ref(fb.db, path), orderByChild('xp'), limitToLast(n));
       const snap = await get(q);
       const rows = [];
       snap.forEach((child) => { rows.push({ uid: child.key, ...child.val() }); });
       // RTDB devolve em ordem crescente de xp; invertemos para o maior primeiro.
       return rows.reverse();
-    } catch (e) { console.warn('[cloud] topScores', e); return []; }
+    } catch (e) { console.warn('[cloud] topBoard', path, e); return []; }
   }
 
   return {
     enabled, init, onReady, onAuthChange,
     uid, guestUid, isSignedIn, currentUser,
     signInGoogle, registerEmail, signInEmail, signOut,
-    loadState, saveState, submitScore, topScores,
+    loadState, saveState, submitScore,
+    weekId, bumpBoard, topBoard,
   };
 })();

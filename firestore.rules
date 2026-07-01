@@ -1,0 +1,30 @@
+rules_version = '2';
+
+// Regras de segurança do Firestore para "Memória Mágica".
+// - Ranking (leaderboard): qualquer um LÊ; cada jogador só ESCREVE no seu doc.
+// - Save do progresso (users): privado, só o próprio dono lê/escreve.
+// - Anti-cheat básico: limita valores plausíveis por atualização.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /leaderboard/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.data.xp is int
+        && request.resource.data.xp >= 0
+        && request.resource.data.xp <= 1000000
+        && request.resource.data.wins is int
+        && request.resource.data.wins >= 0
+        && request.resource.data.ppm is int
+        && request.resource.data.ppm >= 0
+        && request.resource.data.ppm <= 2000
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 24;
+    }
+
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+  }
+}

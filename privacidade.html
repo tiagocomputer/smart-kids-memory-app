@@ -3,91 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4c1d95" />
   <title>Política de Privacidade — Memória Mágica</title>
   <style>
     :root { color-scheme: light; }
+    * { box-sizing: border-box; }
     body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: linear-gradient(168deg, #44178f, #5d22b8 55%, #7b2cae);
-      color: #2c2140; margin: 0; padding: 24px 16px 60px;
+      font-family: 'Fredoka', 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(168deg, #44178f, #5d22b8 52%, #7b2cae);
+      background-attachment: fixed;
+      color: #3b2667; margin: 0; padding: 22px 16px 60px;
       display: flex; justify-content: center;
     }
     .card {
       background: #fff; max-width: 760px; width: 100%;
-      border-radius: 22px; padding: 30px 26px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.3); line-height: 1.6;
+      border-radius: 24px; padding: 26px 24px 30px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.28); line-height: 1.6;
     }
-    h1 { color: #5d22b8; font-size: 1.7rem; margin: 0 0 4px; }
-    h2 { color: #7b2cae; font-size: 1.15rem; margin: 26px 0 8px; }
-    .updated { color: #6b6480; font-size: 0.9rem; margin-bottom: 18px; }
-    a { color: #7b2cae; }
-    ul { padding-left: 20px; }
-    .note { background: #f3eefe; border-radius: 12px; padding: 12px 14px; font-size: 0.95rem; }
-    .lang { text-align: center; margin-top: 26px; font-size: 0.9rem; color: #6b6480; }
-    footer { text-align: center; color: #6b6480; font-size: 0.85rem; margin-top: 22px; }
+    .top { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+    .top img { width: 56px; height: 56px; border-radius: 14px; flex: 0 0 auto; }
+    h1 { color: #6d28d9; font-size: 1.55rem; margin: 0; line-height: 1.2; }
+    .updated { color: #8b83a3; font-size: 0.88rem; margin: 2px 0 16px; }
+    h2 { color: #9333ea; font-size: 1.12rem; margin: 24px 0 6px; }
+    p { margin: 0 0 10px; }
+    a { color: #db2777; font-weight: 600; }
+    ul { padding-left: 20px; margin: 0 0 10px; }
+    li { margin-bottom: 4px; }
+    .note {
+      background: #f5eeff; border: 1.5px solid #e6d8fb;
+      border-radius: 14px; padding: 13px 15px; font-size: 0.97rem; margin-bottom: 6px;
+    }
+    /* Seletor de idioma */
+    .langs { display: flex; gap: 8px; justify-content: center; margin: 4px 0 20px; }
+    .langs button {
+      border: 1.5px solid #e6d8fb; background: #faf7ff; color: #6d28d9;
+      border-radius: 999px; padding: 7px 14px; font: inherit; font-weight: 600;
+      cursor: pointer; font-size: 0.9rem;
+    }
+    .langs button.active { background: #6d28d9; color: #fff; border-color: #6d28d9; }
+    /* Botão voltar ao jogo (estilo do jogo) */
+    .back {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(180deg, #fbbf24, #f59e0b);
+      color: #3b2667; font-weight: 700; font-size: 1.05rem;
+      text-decoration: none; border-radius: 16px; padding: 13px 26px;
+      box-shadow: 0 5px 0 #b45309; margin-top: 8px;
+    }
+    .back:active { transform: translateY(3px); box-shadow: 0 2px 0 #b45309; }
+    .back-wrap { text-align: center; margin-top: 26px; }
+    footer { text-align: center; color: #8b83a3; font-size: 0.85rem; margin-top: 20px; }
   </style>
 </head>
 <body>
   <main class="card">
-    <h1>Política de Privacidade — Memória Mágica 🦉</h1>
-    <p class="updated">Última atualização: 2 de julho de 2026</p>
-
-    <p>O <strong>Memória Mágica</strong> é um jogo da memória para crianças, desenvolvido
-      pela <strong>QuickTipsTop</strong>. Levamos a privacidade das famílias a sério.
-      Esta página explica, de forma simples, quais dados o jogo usa e por quê.</p>
-
-    <div class="note">
-      <strong>Resumo rápido:</strong> o jogo pode ser jogado <strong>sem cadastro</strong>
-      (modo convidado). Nenhum dado pessoal é obrigatório para brincar.
-      Só coletamos dados se um responsável optar por <strong>entrar com uma conta</strong>
-      para salvar o progresso e participar do ranking.
+    <div class="langs" id="langs">
+      <button data-lang="pt">🇧🇷 Português</button>
+      <button data-lang="en">🇺🇸 English</button>
+      <button data-lang="fr">🇫🇷 Français</button>
     </div>
 
-    <h2>1. Quais dados usamos</h2>
-    <ul>
-      <li><strong>No modo convidado:</strong> apenas dados salvos no próprio aparelho
-        (nome de exibição escolhido, avatar, moedas, figurinhas e recordes), guardados
-        localmente no navegador. Não saem do dispositivo e não identificam a criança.</li>
-      <li><strong>Se um responsável fizer login</strong> (Google ou e-mail): coletamos o
-        <strong>e-mail</strong> e o <strong>nome da conta</strong> fornecidos pelo login,
-        além do progresso do jogo (pontos, avatar, figurinhas), para salvar na nuvem e
-        exibir no ranking.</li>
-    </ul>
+    <div class="top">
+      <img src="img/pwa/icon-192.png" alt="Memória Mágica" />
+      <h1 id="p-title">Política de Privacidade</h1>
+    </div>
+    <p class="updated" id="p-updated"></p>
 
-    <h2>2. Para que usamos</h2>
-    <ul>
-      <li>Salvar o progresso e permitir jogar em vários aparelhos.</li>
-      <li>Exibir o nome e o avatar no ranking (geral, semanal e por mundo).</li>
-      <li>Manter o funcionamento e a segurança do jogo.</li>
-    </ul>
-    <p>Não vendemos dados. Não exibimos anúncios personalizados. Não usamos os dados
-      das crianças para publicidade.</p>
+    <div id="p-body"></div>
 
-    <h2>3. Crianças (LGPD / COPPA)</h2>
-    <p>Este jogo é destinado a crianças. O login/cadastro deve ser feito ou autorizado
-      por um <strong>pai, mãe ou responsável</strong>. Recomendamos a supervisão de um
-      adulto. Se um responsável quiser revisar ou excluir os dados de uma conta, basta
-      entrar em contato conosco (abaixo).</p>
-
-    <h2>4. Com quem compartilhamos</h2>
-    <p>Usamos serviços do <strong>Google Firebase</strong> (Authentication e Realtime
-      Database) apenas para autenticação e para guardar o progresso/ranking. O Google
-      atua como operador desses dados, seguindo suas próprias políticas de segurança.</p>
-
-    <h2>5. Guarda e exclusão</h2>
-    <p>Os dados da conta ficam guardados enquanto a conta existir. Para excluir sua conta
-      e os dados associados, escreva para o e-mail abaixo e atenderemos o pedido.</p>
-
-    <h2>6. Contato</h2>
-    <p>Dúvidas ou pedidos sobre privacidade:
-      <br /><a href="mailto:quicktipstopparceiros@gmail.com">quicktipstopparceiros@gmail.com</a></p>
-
-    <div class="lang">
-      This privacy policy is available in Portuguese. For a version in another language,
-      please contact us at the e-mail above.
+    <div class="back-wrap">
+      <a class="back" id="p-back" href="index.html">🏠 <span id="p-back-label">Voltar ao jogo</span></a>
     </div>
 
-    <footer>Memória Mágica · Desenvolvido por QuickTipsTop</footer>
+    <footer>Memória Mágica · QuickTipsTop</footer>
   </main>
+
+  <script>
+    var EMAIL = 'quicktipstopparceiros@gmail.com';
+    var I18N = {
+      pt: {
+        htmlLang: 'pt-BR',
+        title: 'Política de Privacidade 🦉',
+        updated: 'Última atualização: 2 de julho de 2026',
+        back: 'Voltar ao jogo',
+        body: [
+          '<p>O <strong>Memória Mágica</strong> é um jogo da memória para crianças, feito pela <strong>QuickTipsTop</strong>. Levamos a privacidade das famílias a sério. Aqui explicamos, de forma simples, quais dados o jogo usa e por quê.</p>',
+          '<div class="note"><strong>Resumo rápido:</strong> o jogo pode ser jogado <strong>sem cadastro</strong> (modo convidado). Nenhum dado pessoal é obrigatório para brincar. Só coletamos dados se um responsável optar por <strong>entrar com uma conta</strong> para salvar o progresso e participar do ranking.</div>',
+          '<h2>1. Quais dados usamos</h2>',
+          '<ul><li><strong>No modo convidado:</strong> apenas dados salvos no próprio aparelho (nome escolhido, avatar, moedas, figurinhas e recordes). Não saem do dispositivo e não identificam a criança.</li><li><strong>Se um responsável fizer login</strong> (Google ou e-mail): coletamos o <strong>e-mail</strong> e o <strong>nome da conta</strong>, além do progresso do jogo, para salvar na nuvem e exibir no ranking.</li></ul>',
+          '<h2>2. Para que usamos</h2>',
+          '<ul><li>Salvar o progresso e permitir jogar em vários aparelhos.</li><li>Exibir nome e avatar no ranking (geral, semanal e por mundo).</li><li>Manter o funcionamento e a segurança do jogo.</li></ul>',
+          '<p>Não vendemos dados. Não exibimos anúncios personalizados. Não usamos os dados das crianças para publicidade.</p>',
+          '<h2>3. Crianças (LGPD / COPPA)</h2>',
+          '<p>Este jogo é destinado a crianças. O login/cadastro deve ser feito ou autorizado por um <strong>pai, mãe ou responsável</strong>. Recomendamos a supervisão de um adulto. Para revisar ou excluir os dados de uma conta, entre em contato conosco (abaixo).</p>',
+          '<h2>4. Com quem compartilhamos</h2>',
+          '<p>Usamos o <strong>Google Firebase</strong> (Authentication e Realtime Database) apenas para autenticação e para guardar o progresso/ranking. O Google atua como operador desses dados, seguindo suas próprias políticas de segurança.</p>',
+          '<h2>5. Guarda e exclusão</h2>',
+          '<p>Os dados da conta ficam guardados enquanto a conta existir. Para excluir sua conta e os dados associados, escreva para o e-mail abaixo e atenderemos o pedido.</p>',
+          '<h2>6. Contato</h2>',
+          '<p>Dúvidas ou pedidos sobre privacidade:<br /><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p>'
+        ]
+      },
+      en: {
+        htmlLang: 'en',
+        title: 'Privacy Policy 🦉',
+        updated: 'Last updated: July 2, 2026',
+        back: 'Back to the game',
+        body: [
+          '<p><strong>Magic Memory</strong> is a memory game for children, made by <strong>QuickTipsTop</strong>. We take families\' privacy seriously. Here we explain, simply, what data the game uses and why.</p>',
+          '<div class="note"><strong>Quick summary:</strong> the game can be played <strong>without an account</strong> (guest mode). No personal data is required to play. We only collect data if a parent chooses to <strong>sign in with an account</strong> to save progress and join the ranking.</div>',
+          '<h2>1. What data we use</h2>',
+          '<ul><li><strong>In guest mode:</strong> only data saved on the device itself (chosen name, avatar, coins, stickers and records). It never leaves the device and does not identify the child.</li><li><strong>If a parent signs in</strong> (Google or email): we collect the <strong>email</strong> and <strong>account name</strong>, plus game progress, to save in the cloud and show on the ranking.</li></ul>',
+          '<h2>2. Why we use it</h2>',
+          '<ul><li>Save progress and allow playing across devices.</li><li>Show name and avatar on the ranking (all-time, weekly and per-world).</li><li>Keep the game working and secure.</li></ul>',
+          '<p>We do not sell data. We do not show personalized ads. We do not use children\'s data for advertising.</p>',
+          '<h2>3. Children (COPPA / GDPR-K)</h2>',
+          '<p>This game is intended for children. Sign-in/registration must be done or authorized by a <strong>parent or guardian</strong>. We recommend adult supervision. To review or delete an account\'s data, contact us (below).</p>',
+          '<h2>4. Who we share with</h2>',
+          '<p>We use <strong>Google Firebase</strong> (Authentication and Realtime Database) only for authentication and to store progress/ranking. Google acts as a processor of this data under its own security policies.</p>',
+          '<h2>5. Retention and deletion</h2>',
+          '<p>Account data is kept while the account exists. To delete your account and associated data, email the address below and we will handle the request.</p>',
+          '<h2>6. Contact</h2>',
+          '<p>Privacy questions or requests:<br /><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p>'
+        ]
+      },
+      fr: {
+        htmlLang: 'fr',
+        title: 'Politique de Confidentialité 🦉',
+        updated: 'Dernière mise à jour : 2 juillet 2026',
+        back: 'Retour au jeu',
+        body: [
+          '<p><strong>Mémoire Magique</strong> est un jeu de mémoire pour enfants, créé par <strong>QuickTipsTop</strong>. Nous prenons au sérieux la vie privée des familles. Voici, simplement, quelles données le jeu utilise et pourquoi.</p>',
+          '<div class="note"><strong>Résumé rapide :</strong> le jeu peut être joué <strong>sans compte</strong> (mode invité). Aucune donnée personnelle n\'est requise pour jouer. Nous ne collectons des données que si un parent choisit de <strong>se connecter avec un compte</strong> pour sauvegarder la progression et participer au classement.</div>',
+          '<h2>1. Quelles données nous utilisons</h2>',
+          '<ul><li><strong>En mode invité :</strong> uniquement des données enregistrées sur l\'appareil (nom choisi, avatar, pièces, autocollants et records). Elles ne quittent pas l\'appareil et n\'identifient pas l\'enfant.</li><li><strong>Si un parent se connecte</strong> (Google ou e-mail) : nous collectons l\'<strong>e-mail</strong> et le <strong>nom du compte</strong>, ainsi que la progression, pour les sauvegarder dans le cloud et les afficher au classement.</li></ul>',
+          '<h2>2. Pourquoi nous les utilisons</h2>',
+          '<ul><li>Sauvegarder la progression et permettre de jouer sur plusieurs appareils.</li><li>Afficher le nom et l\'avatar au classement (général, hebdomadaire et par monde).</li><li>Assurer le fonctionnement et la sécurité du jeu.</li></ul>',
+          '<p>Nous ne vendons pas de données. Nous n\'affichons pas de publicités personnalisées. Nous n\'utilisons pas les données des enfants à des fins publicitaires.</p>',
+          '<h2>3. Enfants (RGPD-K / COPPA)</h2>',
+          '<p>Ce jeu est destiné aux enfants. La connexion/inscription doit être faite ou autorisée par un <strong>parent ou tuteur</strong>. Nous recommandons la supervision d\'un adulte. Pour consulter ou supprimer les données d\'un compte, contactez-nous (ci-dessous).</p>',
+          '<h2>4. Avec qui nous partageons</h2>',
+          '<p>Nous utilisons <strong>Google Firebase</strong> (Authentication et Realtime Database) uniquement pour l\'authentification et pour stocker la progression/le classement. Google agit comme sous-traitant de ces données selon ses propres politiques de sécurité.</p>',
+          '<h2>5. Conservation et suppression</h2>',
+          '<p>Les données du compte sont conservées tant que le compte existe. Pour supprimer votre compte et les données associées, écrivez à l\'adresse ci-dessous et nous traiterons la demande.</p>',
+          '<h2>6. Contact</h2>',
+          '<p>Questions ou demandes sur la confidentialité :<br /><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p>'
+        ]
+      }
+    };
+
+    function detectLang() {
+      try {
+        var u = new URLSearchParams(location.search).get('lang');
+        if (u && I18N[u]) return u;
+        var s = localStorage.getItem('mm_lang');
+        if (s && I18N[s]) return s;
+      } catch (e) {}
+      var n = (navigator.language || 'pt').slice(0, 2);
+      return I18N[n] ? n : 'pt';
+    }
+
+    function render(lang) {
+      var d = I18N[lang] || I18N.pt;
+      document.documentElement.lang = d.htmlLang;
+      document.getElementById('p-title').textContent = d.title;
+      document.getElementById('p-updated').textContent = d.updated;
+      document.getElementById('p-body').innerHTML = d.body.join('');
+      document.getElementById('p-back-label').textContent = d.back;
+      var btns = document.querySelectorAll('#langs button');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('active', btns[i].getAttribute('data-lang') === lang);
+      }
+    }
+
+    document.getElementById('langs').addEventListener('click', function (e) {
+      var b = e.target.closest('button'); if (!b) return;
+      render(b.getAttribute('data-lang'));
+    });
+
+    render(detectLang());
+  </script>
 </body>
 </html>

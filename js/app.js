@@ -1842,6 +1842,11 @@ const CLOUD_STR = {
     syncing: 'Sincronizando…', synced: 'Progresso sincronizado! 🎉',
     loading: 'Carregando… tente de novo em instantes.',
     loggedOut: 'Você saiu da conta.', authErr: 'Não deu certo. Confira e tente de novo.',
+    cancel: 'Cancelar', privacyLink: 'Política de Privacidade',
+    gateTitle: 'Peça a um adulto 🙂', gateSub: 'Para continuar, resolva a conta abaixo:',
+    gateConfirm: 'Confirmar', gateWrong: 'Ops! Tente de novo.',
+    installText: 'Instale o jogo no seu celular!', installBtn: 'Instalar',
+    iosInstall: 'Para instalar: toque em Compartilhar ⬆️ e "Adicionar à Tela de Início".',
   },
   en: {
     worldRanking: 'World Ranking 🌍', rankLoading: 'Loading ranking…',
@@ -1859,6 +1864,11 @@ const CLOUD_STR = {
     syncing: 'Syncing…', synced: 'Progress synced! 🎉',
     loading: 'Loading… please try again in a moment.',
     loggedOut: 'You signed out.', authErr: "That didn't work. Check and try again.",
+    cancel: 'Cancel', privacyLink: 'Privacy Policy',
+    gateTitle: 'Ask a grown-up 🙂', gateSub: 'To continue, solve the problem below:',
+    gateConfirm: 'Confirm', gateWrong: 'Oops! Try again.',
+    installText: 'Install the game on your phone!', installBtn: 'Install',
+    iosInstall: 'To install: tap Share ⬆️ then "Add to Home Screen".',
   },
   fr: {
     worldRanking: 'Classement Mondial 🌍', rankLoading: 'Chargement…',
@@ -1876,6 +1886,11 @@ const CLOUD_STR = {
     syncing: 'Synchronisation…', synced: 'Progression synchronisée ! 🎉',
     loading: 'Chargement… réessaie dans un instant.',
     loggedOut: 'Tu t\'es déconnecté.', authErr: 'Échec. Vérifie et réessaie.',
+    cancel: 'Annuler', privacyLink: 'Politique de confidentialité',
+    gateTitle: 'Demande à un adulte 🙂', gateSub: 'Pour continuer, résous le calcul :',
+    gateConfirm: 'Confirmer', gateWrong: 'Oups ! Réessaie.',
+    installText: 'Installe le jeu sur ton téléphone !', installBtn: 'Installer',
+    iosInstall: 'Pour installer : appuie sur Partager ⬆️ puis "Sur l\'écran d\'accueil".',
   },
 };
 function cstr(key, vars) {
@@ -1921,6 +1936,13 @@ function applyCloudTexts() {
   set('#account-logout-label', cstr('logout'));
   const em = $('#login-email'); if (em) em.placeholder = cstr('email');
   const pw = $('#login-pass'); if (pw) pw.placeholder = cstr('pass');
+  // Portão dos pais + instalação + privacidade
+  set('#gate-title', cstr('gateTitle'));
+  set('#gate-sub', cstr('gateSub'));
+  set('#gate-ok-label', cstr('gateConfirm'));
+  set('#gate-cancel', cstr('cancel'));
+  set('#install-btn', cstr('installBtn'));
+  set('#privacy-link', cstr('privacyLink'));
 }
 
 // ----- Selo de conta na tela inicial -----
@@ -1977,18 +1999,96 @@ function openAccountModal() {
 }
 function closeAccountModal() { $('#account-modal').hidden = true; }
 
+// ----- Portão dos pais (antes de login / links externos) -----
+let gateOnPass = null;
+let gateA = 0, gateB = 0;
+function parentalGate(onPass) {
+  const modal = $('#gate-modal');
+  if (!modal) { if (onPass) onPass(); return; }
+  gateOnPass = typeof onPass === 'function' ? onPass : null;
+  gateA = 6 + Math.floor(Math.random() * 7); // 6..12
+  gateB = 6 + Math.floor(Math.random() * 7);
+  $('#gate-question').textContent = `${gateA} × ${gateB} = ?`;
+  const ans = $('#gate-answer'); if (ans) ans.value = '';
+  const err = $('#gate-error'); if (err) err.hidden = true;
+  applyCloudTexts();
+  modal.hidden = false;
+  setTimeout(() => { const a = $('#gate-answer'); if (a) a.focus(); }, 60);
+}
+function closeGate() { const m = $('#gate-modal'); if (m) m.hidden = true; gateOnPass = null; }
+function wireGate() {
+  const ok = $('#gate-ok');
+  if (!ok) return;
+  ok.addEventListener('click', () => {
+    const val = parseInt(($('#gate-answer') || {}).value, 10);
+    if (val === gateA * gateB) { const cb = gateOnPass; closeGate(); if (cb) cb(); }
+    else {
+      const err = $('#gate-error'); if (err) { err.hidden = false; err.textContent = cstr('gateWrong'); }
+      const a = $('#gate-answer'); if (a) a.value = '';
+      const card = $('#gate-modal .gate-card');
+      if (card) { card.classList.add('shake'); setTimeout(() => card.classList.remove('shake'), 400); }
+    }
+  });
+  $('#gate-cancel').addEventListener('click', () => { sound.play('click'); closeGate(); });
+  $('#gate-answer').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); ok.click(); } });
+}
+
+// ----- Instalação (PWA) -----
+let deferredInstall = null;
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+function isIos() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+function showInstallBanner(iosHint) {
+  const b = $('#install-banner'); if (!b) return;
+  const btn = $('#install-btn'); if (btn) btn.hidden = iosHint;
+  const txt = $('#install-text'); if (txt) txt.textContent = iosHint ? cstr('iosInstall') : cstr('installText');
+  b.hidden = false;
+}
+function hideInstallBanner() { const b = $('#install-banner'); if (b) b.hidden = true; }
+function wirePwa() {
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstall = e;
+    if (!localStorage.getItem('mm_install_dismissed') && !isStandalone()) showInstallBanner(false);
+  });
+  window.addEventListener('appinstalled', () => { hideInstallBanner(); deferredInstall = null; });
+  const btn = $('#install-btn');
+  if (btn) btn.addEventListener('click', async () => {
+    sound.play('click');
+    if (!deferredInstall) return;
+    deferredInstall.prompt();
+    try { await deferredInstall.userChoice; } catch (e) { /* ignora */ }
+    deferredInstall = null; hideInstallBanner();
+  });
+  const x = $('#install-close');
+  if (x) x.addEventListener('click', () => { localStorage.setItem('mm_install_dismissed', '1'); hideInstallBanner(); });
+  // iOS não dispara beforeinstallprompt: mostra dica de "Adicionar à Tela de Início".
+  if (isIos() && !isStandalone() && !localStorage.getItem('mm_install_dismissed')) showInstallBanner(true);
+  // Link externo (Instagram) passa pelo portão dos pais.
+  const credit = $('#credit-link');
+  if (credit) credit.addEventListener('click', (e) => {
+    e.preventDefault();
+    const href = credit.href;
+    parentalGate(() => window.open(href, '_blank', 'noopener'));
+  });
+}
+
 // Liga os botões dos modais uma única vez (elementos fixos no HTML).
 function wireCloudUI() {
   if (!cloud.enabled) return;
   $('#login-close').addEventListener('click', () => { sound.play('click'); closeLoginModal(); });
   $('#login-guest').addEventListener('click', () => { sound.play('click'); closeLoginModal(); });
 
-  $('#login-google').addEventListener('click', async () => {
+  $('#login-google').addEventListener('click', () => {
     sound.play('click');
-    const btn = $('#login-google'); btn.disabled = true;
-    try { await cloud.signInGoogle(); await afterSignIn(); closeLoginModal(); }
-    catch (e) { showToast(cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr')); }
-    finally { btn.disabled = false; }
+    // Portão dos pais antes de coletar dados de conta (compliance infantil).
+    parentalGate(async () => {
+      const btn = $('#login-google'); btn.disabled = true;
+      try { await cloud.signInGoogle(); await afterSignIn(); closeLoginModal(); }
+      catch (e) { showToast(cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr')); }
+      finally { btn.disabled = false; }
+    });
   });
 
   $('#login-email-toggle').addEventListener('click', () => {
@@ -2004,19 +2104,21 @@ function wireCloudUI() {
     $('#login-toggle-mode').textContent = cloudRegisterMode ? cstr('haveAccount') : cstr('noAccount');
   });
 
-  $('#login-form').addEventListener('submit', async (ev) => {
+  $('#login-form').addEventListener('submit', (ev) => {
     ev.preventDefault();
     const email = $('#login-email').value.trim();
     const pass = $('#login-pass').value;
     const st = $('#login-status');
     if (!email || pass.length < 6) { st.hidden = false; st.textContent = cstr('authErr'); return; }
-    st.hidden = false; st.textContent = cstr('syncing');
-    try {
-      if (cloudRegisterMode) await cloud.registerEmail(email, pass);
-      else await cloud.signInEmail(email, pass);
-      await afterSignIn();
-      closeLoginModal();
-    } catch (e) { st.hidden = false; st.textContent = cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr'); }
+    parentalGate(async () => {
+      st.hidden = false; st.textContent = cstr('syncing');
+      try {
+        if (cloudRegisterMode) await cloud.registerEmail(email, pass);
+        else await cloud.signInEmail(email, pass);
+        await afterSignIn();
+        closeLoginModal();
+      } catch (e) { st.hidden = false; st.textContent = cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr'); }
+    });
   });
 
   $('#account-close').addEventListener('click', () => { sound.play('click'); closeAccountModal(); });
@@ -2384,6 +2486,10 @@ renderMusicMenu();
 updateStartButton();
 updateCoinChip();
 updateSoundButton();
+
+// Portão dos pais + instalação (PWA) — independem do Firebase.
+wireGate();
+wirePwa();
 
 // Nuvem (opcional): login + ranking. Inerte se FIREBASE_CONFIG estiver vazio.
 wireCloudUI();

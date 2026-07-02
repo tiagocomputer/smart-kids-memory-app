@@ -6,10 +6,20 @@
   <meta name="theme-color" content="#4c1d95" />
   <title>Memória Mágica 🧠✨</title>
   <meta name="description" content="Jogo da memória divertido para crianças, com vários jogadores, níveis, idiomas e recompensas!" />
+
+  <!-- PWA: instalável e offline -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/png" href="img/pwa/favicon-32.png" />
+  <link rel="apple-touch-icon" href="img/pwa/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Memória Mágica" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=46" />
+  <link rel="stylesheet" href="css/style.css?v=47" />
 </head>
 <body>
 
@@ -85,9 +95,18 @@
 
     <div class="home-account" id="home-account"></div>
 
+    <div class="install-banner" id="install-banner" hidden>
+      <span class="install-ico">📲</span>
+      <span class="install-text" id="install-text">Instale o jogo no seu celular!</span>
+      <button class="install-btn" id="install-btn">Instalar</button>
+      <button class="install-x" id="install-close" aria-label="Fechar">✕</button>
+    </div>
+
     <p class="credit">
       <span data-i18n="madeBy">Desenvolvido por</span>
-      <a class="credit-link" href="https://www.instagram.com/quicktipstop/" target="_blank" rel="noopener noreferrer">QuickTipsTop</a>
+      <a class="credit-link" id="credit-link" href="https://www.instagram.com/quicktipstop/" target="_blank" rel="noopener noreferrer">QuickTipsTop</a>
+      <br />
+      <a class="privacy-link" id="privacy-link" href="privacidade.html" target="_blank" rel="noopener noreferrer">Política de Privacidade</a>
     </p>
   </main>
 
@@ -358,6 +377,22 @@
     </div>
   </div>
 
+  <!-- MODAL: PORTÃO DOS PAIS (antes de login/links externos) -->
+  <div class="modal" id="gate-modal" hidden>
+    <div class="modal-card gate-card">
+      <div class="modal-emoji">🧑‍🍼</div>
+      <h3 id="gate-title">Peça a um adulto 🙂</h3>
+      <p id="gate-sub">Para continuar, resolva a conta abaixo:</p>
+      <p class="gate-question" id="gate-question">7 × 8 = ?</p>
+      <input type="number" inputmode="numeric" id="gate-answer" class="login-input gate-input" />
+      <p class="login-status" id="gate-error" hidden></p>
+      <div class="win-buttons">
+        <button class="login-btn login-submit" id="gate-ok"><span id="gate-ok-label">Confirmar</span></button>
+        <button class="login-link" id="gate-cancel">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Aviso flutuante (ex.: conexão caiu) -->
   <div class="toast" id="toast" hidden></div>
 
@@ -367,6 +402,14 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=45"></script>
-  <script src="js/app.js?v=45"></script>
+  <script src="js/app.js?v=47"></script>
+  <script>
+    // PWA: registra o service worker (offline + instalável)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => { /* ignora */ });
+      });
+    }
+  </script>
 </body>
 </html>

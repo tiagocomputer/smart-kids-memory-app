@@ -1554,7 +1554,12 @@ body {
   color: var(--on-bg); opacity: 0.6; font-size: 1rem; padding: 4px 6px;
 }
 
-.privacy-link { display: inline-block; margin-top: 4px; font-size: 0.82rem; opacity: 0.75; }
+.privacy-link {
+  display: inline-block; margin-top: 6px; font-size: 0.82rem;
+  color: #fff; opacity: 0.9;
+  text-decoration: underline; text-underline-offset: 2px;
+}
+.privacy-link:hover, .privacy-link:active { opacity: 1; }
 
 /* ---------- Portão dos pais ---------- */
 .gate-card { max-width: 340px; }

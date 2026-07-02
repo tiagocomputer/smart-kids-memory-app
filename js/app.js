@@ -1846,7 +1846,7 @@ const CLOUD_STR = {
     gateTitle: 'Peça a um adulto 🙂', gateSub: 'Para continuar, resolva a conta abaixo:',
     gateConfirm: 'Confirmar', gateWrong: 'Ops! Tente de novo.',
     installText: 'Instale o jogo no seu celular!', installBtn: 'Instalar',
-    iosInstall: 'Para instalar: toque em Compartilhar ⬆️ e "Adicionar à Tela de Início".',
+    iosInstall: 'No Safari, toque em Compartilhar ⬆️ e depois "Adicionar à Tela de Início".',
   },
   en: {
     worldRanking: 'World Ranking 🌍', rankLoading: 'Loading ranking…',
@@ -1868,7 +1868,7 @@ const CLOUD_STR = {
     gateTitle: 'Ask a grown-up 🙂', gateSub: 'To continue, solve the problem below:',
     gateConfirm: 'Confirm', gateWrong: 'Oops! Try again.',
     installText: 'Install the game on your phone!', installBtn: 'Install',
-    iosInstall: 'To install: tap Share ⬆️ then "Add to Home Screen".',
+    iosInstall: 'In Safari, tap Share ⬆️ then "Add to Home Screen".',
   },
   fr: {
     worldRanking: 'Classement Mondial 🌍', rankLoading: 'Chargement…',
@@ -1890,7 +1890,7 @@ const CLOUD_STR = {
     gateTitle: 'Demande à un adulte 🙂', gateSub: 'Pour continuer, résous le calcul :',
     gateConfirm: 'Confirmer', gateWrong: 'Oups ! Réessaie.',
     installText: 'Installe le jeu sur ton téléphone !', installBtn: 'Installer',
-    iosInstall: 'Pour installer : appuie sur Partager ⬆️ puis "Sur l\'écran d\'accueil".',
+    iosInstall: 'Dans Safari, appuie sur Partager ⬆️ puis "Sur l\'écran d\'accueil".',
   },
 };
 function cstr(key, vars) {
@@ -1942,6 +1942,8 @@ function applyCloudTexts() {
   set('#gate-ok-label', cstr('gateConfirm'));
   set('#gate-cancel', cstr('cancel'));
   set('#install-btn', cstr('installBtn'));
+  // Mensagem do banner de instalação também acompanha o idioma (normal ou dica iOS).
+  set('#install-text', cstr(installIosMode ? 'iosInstall' : 'installText'));
   set('#privacy-link', cstr('privacyLink'));
 }
 
@@ -2035,12 +2037,14 @@ function wireGate() {
 
 // ----- Instalação (PWA) -----
 let deferredInstall = null;
+let installIosMode = false;  // true = mostrando a dica de "Adicionar à Tela de Início" (iOS)
 function isStandalone() {
   return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 }
 function isIos() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
 function showInstallBanner(iosHint) {
   const b = $('#install-banner'); if (!b) return;
+  installIosMode = iosHint;
   const btn = $('#install-btn'); if (btn) btn.hidden = iosHint;
   const txt = $('#install-text'); if (txt) txt.textContent = iosHint ? cstr('iosInstall') : cstr('installText');
   b.hidden = false;

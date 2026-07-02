@@ -1528,3 +1528,36 @@ body {
 .rank-ava-ico { font-size: 1.1rem; }
 .rank-who { flex: 1; font-weight: 700; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .rank-xp { font-weight: 800; color: var(--card-back2); white-space: nowrap; }
+
+/* ---------- PWA: banner de instalação ---------- */
+.install-banner {
+  display: flex; align-items: center; gap: 8px;
+  width: min(92vw, 540px); margin: 10px auto 0;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 16px; padding: 10px 12px;
+  backdrop-filter: blur(6px);
+}
+.install-banner[hidden] { display: none; }
+.install-ico { font-size: 1.3rem; flex: 0 0 auto; }
+.install-text { flex: 1; font-size: 0.9rem; font-weight: 600; color: var(--on-bg); line-height: 1.25; }
+.install-btn {
+  flex: 0 0 auto; border: none; cursor: pointer;
+  background: var(--card-back1); color: #fff;
+  font: inherit; font-weight: 800; font-size: 0.92rem;
+  padding: 9px 16px; border-radius: 999px; box-shadow: 0 3px 0 var(--card-back2);
+}
+.install-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--card-back2); }
+.install-btn[hidden] { display: none; }
+.install-x {
+  flex: 0 0 auto; border: none; background: none; cursor: pointer;
+  color: var(--on-bg); opacity: 0.6; font-size: 1rem; padding: 4px 6px;
+}
+
+.privacy-link { display: inline-block; margin-top: 4px; font-size: 0.82rem; opacity: 0.75; }
+
+/* ---------- Portão dos pais ---------- */
+.gate-card { max-width: 340px; }
+.gate-question { font-size: 2rem; font-weight: 800; color: var(--text-dark); margin: 10px 0 12px; }
+.gate-input { max-width: 160px; margin: 0 auto 4px; font-size: 1.3rem; }
+.gate-card .win-buttons { margin-top: 14px; }

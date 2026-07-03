@@ -682,6 +682,7 @@ function showScreen(name) {
   window.scrollTo(0, 0);
   if (name === 'setup') renderProfileChip();
   if (name === 'home') renderHomeAccount();
+  if (name === 'join') renderJoinIdentity();
   if (MENU_SCREENS.has(name)) music.playMenu();
 }
 function currentScreen() {
@@ -1838,6 +1839,7 @@ const CLOUD_STR = {
     email: 'E-mail', pass: 'Senha (6+ caracteres)', doLogin: 'Entrar', doRegister: 'Criar conta',
     haveAccount: 'Já tenho conta', noAccount: 'Criar uma conta',
     continueGuest: 'Jogar como convidado', saveProgress: 'Entrar / Salvar progresso',
+    joiningAs: 'Entrando como {n} 🦉', joinGuestNote: 'Você está entrando como convidado. Entre para manter seus pontos e rank!',
     helloName: 'Olá, {n}!', accountSynced: 'Seu progresso está salvo na nuvem ✅',
     syncing: 'Sincronizando…', synced: 'Progresso sincronizado! 🎉',
     loading: 'Carregando… tente de novo em instantes.',
@@ -1860,6 +1862,7 @@ const CLOUD_STR = {
     email: 'Email', pass: 'Password (6+ chars)', doLogin: 'Sign in', doRegister: 'Create account',
     haveAccount: 'I have an account', noAccount: 'Create an account',
     continueGuest: 'Play as guest', saveProgress: 'Sign in / Save progress',
+    joiningAs: 'Joining as {n} 🦉', joinGuestNote: 'You are joining as a guest. Sign in to keep your points and rank!',
     helloName: 'Hi, {n}!', accountSynced: 'Your progress is saved in the cloud ✅',
     syncing: 'Syncing…', synced: 'Progress synced! 🎉',
     loading: 'Loading… please try again in a moment.',
@@ -1882,6 +1885,7 @@ const CLOUD_STR = {
     email: 'E-mail', pass: 'Mot de passe (6+ caractères)', doLogin: 'Se connecter', doRegister: 'Créer un compte',
     haveAccount: "J'ai un compte", noAccount: 'Créer un compte',
     continueGuest: 'Jouer en tant qu\'invité', saveProgress: 'Se connecter / Sauvegarder',
+    joiningAs: 'Tu rejoins en tant que {n} 🦉', joinGuestNote: 'Tu rejoins en tant qu\'invité. Connecte-toi pour garder tes points et ton classement !',
     helloName: 'Salut, {n} !', accountSynced: 'Ta progression est sauvegardée dans le cloud ✅',
     syncing: 'Synchronisation…', synced: 'Progression synchronisée ! 🎉',
     loading: 'Chargement… réessaie dans un instant.',
@@ -1967,6 +1971,31 @@ function renderHomeAccount() {
       <span class="account-pill-name">${cstr('saveProgress')}</span>
     </button>`;
     $('#account-open').addEventListener('click', () => { sound.play('click'); openLoginModal(); });
+  }
+}
+
+// ----- Identidade na tela de "Entrar no jogo" (join por QR/link) -----
+// Mostra quem está entrando e, se logado, preenche nome/avatar da conta.
+// Se convidado, oferece login ali mesmo para preservar pontos/rank.
+function renderJoinIdentity() {
+  const el = $('#join-account');
+  if (!el) return;
+  if (!cloud.enabled) { el.hidden = true; return; }
+  el.hidden = false;
+  if (cloud.isSignedIn()) {
+    // Adota o nome/avatar da conta para a partida (se ainda não houver nome).
+    if (!(storage.name || '').trim()) {
+      const fn = accountFirstName();
+      if (fn) storage.name = fn;
+    }
+    const ni = $('#join-name-input'); if (ni) ni.value = storage.name;
+    renderNameAvatars();
+    el.innerHTML = `<div class="join-signed">${cstr('joiningAs', { n: esc(rankingName()) })}</div>`;
+  } else {
+    el.innerHTML = `<p class="join-guest-note">${cstr('joinGuestNote')}</p>
+      <button class="btn btn-small cloud-enter" id="join-login">🔑 ${cstr('saveProgress')}</button>`;
+    const b = $('#join-login');
+    if (b) b.addEventListener('click', () => { sound.play('click'); openLoginModal(() => renderJoinIdentity()); });
   }
 }
 
@@ -2500,10 +2529,11 @@ wireCloudUI();
 applyCloudTexts();
 renderHomeAccount();
 cloud.init();
-cloud.onReady(() => renderHomeAccount());
+cloud.onReady(() => { renderHomeAccount(); if (currentScreen() === 'join') renderJoinIdentity(); });
 cloud.onAuthChange(() => {
   renderHomeAccount();
   if (currentScreen() === 'records') renderRecords();
+  if (currentScreen() === 'join') renderJoinIdentity();
 });
 
 joinHostId = new URLSearchParams(location.search).get('join');

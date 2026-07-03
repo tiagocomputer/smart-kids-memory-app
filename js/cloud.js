@@ -78,6 +78,8 @@ const cloud = (() => {
       ]);
       const app = appMod.initializeApp(FIREBASE_CONFIG);
       const auth = authApi.getAuth(app);
+      // Mantém o login salvo no navegador (sobrevive a reloads/novas abas/QR).
+      try { await authApi.setPersistence(auth, authApi.browserLocalPersistence); } catch (e) { /* ignora */ }
       const db = dbApi.getDatabase(app);
       fb = { auth, db, authApi, dbApi };
       authApi.onAuthStateChanged(auth, (user) => {

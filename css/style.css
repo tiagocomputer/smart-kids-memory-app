@@ -1387,6 +1387,17 @@ body {
 .account-pill-name { max-width: 62vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .account-gear { opacity: 0.85; }
 
+/* Identidade na tela de "Entrar no jogo" */
+.join-account { margin: 0 auto 14px; text-align: center; max-width: 420px; }
+.join-account[hidden] { display: none; }
+.join-signed {
+  display: inline-block; font-weight: 700; color: var(--text-dark);
+  background: #dcfce7; border: 1.5px solid #bbf7d0;
+  border-radius: 999px; padding: 8px 18px;
+}
+.join-guest-note { font-size: 0.92rem; opacity: 0.9; margin: 0 0 10px; }
+.join-account .cloud-enter { display: inline-block; width: auto; margin: 0; }
+
 /* ---------- Modais de login e conta ---------- */
 .modal-x {
   position: absolute; top: 12px; right: 14px;

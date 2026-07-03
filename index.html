@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=49" />
+  <link rel="stylesheet" href="css/style.css?v=50" />
 </head>
 <body>
 
@@ -190,6 +190,7 @@
   <!-- TELA: ENTRAR NO JOGO (CONVIDADO) -->
   <main id="screen-join" class="screen">
     <h2 class="screen-title" data-i18n="joinTitle">Entrar no jogo 🎮</h2>
+    <div class="join-account" id="join-account" hidden></div>
     <section class="setup-block">
       <h3 data-i18n="yourName">Seu nome</h3>
       <label class="name-field" for="join-name-input">
@@ -401,8 +402,8 @@
   <script src="js/art.js?v=33"></script>
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
-  <script src="js/cloud.js?v=45"></script>
-  <script src="js/app.js?v=48"></script>
+  <script src="js/cloud.js?v=50"></script>
+  <script src="js/app.js?v=50"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

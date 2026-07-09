@@ -1669,37 +1669,19 @@ body {
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.22);
   animation: card-in 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
 }
-/* Argolas de fichário: oval EM PÉ (vertical), metálica, abraçando a borda
-   esquerda do papel. O furo escuro fica atrás; o miolo vazado da argola o
-   revela, dando o efeito de "passou de um lado ao outro da folha". */
+/* Argolas de fichário: tubo metálico grosso (SVG), oval EM PÉ, abraçando a
+   borda esquerda do papel — metade na lombada, metade sobre a folha. */
 .book-ring {
-  position: absolute; left: 18px;             /* borda do papel ~30px: metade na lombada, metade no papel */
-  width: 24px; height: 42px;                  /* mais alta que larga => em pé */
+  position: absolute; left: 8px;
+  width: 44px; height: 62px;
   transform: translateY(-50%);
-  border-radius: 50%;
-  border: 6px solid transparent;
-  /* aro metálico: brilho em cima/esq, sombra embaixo/dir */
-  border-color: #f4f7fb #9aa2b2 #6f7789 #d3d9e4;
-  background: transparent;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.6);
+  background: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2060%2086'%3E%3Cdefs%3E%3ClinearGradient%20id='m'%20x1='0'%20y1='0'%20x2='1'%20y2='1'%3E%3Cstop%20offset='0'%20stop-color='%23ffffff'/%3E%3Cstop%20offset='0.28'%20stop-color='%23dfe3ec'/%3E%3Cstop%20offset='0.52'%20stop-color='%23a2aab8'/%3E%3Cstop%20offset='0.74'%20stop-color='%23c9cfd9'/%3E%3Cstop%20offset='1'%20stop-color='%236f7788'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse%20cx='30'%20cy='43'%20rx='18'%20ry='34'%20fill='none'%20stroke='url(%23m)'%20stroke-width='13'/%3E%3Cellipse%20cx='28.5'%20cy='41'%20rx='18'%20ry='34'%20fill='none'%20stroke='%23ffffff'%20stroke-opacity='0.55'%20stroke-width='3'/%3E%3Cellipse%20cx='31.5'%20cy='45'%20rx='18'%20ry='34'%20fill='none'%20stroke='%23545b6b'%20stroke-opacity='0.4'%20stroke-width='2'/%3E%3C/svg%3E") center / contain no-repeat;
+  filter: drop-shadow(1px 3px 2px rgba(0, 0, 0, 0.45));
   z-index: 4; pointer-events: none;
 }
-.book-ring::after {           /* realce metálico interno do aro */
-  content: ''; position: absolute; inset: -3px; border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-}
-.book-hole {
-  position: absolute; left: 30px;             /* no papel, atrás da argola */
-  width: 9px; height: 20px;
-  transform: translateY(-50%);
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 40% 35%, #b3a4d6, #6a5a95 80%);
-  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
-  z-index: 2; pointer-events: none;
-}
-.book-ring.r1 { top: 20%; }  .book-hole.h1 { top: 20%; }
-.book-ring.r2 { top: 50%; }  .book-hole.h2 { top: 50%; }
-.book-ring.r3 { top: 80%; }  .book-hole.h3 { top: 80%; }
+.book-ring.r1 { top: 20%; }
+.book-ring.r2 { top: 50%; }
+.book-ring.r3 { top: 80%; }
 
 .book-inner {
   position: relative; z-index: 1;

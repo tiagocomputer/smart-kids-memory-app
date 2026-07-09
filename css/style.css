@@ -1651,71 +1651,76 @@ body {
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-/* ---------- Livro (fichário) ---------- */
+/* ---------- Livro (fichário) — paleta do jogo ---------- */
 .book-overlay {
   position: fixed; inset: 0; z-index: 60;
   background: rgba(24, 14, 55, 0.72); backdrop-filter: blur(3px);
-  display: grid; place-items: center; padding: 14px;
+  display: grid; place-items: center; padding: 12px;
 }
 .book-overlay[hidden] { display: none; }
 
 .book {
   position: relative;
-  width: min(94vw, 430px); max-height: 88vh;
-  background: linear-gradient(160deg, #9a6a44, #7c4f2c 60%, #6b4123);
+  width: min(94vw, 440px); max-height: 90vh;
+  background: linear-gradient(160deg, #7c3aed, #5b21b6 60%, #4c1d95);
   border-radius: 24px;
-  padding: 14px 14px 14px 30px;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.18);
+  padding: 12px 12px 12px 30px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.22);
   animation: card-in 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
 }
+/* argolas: passam por dentro dos furos do papel */
 .book-ring {
-  position: absolute; left: 8px; width: 26px; height: 26px;
+  position: absolute; left: 21px; width: 26px; height: 26px;
   border-radius: 50%;
-  border: 5px solid #cfd4dd;
+  border: 5px solid #d7dbe4;
   background: transparent;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 1px 1px rgba(255,255,255,0.35);
-  z-index: 2;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 1px rgba(255, 255, 255, 0.4);
+  z-index: 3; pointer-events: none;
 }
-.book-ring.r1 { top: 16%; }
-.book-ring.r2 { top: 47%; }
-.book-ring.r3 { top: 78%; }
+.book-ring.r1 { top: 14.3%; }
+.book-ring.r2 { top: 45.3%; }
+.book-ring.r3 { top: 76.3%; }
 
 .book-inner {
+  position: relative;
   background:
-    radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.5), transparent 40%),
-    linear-gradient(165deg, #fdf3e0, #f6e6c8 70%, #efdcba);
+    radial-gradient(circle 7px at 11px 16%, #cfc2ee 6px, transparent 7px),
+    radial-gradient(circle 7px at 11px 47%, #cfc2ee 6px, transparent 7px),
+    radial-gradient(circle 7px at 11px 78%, #cfc2ee 6px, transparent 7px),
+    radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.75), transparent 40%),
+    linear-gradient(165deg, #ffffff, #f4efff 70%, #ece4fb);
   border-radius: 14px;
-  padding: 12px 12px 10px;
-  box-shadow: inset 4px 0 10px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  padding: 10px 10px 8px 20px;
+  box-shadow: inset 4px 0 10px rgba(76, 29, 149, 0.14), inset 0 0 0 1px rgba(76, 29, 149, 0.08);
   display: flex; flex-direction: column; gap: 8px;
-  max-height: calc(88vh - 28px);
+  max-height: calc(90vh - 24px);
 }
 
 .book-head { display: flex; align-items: center; gap: 10px; }
 .book-cover-chip {
   width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%;
-  background: #fff; border: 3px solid #e7d3ac; overflow: hidden;
+  background: #fff; border: 3px solid #e4d9fa; overflow: hidden;
   display: grid; place-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
 }
 .book-cover-chip img { width: 86%; height: 86%; object-fit: contain; }
 .book-title-wrap { flex: 1; min-width: 0; display: flex; flex-direction: column; }
-.book-title-wrap b { color: #6b4123; font-size: 1.1rem; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.book-title-wrap b { color: var(--text-dark); font-size: 1.08rem; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .book-count {
   align-self: flex-start; margin-top: 2px;
-  background: #6b4123; color: #fde68a; font-size: 0.72rem; font-weight: 800;
+  background: #6d28d9; color: #fde68a; font-size: 0.72rem; font-weight: 800;
   border-radius: 999px; padding: 2px 10px;
 }
 .book-x {
-  background: #efdcba; border: none; color: #6b4123;
+  background: #ede6fc; border: none; color: #6d28d9;
   width: 34px; height: 34px; border-radius: 50%; font-size: 1rem; font-weight: 800;
-  cursor: pointer; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+  cursor: pointer; box-shadow: 0 2px 0 rgba(76, 29, 149, 0.25);
 }
 
 .book-stage { perspective: 1200px; touch-action: pan-y; flex: 1; min-height: 0; }
 .book-page {
-  display: grid; grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr;
-  gap: 10px; height: 100%;
+  display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr;
+  gap: 8px; height: 100%;
   transform-origin: left center;
 }
 /* virada de página (sai e entra girando na lombada) */
@@ -1730,45 +1735,52 @@ body {
 
 .book-card {
   position: relative;
-  background: #fff; border-radius: 12px;
-  border: 2.5px solid #fff;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.18);
+  background: #fff; border-radius: 11px;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 6px rgba(59, 38, 103, 0.18);
   display: grid; place-items: center; overflow: hidden;
-  min-height: 86px;
+  min-height: 60px;
 }
 .book-card img { width: 92%; height: 92%; object-fit: contain; }
 .book-card.new { animation: pop 0.6s; outline: 3px solid var(--pink); outline-offset: -3px; }
 
-/* slot vazio: relevo no papel (como figurinha por colar) */
+/* slot vazio: relevo no papel (figurinha por colar) */
 .book-card.locked {
-  background: #ecd9b5;
-  border: 2px dashed #d9c193;
-  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.16);
+  background: #eee7fb;
+  border: 2px dashed #cfc0ef;
+  box-shadow: inset 0 3px 8px rgba(76, 29, 149, 0.13);
 }
 .bc-emboss {
-  font-size: 2.6rem; line-height: 1;
-  filter: grayscale(1) sepia(0.5) opacity(0.35);
+  font-size: 1.9rem; line-height: 1;
+  filter: grayscale(1) opacity(0.3);
 }
 .bc-q {
-  position: absolute; right: 8px; bottom: 6px;
-  font-size: 0.85rem; font-weight: 800; color: #a9854f;
+  position: absolute; right: 6px; bottom: 4px;
+  font-size: 0.8rem; font-weight: 800; color: #9f8ac9;
 }
 .book-card.legendary { border-color: #fde047; }
-.book-card.legendary.locked { border: 2px dashed #eab308; background: #f3e3b3; }
-.book-overlay.legendary .book { background: linear-gradient(160deg, #a97b1e, #7c581a 60%, #6b4a13); }
+.book-card.legendary.locked { border: 2px dashed #eab308; background: #faf3d7; }
+.book-overlay.legendary .book { background: linear-gradient(160deg, #d99a06, #a16207 60%, #854d0e); }
+.book-overlay.legendary .book-count { background: #a16207; }
 
 .book-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding-top: 2px; }
 .book-arrow {
-  width: 40px; height: 40px; border-radius: 50%;
-  border: none; background: #6b4123; color: #fde68a;
-  font-size: 1.5rem; line-height: 1; font-weight: 800; cursor: pointer;
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  width: 42px; height: 42px; border-radius: 50%;
+  border: none; background: linear-gradient(180deg, #fbbf24, #f59e0b);
+  color: #3b2667; font-size: 1.5rem; line-height: 1; font-weight: 800; cursor: pointer;
+  box-shadow: 0 3px 0 #b45309;
 }
-.book-arrow:disabled { opacity: 0.35; }
-.book-dots { display: flex; gap: 7px; justify-content: center; flex: 1; }
+.book-arrow:active { transform: translateY(2px); box-shadow: 0 1px 0 #b45309; }
+.book-arrow:disabled { opacity: 0.35; transform: none; }
+.book-dots { display: flex; gap: 6px; justify-content: center; flex: 1; flex-wrap: wrap; }
 .book-dot {
-  width: 11px; height: 11px; border-radius: 50%; border: none; padding: 0;
-  background: #cbb188; cursor: pointer;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  width: 10px; height: 10px; border-radius: 50%; border: none; padding: 0;
+  background: #c9b9ec; cursor: pointer;
+  box-shadow: inset 0 1px 2px rgba(76, 29, 149, 0.3);
 }
-.book-dot.active { background: #fbbf24; box-shadow: 0 0 0 2.5px rgba(251, 191, 36, 0.35); }
+.book-dot.gold { background: #e7cf8b; }
+.book-dot.active { background: #fbbf24; box-shadow: 0 0 0 2.5px rgba(251, 191, 36, 0.4); }
+
+/* respiro entre a grade de mundos e o botão de jogar */
+.world-grid { margin-bottom: 26px; }
+#btn-album-play { margin-top: 4px; }

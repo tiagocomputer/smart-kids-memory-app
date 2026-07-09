@@ -721,12 +721,8 @@ function setLang(next) {
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
   if (cur === 'album') {
     renderAlbum();
-    // Livro aberto: re-traduz o título do mundo e re-renderiza a página.
-    if (albumBook.cat) {
-      const bc = CATEGORIES.find((c) => c.id === albumBook.cat);
-      if (bc) $('#book-title').textContent = t(bc.key);
-      renderBookPage();
-    }
+    // Livro aberto: re-renderiza a página (o título/mundo é traduzido lá).
+    if (albumBook.cat) renderBookPage();
   }
   if (cur === 'records') renderRecords();
   if (cur === 'win') { renderWinTexts(); if (game.online) updateRematchUI(); }
@@ -1788,17 +1784,29 @@ function renderAlbum(highlightId = null) {
   }
 }
 
-// ----- Livro (fichário) do mundo -----
-const BOOK_PER_PAGE = 6;
+// ----- Livro (fichário) do álbum -----
+// O livro é UM álbum contínuo: cada mundo ocupa uma página de 12 figurinhas
+// (Lendárias = 2 páginas). As setas/deslizes passam de um mundo para o outro.
+const BOOK_PER_PAGE = 12;
 const albumBook = { cat: null, page: 0, highlight: null, turning: false };
 
 function bookItems(catId) { return STICKERS.filter((s) => s.cat === catId); }
-function bookPages(catId) { return Math.ceil(bookItems(catId).length / BOOK_PER_PAGE); }
 
-function bookPageHTML(catId, page, highlightId) {
-  const cat = CATEGORIES.find((c) => c.id === catId);
+// Lista global de páginas: [{cat, start, part, parts}, ...]
+function bookPagesList() {
+  const pages = [];
+  CATEGORIES.forEach((cat) => {
+    const n = bookItems(cat.id).length;
+    const parts = Math.ceil(n / BOOK_PER_PAGE);
+    for (let i = 0; i < parts; i++) pages.push({ cat: cat.id, start: i * BOOK_PER_PAGE, part: i, parts });
+  });
+  return pages;
+}
+
+function bookPageHTML(pg, highlightId) {
+  const cat = CATEGORIES.find((c) => c.id === pg.cat);
   const owned = storage.stickers;
-  const slice = bookItems(catId).slice(page * BOOK_PER_PAGE, (page + 1) * BOOK_PER_PAGE);
+  const slice = bookItems(pg.cat).slice(pg.start, pg.start + BOOK_PER_PAGE);
   return slice.map((s) => {
     const has = owned.includes(s.id);
     return `
@@ -1811,35 +1819,38 @@ function bookPageHTML(catId, page, highlightId) {
 }
 
 function renderBookPage() {
-  const catId = albumBook.cat;
-  if (!catId) return;
-  const items = bookItems(catId);
+  const pages = bookPagesList();
+  const pg = pages[albumBook.page];
+  if (!pg) return;
+  const cat = CATEGORIES.find((c) => c.id === pg.cat);
+  albumBook.cat = pg.cat;
+  const items = bookItems(pg.cat);
   const have = items.filter((s) => storage.stickers.includes(s.id)).length;
+  // Cabeçalho segue o mundo da página atual (muda ao folhear)
+  $('#book-title').textContent = t(cat.key) + (pg.parts > 1 ? ` · ${pg.part + 1}/${pg.parts}` : '');
+  $('#book-cover').src = items[0].img;
   $('#book-count').textContent = `${have}/${items.length}`;
-  $('#book-page').innerHTML = bookPageHTML(catId, albumBook.page, albumBook.highlight);
-  const total = bookPages(catId);
-  $('#book-dots').innerHTML = Array.from({ length: total }, (_, i) =>
-    `<button class="book-dot ${i === albumBook.page ? 'active' : ''}" data-page="${i}" aria-label="${i + 1}"></button>`).join('');
+  $('#album-book').classList.toggle('legendary', !!cat.legendary);
+  $('#book-page').innerHTML = bookPageHTML(pg, albumBook.highlight);
+  $('#book-dots').innerHTML = pages.map((p, i) => {
+    const c = CATEGORIES.find((x) => x.id === p.cat);
+    return `<button class="book-dot ${i === albumBook.page ? 'active' : ''} ${c && c.legendary ? 'gold' : ''}" data-page="${i}" aria-label="${i + 1}"></button>`;
+  }).join('');
   $('#book-prev').disabled = albumBook.page === 0;
-  $('#book-next').disabled = albumBook.page === total - 1;
+  $('#book-next').disabled = albumBook.page === pages.length - 1;
 }
 
 function openAlbumBook(catId, highlightId = null) {
-  const cat = CATEGORIES.find((c) => c.id === catId);
-  if (!cat) return;
-  const items = bookItems(catId);
-  albumBook.cat = catId;
-  albumBook.highlight = highlightId;
-  let page = 0;
+  const pages = bookPagesList();
+  let page = pages.findIndex((p) => p.cat === catId);
+  if (page < 0) return;
   if (highlightId) {
-    const idx = items.findIndex((s) => s.id === highlightId);
-    if (idx >= 0) page = Math.floor(idx / BOOK_PER_PAGE);
+    const idx = bookItems(catId).findIndex((s) => s.id === highlightId);
+    if (idx >= 0) page += Math.floor(idx / BOOK_PER_PAGE);
   }
   albumBook.page = page;
+  albumBook.highlight = highlightId;
   albumBook.turning = false;
-  $('#book-title').textContent = t(cat.key);
-  $('#book-cover').src = items[0].img;
-  $('#album-book').classList.toggle('legendary', !!cat.legendary);
   renderBookPage();
   $('#album-book').hidden = false;
 }
@@ -1855,7 +1866,7 @@ function closeAlbumBook() {
 
 function goBookPage(target) {
   if (albumBook.cat == null || albumBook.turning) return;
-  const total = bookPages(albumBook.cat);
+  const total = bookPagesList().length;
   if (target < 0 || target >= total || target === albumBook.page) return;
   const dir = target > albumBook.page ? 1 : -1;
   albumBook.page = target;

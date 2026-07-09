@@ -1669,29 +1669,40 @@ body {
   box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), inset 0 2px 0 rgba(255, 255, 255, 0.22);
   animation: card-in 0.35s cubic-bezier(0.3, 1.5, 0.5, 1);
 }
-/* argolas de fichário: entram no furo do papel (furo desenha por cima da
-   ponta da argola, vendendo o efeito "atravessou a folha") */
+/* Argolas de fichário: oval EM PÉ (vertical), metálica, abraçando a borda
+   esquerda do papel. O furo escuro fica atrás; o miolo vazado da argola o
+   revela, dando o efeito de "passou de um lado ao outro da folha". */
 .book-ring {
-  position: absolute; left: -17px; width: 32px; height: 30px;
+  position: absolute; left: 18px;             /* borda do papel ~30px: metade na lombada, metade no papel */
+  width: 24px; height: 42px;                  /* mais alta que larga => em pé */
+  transform: translateY(-50%);
   border-radius: 50%;
-  border: 6px solid #dde1ea;
+  border: 6px solid transparent;
+  /* aro metálico: brilho em cima/esq, sombra embaixo/dir */
+  border-color: #f4f7fb #9aa2b2 #6f7789 #d3d9e4;
   background: transparent;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35), inset 0 -2px 3px rgba(0, 0, 0, 0.28);
-  z-index: 3; pointer-events: none;
-}
-.book-hole {
-  position: absolute; left: 7px; width: 14px; height: 14px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #a493cb, #6b5a95);
-  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.6);
   z-index: 4; pointer-events: none;
 }
-.book-ring.r1 { top: 13%; }  .book-hole.h1 { top: calc(13% + 8px); }
-.book-ring.r2 { top: 45%; }  .book-hole.h2 { top: calc(45% + 8px); }
-.book-ring.r3 { top: 77%; }  .book-hole.h3 { top: calc(77% + 8px); }
+.book-ring::after {           /* realce metálico interno do aro */
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+}
+.book-hole {
+  position: absolute; left: 30px;             /* no papel, atrás da argola */
+  width: 9px; height: 20px;
+  transform: translateY(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 40% 35%, #b3a4d6, #6a5a95 80%);
+  box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+  z-index: 2; pointer-events: none;
+}
+.book-ring.r1 { top: 20%; }  .book-hole.h1 { top: 20%; }
+.book-ring.r2 { top: 50%; }  .book-hole.h2 { top: 50%; }
+.book-ring.r3 { top: 80%; }  .book-hole.h3 { top: 80%; }
 
 .book-inner {
-  position: relative;
+  position: relative; z-index: 1;
   background:
     radial-gradient(120% 100% at 50% 0%, rgba(255, 255, 255, 0.75), transparent 40%),
     linear-gradient(165deg, #ffffff, #f4efff 70%, #ece4fb);

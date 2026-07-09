@@ -370,7 +370,8 @@ function stickerSet(cat, dir, prefix, n) {
   return Array.from({ length: n }, (_, i) => ({ id: `${cat}${i + 1}`, cat, img: `img/${dir}/${prefix}${i + 1}.webp` }));
 }
 const STICKERS = [
-  ...stickerSet('animais', 'animais', 'an', 13),
+  // 12 figurinhas por mundo (o tema animais tem 13 cartas; o álbum usa as 12 primeiras)
+  ...stickerSet('animais', 'animais', 'an', 12),
   ...stickerSet('oceano', 'oceano', 'oc', 12),
   ...stickerSet('dinos', 'dinos', 'd', 12),
   ...stickerSet('comida', 'comida', 'co', 12),

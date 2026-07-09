@@ -683,6 +683,7 @@ function showScreen(name) {
   if (name === 'setup') renderProfileChip();
   if (name === 'home') renderHomeAccount();
   if (name === 'join') renderJoinIdentity();
+  if (name !== 'album') closeAlbumBook();   // saiu do álbum -> fecha o livro
   if (MENU_SCREENS.has(name)) music.playMenu();
 }
 function currentScreen() {
@@ -718,7 +719,15 @@ function setLang(next) {
   updateStartButton();
   const cur = currentScreen();
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
-  if (cur === 'album') renderAlbum();
+  if (cur === 'album') {
+    renderAlbum();
+    // Livro aberto: re-traduz o título do mundo e re-renderiza a página.
+    if (albumBook.cat) {
+      const bc = CATEGORIES.find((c) => c.id === albumBook.cat);
+      if (bc) $('#book-title').textContent = t(bc.key);
+      renderBookPage();
+    }
+  }
   if (cur === 'records') renderRecords();
   if (cur === 'win') { renderWinTexts(); if (game.online) updateRematchUI(); }
   if (cur === 'home') { owlVoice.speak(); renderHomeAccount(); }   // troca de idioma
@@ -1745,6 +1754,7 @@ function openPack() {
 
 // ---------- Álbum ----------
 
+// Álbum: grade de mundos (medalhões) + livro interativo por mundo.
 function renderAlbum(highlightId = null) {
   const owned = storage.stickers;
   const ownedN = owned.filter((id) => STICKER_IDS.has(id)).length;
@@ -1752,28 +1762,150 @@ function renderAlbum(highlightId = null) {
   $('#album-bar-fill').style.width = `${(ownedN / STICKERS.length) * 100}%`;
 
   const content = $('#album-content');
-  content.innerHTML = CATEGORIES.map((cat) => {
+  content.innerHTML = `<div class="world-grid">${CATEGORIES.map((cat) => {
     const items = STICKERS.filter((s) => s.cat === cat.id);
     const have = items.filter((s) => owned.includes(s.id)).length;
-    const grid = items.map((s) => {
-      const has = owned.includes(s.id);
-      const isNew = s.id === highlightId;
-      const face = has
-        ? (s.img ? `<img class="s-img" src="${s.img}" alt="" draggable="false">` : `<span class="s-emoji">${s.emoji}</span>`)
-        : `<span class="s-emoji">${cat.legendary ? '✦' : '❔'}</span>`;
-      const name = !has ? '???' : (s.emoji ? tSticker(s.id) : '');
-      return `
-        <div class="sticker ${has ? '' : 'locked'} ${isNew ? 'new' : ''} ${cat.legendary ? 'legendary' : ''}">
-          ${face}
-          ${name ? `<span class="s-name">${name}</span>` : '<span class="s-name"></span>'}
-        </div>`;
-    }).join('');
+    const done = have === items.length;
     return `
-      <section class="album-cat ${cat.legendary ? 'legendary' : ''}">
-        <h3 class="album-cat-title">${cat.emoji} ${t(cat.key)} <span class="cat-count">${have}/${items.length}</span></h3>
-        <div class="album-grid">${grid}</div>
-      </section>`;
+      <button class="world-badge ${cat.legendary ? 'legendary' : ''}" data-cat="${cat.id}">
+        <span class="wb-circle">
+          <img src="${items[0].img}" alt="" draggable="false">
+          ${done ? '<span class="wb-check">✓</span>' : ''}
+        </span>
+        <span class="wb-ribbon">${t(cat.key)}</span>
+        <span class="wb-progress"><i style="width:${Math.round((have / items.length) * 100)}%"></i><b>${have}/${items.length}</b></span>
+      </button>`;
+  }).join('')}</div>`;
+
+  content.querySelectorAll('.world-badge').forEach((b) => {
+    b.addEventListener('click', () => { sound.play('click'); openAlbumBook(b.dataset.cat); });
+  });
+
+  // Figurinha nova: abre direto o livro do mundo dela, na página certa.
+  if (highlightId) {
+    const s = STICKERS.find((x) => x.id === highlightId);
+    if (s) openAlbumBook(s.cat, highlightId);
+  }
+}
+
+// ----- Livro (fichário) do mundo -----
+const BOOK_PER_PAGE = 6;
+const albumBook = { cat: null, page: 0, highlight: null, turning: false };
+
+function bookItems(catId) { return STICKERS.filter((s) => s.cat === catId); }
+function bookPages(catId) { return Math.ceil(bookItems(catId).length / BOOK_PER_PAGE); }
+
+function bookPageHTML(catId, page, highlightId) {
+  const cat = CATEGORIES.find((c) => c.id === catId);
+  const owned = storage.stickers;
+  const slice = bookItems(catId).slice(page * BOOK_PER_PAGE, (page + 1) * BOOK_PER_PAGE);
+  return slice.map((s) => {
+    const has = owned.includes(s.id);
+    return `
+      <div class="book-card ${has ? '' : 'locked'} ${s.legendary ? 'legendary' : ''} ${s.id === highlightId ? 'new' : ''}">
+        ${has
+          ? `<img src="${s.img}" alt="" draggable="false">`
+          : `<span class="bc-emboss">${cat.emoji}</span><span class="bc-q">?</span>`}
+      </div>`;
   }).join('');
+}
+
+function renderBookPage() {
+  const catId = albumBook.cat;
+  if (!catId) return;
+  const items = bookItems(catId);
+  const have = items.filter((s) => storage.stickers.includes(s.id)).length;
+  $('#book-count').textContent = `${have}/${items.length}`;
+  $('#book-page').innerHTML = bookPageHTML(catId, albumBook.page, albumBook.highlight);
+  const total = bookPages(catId);
+  $('#book-dots').innerHTML = Array.from({ length: total }, (_, i) =>
+    `<button class="book-dot ${i === albumBook.page ? 'active' : ''}" data-page="${i}" aria-label="${i + 1}"></button>`).join('');
+  $('#book-prev').disabled = albumBook.page === 0;
+  $('#book-next').disabled = albumBook.page === total - 1;
+}
+
+function openAlbumBook(catId, highlightId = null) {
+  const cat = CATEGORIES.find((c) => c.id === catId);
+  if (!cat) return;
+  const items = bookItems(catId);
+  albumBook.cat = catId;
+  albumBook.highlight = highlightId;
+  let page = 0;
+  if (highlightId) {
+    const idx = items.findIndex((s) => s.id === highlightId);
+    if (idx >= 0) page = Math.floor(idx / BOOK_PER_PAGE);
+  }
+  albumBook.page = page;
+  albumBook.turning = false;
+  $('#book-title').textContent = t(cat.key);
+  $('#book-cover').src = items[0].img;
+  $('#album-book').classList.toggle('legendary', !!cat.legendary);
+  renderBookPage();
+  $('#album-book').hidden = false;
+}
+
+function closeAlbumBook() {
+  const el = $('#album-book');
+  if (el && !el.hidden) {
+    el.hidden = true;
+    albumBook.cat = null; albumBook.highlight = null;
+    renderAlbum(); // atualiza contadores/selos da grade ao voltar
+  }
+}
+
+function goBookPage(target) {
+  if (albumBook.cat == null || albumBook.turning) return;
+  const total = bookPages(albumBook.cat);
+  if (target < 0 || target >= total || target === albumBook.page) return;
+  const dir = target > albumBook.page ? 1 : -1;
+  albumBook.page = target;
+  albumBook.highlight = null;
+  albumBook.turning = true;
+  sound.play('flip');
+  const pg = $('#book-page');
+  const outCls = dir > 0 ? 'leaf-out-next' : 'leaf-out-prev';
+  const inCls = dir > 0 ? 'leaf-in-next' : 'leaf-in-prev';
+  pg.classList.remove('leaf-out-next', 'leaf-out-prev', 'leaf-in-next', 'leaf-in-prev');
+  pg.classList.add(outCls);
+  const onOut = () => {
+    pg.removeEventListener('animationend', onOut);
+    renderBookPage();
+    pg.classList.remove(outCls);
+    void pg.offsetWidth;                 // reinicia a animação
+    pg.classList.add(inCls);
+    const onIn = () => { pg.removeEventListener('animationend', onIn); pg.classList.remove(inCls); albumBook.turning = false; };
+    pg.addEventListener('animationend', onIn);
+  };
+  pg.addEventListener('animationend', onOut);
+}
+function turnBookPage(dir) { goBookPage(albumBook.page + dir); }
+
+function wireAlbumBook() {
+  $('#book-close').addEventListener('click', () => { sound.play('click'); closeAlbumBook(); });
+  $('#album-book').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAlbumBook(); });
+  $('#book-prev').addEventListener('click', () => turnBookPage(-1));
+  $('#book-next').addEventListener('click', () => turnBookPage(1));
+  $('#book-dots').addEventListener('click', (e) => {
+    const d = e.target.closest('[data-page]'); if (!d) return;
+    goBookPage(parseInt(d.dataset.page, 10));
+  });
+  // Deslizar para folhear (toque e mouse, via Pointer Events)
+  const stage = $('#book-stage');
+  let sx = null, sy = null;
+  stage.addEventListener('pointerdown', (e) => { sx = e.clientX; sy = e.clientY; });
+  stage.addEventListener('pointerup', (e) => {
+    if (sx == null) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy;
+    sx = sy = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) turnBookPage(dx < 0 ? 1 : -1);
+  });
+  stage.addEventListener('pointercancel', () => { sx = sy = null; });
+  document.addEventListener('keydown', (e) => {
+    if ($('#album-book').hidden) return;
+    if (e.key === 'ArrowRight') turnBookPage(1);
+    else if (e.key === 'ArrowLeft') turnBookPage(-1);
+    else if (e.key === 'Escape') closeAlbumBook();
+  });
 }
 
 // ---------- Recordes ----------
@@ -2523,6 +2655,7 @@ updateSoundButton();
 // Portão dos pais + instalação (PWA) — independem do Firebase.
 wireGate();
 wirePwa();
+wireAlbumBook();
 
 // Nuvem (opcional): login + ranking. Inerte se FIREBASE_CONFIG estiver vazio.
 wireCloudUI();

@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=50" />
+  <link rel="stylesheet" href="css/style.css?v=51" />
 </head>
 <body>
 
@@ -378,6 +378,33 @@
     </div>
   </div>
 
+  <!-- LIVRO DO ÁLBUM (fichário interativo por mundo) -->
+  <div class="book-overlay" id="album-book" hidden>
+    <div class="book">
+      <span class="book-ring r1"></span>
+      <span class="book-ring r2"></span>
+      <span class="book-ring r3"></span>
+      <div class="book-inner">
+        <div class="book-head">
+          <span class="book-cover-chip"><img id="book-cover" src="" alt="" draggable="false"></span>
+          <span class="book-title-wrap">
+            <b id="book-title"></b>
+            <span class="book-count" id="book-count"></span>
+          </span>
+          <button class="book-x" id="book-close" aria-label="Fechar">✕</button>
+        </div>
+        <div class="book-stage" id="book-stage">
+          <div class="book-page" id="book-page"></div>
+        </div>
+        <div class="book-nav">
+          <button class="book-arrow" id="book-prev" aria-label="Anterior">‹</button>
+          <div class="book-dots" id="book-dots"></div>
+          <button class="book-arrow" id="book-next" aria-label="Próxima">›</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAL: PORTÃO DOS PAIS (antes de login/links externos) -->
   <div class="modal" id="gate-modal" hidden>
     <div class="modal-card gate-card">
@@ -403,7 +430,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=50"></script>
-  <script src="js/app.js?v=50"></script>
+  <script src="js/app.js?v=51"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

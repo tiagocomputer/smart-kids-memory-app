@@ -876,7 +876,7 @@ function updatePlayerImages() {
 function updateLevelImages() {
   const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
   ['facil', 'medio', 'dificil'].forEach((lv) => {
-    const el = $(`#level-img-${lv}`); if (el) el.src = `img/levels/${lv}-${l}.webp?v=2`;
+    const el = $(`#level-img-${lv}`); if (el) el.src = `img/levels/${lv}-${l}.webp?v=3`;
   });
 }
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');

@@ -716,6 +716,7 @@ function setLang(next) {
   applyI18n();
   applyCloudTexts();       // textos dos modais de login/conta no novo idioma
   updatePlayerImages();    // cards de jogador (imagem por idioma)
+  updateLevelImages();     // cards de nível (imagem por idioma)
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -870,6 +871,13 @@ function updatePlayerImages() {
   const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
   const i1 = $('#player-img-1'); if (i1) i1.src = `img/players/p1-${l}.webp`;
   const i2 = $('#player-img-2'); if (i2) i2.src = `img/players/p2-${l}.webp`;
+}
+// Cards de nível idem (imagens ilustradas com texto por idioma).
+function updateLevelImages() {
+  const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
+  ['facil', 'medio', 'dificil'].forEach((lv) => {
+    const el = $(`#level-img-${lv}`); if (el) el.src = `img/levels/${lv}-${l}.webp`;
+  });
 }
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
@@ -2671,6 +2679,7 @@ document.addEventListener('pointerdown', () => {
 applyTheme();
 applyI18n();
 updatePlayerImages();
+updateLevelImages();
 setupProfileControls();
 renderThemeOptions();
 renderMusicMenu();

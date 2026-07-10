@@ -1933,3 +1933,27 @@ body {
 }
 .menu-btn .menu-img { width: 100%; height: auto; display: block; }
 .menu-btn:active { transform: translateY(2px) scale(0.985); filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28)); }
+
+/* ---- Ícones do topo (botões redondos ilustrados) ---- */
+.icon-btn {
+  width: 46px; height: 46px; flex: 0 0 auto;
+  background: none; border: none; padding: 0; cursor: pointer; line-height: 0;
+  transition: transform 0.12s ease;
+}
+.icon-btn img { width: 100%; height: 100%; display: block; }
+.icon-btn:active { transform: scale(0.88); }
+
+.coins-chip {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1.5px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px; padding: 2px 12px 2px 2px;
+}
+.coins-chip .coins-ico { width: 40px; height: 40px; display: block; flex: 0 0 auto; }
+.coins-chip #coin-count { font-weight: 800; font-size: 1.05rem; color: var(--on-bg); min-width: 1ch; }
+
+@media (max-width: 380px) {
+  .icon-btn { width: 42px; height: 42px; }
+  .coins-chip .coins-ico { width: 36px; height: 36px; }
+  .topbar-right { gap: 3px; }
+}

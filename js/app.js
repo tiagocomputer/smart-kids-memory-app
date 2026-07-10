@@ -736,7 +736,7 @@ function setLang(next) {
 function applyTheme() {
   const th = storage.theme;
   document.documentElement.dataset.theme = th;
-  $('#btn-theme').textContent = th === 'light' ? '☀️' : '🌙';
+  { const ti = $('#theme-ico'); if (ti) ti.src = th === 'light' ? 'img/ui/sun.webp' : 'img/ui/moon.webp'; }
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) meta.content = th === 'light' ? '#bae6fd' : '#4c1d95';
 }
@@ -2523,7 +2523,7 @@ function launchConfetti(durationMs = 4000, golden = false) {
 // ---------- Topo ----------
 
 function updateCoinChip() { $('#coin-count').textContent = storage.coins; }
-function updateSoundButton() { $('#btn-sound').textContent = storage.sound ? '🔊' : '🔇'; }
+function updateSoundButton() { const si = $('#sound-ico'); if (si) si.src = storage.sound ? 'img/ui/sound-on.webp' : 'img/ui/sound-off.webp'; }
 
 function leaveGame() {
   stopTimer();

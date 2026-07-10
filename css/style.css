@@ -1923,3 +1923,13 @@ body {
   transform: translateY(-4px) scale(1.06);
   filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.95)) drop-shadow(0 6px 8px rgba(0, 0, 0, 0.3));
 }
+
+/* ---- Botões ilustrados da tela inicial (imagem por idioma) ---- */
+.menu-btn {
+  width: 100%; background: none; border: none; padding: 0; cursor: pointer;
+  line-height: 0; border-radius: 18px;
+  transition: transform 0.12s ease, filter 0.12s ease;
+  filter: drop-shadow(0 5px 6px rgba(0, 0, 0, 0.28));
+}
+.menu-btn .menu-img { width: 100%; height: auto; display: block; }
+.menu-btn:active { transform: translateY(2px) scale(0.985); filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.28)); }

@@ -563,7 +563,7 @@ body {
   margin-bottom: clamp(20px, 5vh, 30px);
 }
 
-.menu { display: flex; flex-direction: column; gap: 20px; width: min(92vw, 540px); max-width: 540px; }
+.menu { display: flex; flex-direction: column; gap: 11px; width: min(92vw, 540px); max-width: 540px; }
 
 @media (max-width: 380px) {
   .btn-menu {

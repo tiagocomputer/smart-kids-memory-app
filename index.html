@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=59" />
+  <link rel="stylesheet" href="css/style.css?v=60" />
 </head>
 <body>
 
@@ -163,23 +163,14 @@
     <section class="setup-block">
       <h3 data-i18n="qLevel">Escolha o nível</h3>
       <div class="level-row" id="level-options">
-        <button class="level-card easy selected" data-level="facil">
-          <span class="lc-ico">🌱</span>
-          <span class="lc-name" data-i18n="levelFacil">Fácil</span>
-          <small>8 <span data-i18n="pairs">pares</span> · ⏱️ 1:40</small>
-          <span class="lc-meter"><i></i><i></i><i></i></span>
+        <button class="level-card selected" data-level="facil" data-i18n-aria="levelFacil" aria-label="Fácil">
+          <img class="level-img" id="level-img-facil" src="img/levels/facil-pt.webp" alt="" draggable="false">
         </button>
-        <button class="level-card medium" data-level="medio">
-          <span class="lc-ico">⭐</span>
-          <span class="lc-name" data-i18n="levelMedio">Médio</span>
-          <small>10 <span data-i18n="pairs">pares</span> · ⏱️ 2:10</small>
-          <span class="lc-meter"><i></i><i></i><i></i></span>
+        <button class="level-card" data-level="medio" data-i18n-aria="levelMedio" aria-label="Médio">
+          <img class="level-img" id="level-img-medio" src="img/levels/medio-pt.webp" alt="" draggable="false">
         </button>
-        <button class="level-card hard" data-level="dificil">
-          <span class="lc-ico">🔥</span>
-          <span class="lc-name" data-i18n="levelDificil">Difícil</span>
-          <small>12 <span data-i18n="pairs">pares</span> · ⏱️ 2:40</small>
-          <span class="lc-meter"><i></i><i></i><i></i></span>
+        <button class="level-card" data-level="dificil" data-i18n-aria="levelDificil" aria-label="Difícil">
+          <img class="level-img" id="level-img-dificil" src="img/levels/dificil-pt.webp" alt="" draggable="false">
         </button>
       </div>
     </section>
@@ -440,7 +431,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=59"></script>
-  <script src="js/app.js?v=59"></script>
+  <script src="js/app.js?v=60"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

@@ -715,6 +715,7 @@ function setLang(next) {
   localStorage.setItem('mm_lang', lang);
   applyI18n();
   applyCloudTexts();       // textos dos modais de login/conta no novo idioma
+  updatePlayerImages();    // cards de jogador (imagem por idioma)
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -862,7 +863,14 @@ function bindOptionRow(rowId, dataKey, onPick, sel = '.opt') {
 bindOptionRow('player-options', 'players', (v) => {
   config.players = parseInt(v, 10);
   updateStartButton();
-});
+}, '.player-card');
+
+// Cards de jogador são imagens com texto embutido — troca conforme o idioma.
+function updatePlayerImages() {
+  const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
+  const i1 = $('#player-img-1'); if (i1) i1.src = `img/players/p1-${l}.webp`;
+  const i2 = $('#player-img-2'); if (i2) i2.src = `img/players/p2-${l}.webp`;
+}
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
 function updateStartButton() {
@@ -2662,6 +2670,7 @@ document.addEventListener('pointerdown', () => {
 
 applyTheme();
 applyI18n();
+updatePlayerImages();
 setupProfileControls();
 renderThemeOptions();
 renderMusicMenu();

@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=61" />
+  <link rel="stylesheet" href="css/style.css?v=62" />
 </head>
 <body>
 
@@ -76,20 +76,14 @@
     <h1 class="title"><span data-i18n="appName1">Memória</span><br/><span class="accent" data-i18n="appName2">Mágica</span></h1>
     <p class="subtitle" data-i18n="subtitle">Encontre os pares, ganhe moedas e colecione figurinhas!</p>
     <div class="menu">
-      <button class="btn btn-menu btn-play" id="btn-go-setup">
-        <img class="btn-ico-img" src="img/icons/play.webp?v=33" alt="" draggable="false">
-        <span class="btn-label" data-i18n="play">Jogar</span>
-        <span class="btn-chev">›</span>
+      <button class="menu-btn" id="btn-go-setup" data-i18n-aria="play" aria-label="Jogar">
+        <img class="menu-img" id="menu-img-play" src="img/menu/play-pt.webp" alt="" draggable="false">
       </button>
-      <button class="btn btn-menu btn-album" id="btn-go-album">
-        <img class="btn-ico-img" src="img/icons/album.webp?v=33" alt="" draggable="false">
-        <span class="btn-label" data-i18n="album">Álbum de Figurinhas</span>
-        <span class="btn-chev">›</span>
+      <button class="menu-btn" id="btn-go-album" data-i18n-aria="album" aria-label="Álbum de Figurinhas">
+        <img class="menu-img" id="menu-img-album" src="img/menu/album-pt.webp" alt="" draggable="false">
       </button>
-      <button class="btn btn-menu btn-records" id="btn-go-records">
-        <img class="btn-ico-img" src="img/icons/records.webp?v=33" alt="" draggable="false">
-        <span class="btn-label" data-i18n="records">Recordes</span>
-        <span class="btn-chev">›</span>
+      <button class="menu-btn" id="btn-go-records" data-i18n-aria="records" aria-label="Recordes">
+        <img class="menu-img" id="menu-img-records" src="img/menu/records-pt.webp" alt="" draggable="false">
       </button>
     </div>
 
@@ -431,7 +425,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=59"></script>
-  <script src="js/app.js?v=61"></script>
+  <script src="js/app.js?v=62"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

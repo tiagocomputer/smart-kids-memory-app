@@ -848,12 +848,12 @@ function goSetup() {
 
 const config = { players: 1, theme: 'animais', level: 'facil' };
 
-function bindOptionRow(rowId, dataKey, onPick) {
+function bindOptionRow(rowId, dataKey, onPick, sel = '.opt') {
   const row = document.getElementById(rowId);
   row.addEventListener('click', (e) => {
-    const btn = e.target.closest('.opt');
+    const btn = e.target.closest(sel);
     if (!btn) return;
-    row.querySelectorAll('.opt').forEach((o) => o.classList.remove('selected'));
+    row.querySelectorAll(sel).forEach((o) => o.classList.remove('selected'));
     btn.classList.add('selected');
     sound.play('click');
     onPick(btn.dataset[dataKey]);
@@ -863,7 +863,7 @@ bindOptionRow('player-options', 'players', (v) => {
   config.players = parseInt(v, 10);
   updateStartButton();
 });
-bindOptionRow('level-options', 'level', (v) => (config.level = v));
+bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
 function updateStartButton() {
   if (duelPicking) { $('#start-label').textContent = `${t('rematchYes')} ⚔️`; return; }
@@ -890,17 +890,22 @@ function renderThemeOptions() {
   const row = $('#theme-options');
   row.innerHTML = THEME_LIST.map((th) => {
     const locked = !isThemeUnlocked(th.id);
+    const sel = config.theme === th.id;
     return `
-      <button class="opt ${config.theme === th.id ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}">
-        <span class="opt-emoji">${locked ? '🔒' : themeIcon(th)}</span>
-        <span>${t(th.key)}</span>
-        ${locked ? `<small class="cost">🗝️ ${th.cost}${coinTiny}</small>` : ''}
+      <button class="theme-badge ${sel ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}">
+        <span class="tb-circle">
+          ${themeIcon(th)}
+          ${locked ? '<span class="tb-lock">🔒</span>' : ''}
+          ${sel && !locked ? '<span class="tb-check">✓</span>' : ''}
+        </span>
+        <span class="tb-name">${t(th.key)}</span>
+        ${locked ? `<span class="tb-cost">🗝️ ${th.cost}${coinTiny}</span>` : ''}
       </button>`;
   }).join('');
 }
 
 $('#theme-options').addEventListener('click', (e) => {
-  const btn = e.target.closest('.opt');
+  const btn = e.target.closest('.theme-badge');
   if (!btn) return;
   const id = btn.dataset.theme;
   if (!isThemeUnlocked(id)) { sound.play('click'); openUnlockModal(id); return; }

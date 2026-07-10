@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=56" />
+  <link rel="stylesheet" href="css/style.css?v=57" />
 </head>
 <body>
 
@@ -146,12 +146,12 @@
       <h3 data-i18n="qPlayers">Quantos jogadores?</h3>
       <div class="option-row player-pick" id="player-options">
         <button class="opt opt-player selected" data-players="1">
-          <span class="opt-player-ico">🙋</span>
+          <span class="opt-player-ico">🙂</span>
           <span class="opt-player-title" data-i18n="onePlayer">1 jogador</span>
           <small data-i18n="onePlayerSub">Jogue sozinho</small>
         </button>
         <button class="opt opt-player" data-players="2">
-          <span class="opt-player-ico">🤝</span>
+          <span class="opt-player-ico">👥</span>
           <span class="opt-player-title" data-i18n="twoPlayers">2 jogadores</span>
           <small data-i18n="twoPlayersSub">Duelo · QR code</small>
         </button>
@@ -160,16 +160,31 @@
 
     <section class="setup-block">
       <h3 data-i18n="qTheme">Escolha a fase</h3>
-      <!-- preenchido pelo JS (fases livres e bloqueadas) -->
-      <div class="option-row" id="theme-options"></div>
+      <!-- preenchido pelo JS (medalhões redondos: livres e bloqueados) -->
+      <div class="theme-grid" id="theme-options"></div>
     </section>
 
     <section class="setup-block">
       <h3 data-i18n="qLevel">Escolha o nível</h3>
-      <div class="option-row" id="level-options">
-        <button class="opt selected" data-level="facil"><span class="opt-emoji">🌱</span><span data-i18n="levelFacil">Fácil</span><small>8 <span data-i18n="pairs">pares</span> · ⏱️ 1:40</small></button>
-        <button class="opt" data-level="medio"><span class="opt-emoji">🌟</span><span data-i18n="levelMedio">Médio</span><small>10 <span data-i18n="pairs">pares</span> · ⏱️ 2:10</small></button>
-        <button class="opt" data-level="dificil"><span class="opt-emoji">🔥</span><span data-i18n="levelDificil">Difícil</span><small>12 <span data-i18n="pairs">pares</span> · ⏱️ 2:40</small></button>
+      <div class="level-row" id="level-options">
+        <button class="level-card easy selected" data-level="facil">
+          <span class="lc-ico">🌱</span>
+          <span class="lc-name" data-i18n="levelFacil">Fácil</span>
+          <small>8 <span data-i18n="pairs">pares</span> · ⏱️ 1:40</small>
+          <span class="lc-meter"><i></i><i></i><i></i></span>
+        </button>
+        <button class="level-card medium" data-level="medio">
+          <span class="lc-ico">⭐</span>
+          <span class="lc-name" data-i18n="levelMedio">Médio</span>
+          <small>10 <span data-i18n="pairs">pares</span> · ⏱️ 2:10</small>
+          <span class="lc-meter"><i></i><i></i><i></i></span>
+        </button>
+        <button class="level-card hard" data-level="dificil">
+          <span class="lc-ico">🔥</span>
+          <span class="lc-name" data-i18n="levelDificil">Difícil</span>
+          <small>12 <span data-i18n="pairs">pares</span> · ⏱️ 2:40</small>
+          <span class="lc-meter"><i></i><i></i><i></i></span>
+        </button>
       </div>
     </section>
 

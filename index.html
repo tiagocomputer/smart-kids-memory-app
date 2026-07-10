@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=63" />
+  <link rel="stylesheet" href="css/style.css?v=64" />
 </head>
 <body>
 
@@ -37,15 +37,16 @@
 
   <!-- Barra superior -->
   <header class="topbar">
-    <button id="btn-home" class="chip icon-chip" data-i18n-aria="home" aria-label="Início">🏠</button>
+    <button id="btn-home" class="icon-btn" data-i18n-aria="home" aria-label="Início"><img src="img/ui/home.webp" alt="" draggable="false"></button>
 
-    <div class="chip coins" id="coin-chip" data-i18n-aria="coins" aria-label="Moedas">
-      <span class="coin-badge" aria-hidden="true">★</span><span id="coin-count">0</span>
+    <div class="coins-chip" id="coin-chip" data-i18n-aria="coins" aria-label="Moedas">
+      <img class="coins-ico" src="img/ui/coin.webp" alt="" draggable="false">
+      <span id="coin-count">0</span>
     </div>
 
     <div class="topbar-right">
       <div class="lang-wrap">
-        <button id="btn-lang" class="chip icon-chip" data-i18n-aria="language" aria-label="Idioma">🌐</button>
+        <button id="btn-lang" class="icon-btn" data-i18n-aria="language" aria-label="Idioma"><img src="img/ui/globe.webp" alt="" draggable="false"></button>
         <div class="lang-menu" id="lang-menu" hidden>
           <button data-lang="pt">🇧🇷 Português</button>
           <button data-lang="en">🇺🇸 English</button>
@@ -53,11 +54,11 @@
         </div>
       </div>
       <div class="lang-wrap">
-        <button id="btn-music" class="chip icon-chip" data-i18n-aria="music" aria-label="Música">🎵</button>
+        <button id="btn-music" class="icon-btn" data-i18n-aria="music" aria-label="Música"><img src="img/ui/music.webp" alt="" draggable="false"></button>
         <div class="lang-menu" id="music-menu" hidden></div>
       </div>
-      <button id="btn-theme" class="chip icon-chip" data-i18n-aria="theme" aria-label="Tema">🌙</button>
-      <button id="btn-sound" class="chip icon-chip" data-i18n-aria="sound" aria-label="Som">🔊</button>
+      <button id="btn-theme" class="icon-btn" data-i18n-aria="theme" aria-label="Tema"><img id="theme-ico" src="img/ui/moon.webp" alt="" draggable="false"></button>
+      <button id="btn-sound" class="icon-btn" data-i18n-aria="sound" aria-label="Som"><img id="sound-ico" src="img/ui/sound-on.webp" alt="" draggable="false"></button>
     </div>
   </header>
 
@@ -425,7 +426,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=59"></script>
-  <script src="js/app.js?v=62"></script>
+  <script src="js/app.js?v=64"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

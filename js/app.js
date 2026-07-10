@@ -912,7 +912,6 @@ function renderThemeOptions() {
         <span class="tb-circle">
           ${themeIcon(th)}
           ${locked ? '<span class="tb-lock">🔒</span>' : ''}
-          ${sel && !locked ? '<span class="tb-check">✓</span>' : ''}
         </span>
         <span class="tb-name">${t(th.key)}</span>
         ${locked ? `<span class="tb-cost">🗝️ ${th.cost}${coinTiny}</span>` : ''}

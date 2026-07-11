@@ -286,7 +286,7 @@ const DINO_SPECIES = [];
 });
 
 // Fases com IMAGENS (arquivos fornecidos). Cada item é uma figura recortada.
-const IMG_ASSET_VERSION = '42';
+const IMG_ASSET_VERSION = '43';
 const imgTheme = (prefix, dir, n) =>
   Array.from({ length: n }, (_, i) => ({ id: prefix + (i + 1), img: 'img/' + dir + '/' + prefix + (i + 1) + `.webp?v=${IMG_ASSET_VERSION}` }));
 const IMG_THEMES = {
@@ -387,7 +387,7 @@ const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 // Figurinhas colecionáveis — usam a MESMA arte das cartas (coerentes com o jogo).
 // Figurinhas de imagem não têm nome (a figura é a identidade); lendárias = douradas/raras.
 function stickerSet(cat, dir, prefix, n) {
-  return Array.from({ length: n }, (_, i) => ({ id: `${cat}${i + 1}`, cat, img: `img/${dir}/${prefix}${i + 1}.webp` }));
+  return Array.from({ length: n }, (_, i) => ({ id: `${cat}${i + 1}`, cat, img: `img/${dir}/${prefix}${i + 1}.webp?v=${IMG_ASSET_VERSION}` }));
 }
 const STICKERS = [
   // 12 figurinhas por mundo (o tema animais tem 13 cartas; o álbum usa as 12 primeiras)

@@ -1966,3 +1966,31 @@ body {
 }
 .continue-btn img { width: 100%; height: auto; display: block; }
 .continue-btn:active { transform: scale(0.96); }
+
+/* ---- Perfil repaginado: área de avatar maior + Continuar mais abaixo ---- */
+.avatar-block { margin-bottom: 8px; }
+.avatar-block .avatar-row {
+  max-height: min(46vh, 440px);
+  gap: 12px; padding: 12px;
+}
+.avatar-block .avatar-opt { width: 64px; height: 64px; }
+.profile-continue { margin-top: 22px; margin-bottom: 10px; }
+
+/* ---- Figurinha ampliada (modal) ---- */
+#sticker-modal { z-index: 70; }
+.sticker-card { position: relative; max-width: 300px; padding: 26px 24px; overflow: hidden; }
+.sticker-big { display: grid; place-items: center; min-height: 200px; }
+.sticker-big img {
+  width: 100%; max-width: 240px; height: auto; display: block;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, 0.3));
+  animation: pop 0.45s cubic-bezier(0.3, 1.5, 0.5, 1);
+}
+.s-emoji-big { font-size: 7rem; line-height: 1; animation: pop 0.45s cubic-bezier(0.3, 1.5, 0.5, 1); }
+.sticker-card.legendary {
+  background: linear-gradient(160deg, #fff8e1, #ffe7a3);
+  box-shadow: 0 14px 0 rgba(180, 120, 0, 0.3), 0 0 46px rgba(253, 224, 71, 0.65);
+}
+.sticker-shine {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 32%, rgba(255, 255, 255, 0.55), transparent 62%);
+}

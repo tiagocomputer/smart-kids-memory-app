@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=64" />
+  <link rel="stylesheet" href="css/style.css?v=65" />
 </head>
 <body>
 
@@ -124,7 +124,7 @@
       <div class="avatar-row" id="profile-avatar-options"></div>
     </section>
 
-    <button class="btn btn-big btn-play" id="btn-profile-continue"><span data-i18n="continueBtn">Continuar</span> ➡️</button>
+    <button class="continue-btn" id="btn-profile-continue" data-i18n-aria="continueBtn" aria-label="Continuar"><img id="continue-img" src="img/continue/continue-pt.webp" alt="" draggable="false"></button>
   </main>
 
   <!-- TELA: PREPARAR JOGO -->
@@ -426,7 +426,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=59"></script>
-  <script src="js/app.js?v=64"></script>
+  <script src="js/app.js?v=65"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

@@ -38,6 +38,7 @@ const I18N = {
     themeAventureiros: 'Mundo dos Aventureiros', themeCriaturas: 'Criaturinhas',
     themeGelo: 'Mundo do Gelo', themeElementos: 'Mundo dos 4 Elementos',
     themeDuendes: 'Mundo dos Duendes', themeFlores: 'Mundo das Flores',
+    themeCirco: 'Mundo do Circo', themeNatal: 'Mundo do Natal',
     levelFacil: 'Fácil', levelMedio: 'Médio', levelDificil: 'Difícil',
     pairs: 'pares', start: 'Começar!', restart: 'Recomeçar',
     pause: 'Pausar', paused: 'Jogo pausado ⏸️', resume: 'Continuar',
@@ -61,6 +62,7 @@ const I18N = {
     catDiversao: 'Diversão', catLendarias: 'Lendárias Douradas',
     catOceano: 'Oceano', catDinos: 'Dinossauros', catMonstros: 'Monstrinhos',
     catGelo: 'Gelo', catElementos: '4 Elementos', catDuendes: 'Duendes', catFlores: 'Flores',
+    catCirco: 'Circo', catNatal: 'Natal',
     recordsTitle: 'Seus Recordes 🏆', rankLabel: 'Seu nível', nextRank: 'Faltam {n} pares para {r}',
     maxRank: 'Você é o melhor de todos! 👑', bestTimes: 'Melhores tempos ⏱️', bestSpeed: 'Velocidade recorde ⚡',
     stickersOwned: 'Figurinhas', gamesWon: 'Vitórias', noRecord: '—', ppmUnit: '{n}/min',
@@ -113,6 +115,7 @@ const I18N = {
     themeAventureiros: 'Adventurers World', themeCriaturas: 'Lil Creatures',
     themeGelo: 'Ice World', themeElementos: '4 Elements World',
     themeDuendes: 'Elf World', themeFlores: 'Flower World',
+    themeCirco: 'Circus World', themeNatal: 'Christmas World',
     levelFacil: 'Easy', levelMedio: 'Medium', levelDificil: 'Hard',
     pairs: 'pairs', start: 'Start!', restart: 'Restart',
     pause: 'Pause', paused: 'Game paused ⏸️', resume: 'Resume',
@@ -136,6 +139,7 @@ const I18N = {
     catDiversao: 'Fun', catLendarias: 'Golden Legendaries',
     catOceano: 'Ocean', catDinos: 'Dinosaurs', catMonstros: 'Lil Monsters',
     catGelo: 'Ice', catElementos: '4 Elements', catDuendes: 'Elves', catFlores: 'Flowers',
+    catCirco: 'Circus', catNatal: 'Christmas',
     recordsTitle: 'Your Records 🏆', rankLabel: 'Your rank', nextRank: '{n} more pairs to {r}',
     maxRank: "You're the best of all! 👑", bestTimes: 'Best times ⏱️', bestSpeed: 'Record speed ⚡',
     stickersOwned: 'Stickers', gamesWon: 'Wins', noRecord: '—', ppmUnit: '{n}/min',
@@ -188,6 +192,7 @@ const I18N = {
     themeAventureiros: 'Monde des Aventuriers', themeCriaturas: 'Petites Créatures',
     themeGelo: 'Monde de Glace', themeElementos: 'Monde des 4 Éléments',
     themeDuendes: 'Monde des Lutins', themeFlores: 'Monde des Fleurs',
+    themeCirco: 'Monde du Cirque', themeNatal: 'Monde de Noël',
     levelFacil: 'Facile', levelMedio: 'Moyen', levelDificil: 'Difficile',
     pairs: 'paires', start: 'Commencer!', restart: 'Recommencer',
     pause: 'Pause', paused: 'Jeu en pause ⏸️', resume: 'Reprendre',
@@ -211,6 +216,7 @@ const I18N = {
     catDiversao: 'Amusement', catLendarias: 'Légendaires Dorés',
     catOceano: 'Océan', catDinos: 'Dinosaures', catMonstros: 'Petits Monstres',
     catGelo: 'Glace', catElementos: '4 Éléments', catDuendes: 'Lutins', catFlores: 'Fleurs',
+    catCirco: 'Cirque', catNatal: 'Noël',
     recordsTitle: 'Tes Records 🏆', rankLabel: 'Ton niveau', nextRank: '{n} paires pour {r}',
     maxRank: 'Tu es le meilleur de tous! 👑', bestTimes: 'Meilleurs temps ⏱️', bestSpeed: 'Vitesse record ⚡',
     stickersOwned: 'Autocollants', gamesWon: 'Victoires', noRecord: '—', ppmUnit: '{n}/min',
@@ -303,6 +309,8 @@ const IMG_THEMES = {
   elementos: imgTheme('el', 'elementos', 12),
   duendes: imgTheme('du', 'duendes', 12),
   flores: imgTheme('fl', 'flores', 12),
+  circo: imgTheme('ci', 'circo', 12),
+  natal: imgTheme('na', 'natal', 12),
 };
 
 const THEME_FACES = {};
@@ -318,26 +326,31 @@ function themeFaces(id) {
 }
 
 // Fases: cost 0 = sempre aberta; cost > 0 = precisa comprar a chave
+// Ordem de VALOR (do menos valioso ao mais valioso, ponto de vista de game design):
+// mundos universais/introdutórios primeiro; temáticos e especiais depois; os
+// sazonais/premium no topo — Circo e, como joia da coroa, o Natal (mais caro).
 const THEME_LIST = [
   { id: 'animais',    icon: '🐶', key: 'themeAnimais',    cost: 0 },
   { id: 'frutas',     icon: '🍎', key: 'themeFrutas',     cost: 0 },
   { id: 'espaco',     icon: '🚀', key: 'themeEspaco',     cost: 0 },
   { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 140 },
-  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 260 },
-  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 420 },
-  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 620 },
-  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 860 },
-  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 1140 },
+  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 260 },
+  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 420 },
+  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 620 },
+  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 860 },
+  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 1140 },
   { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 1460 },
-  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 1820 },
-  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 2220 },
-  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 2660 },
-  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 3140 },
-  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 3660 },
-  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 4220 },
-  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 4820 },
-  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 5460 },
-  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 6140 },
+  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 1820 },
+  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 2220 },
+  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 2660 },
+  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 3140 },
+  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 3660 },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 4220 },
+  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 4820 },
+  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 5460 },
+  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 6140 },
+  { id: 'circo',      icon: '🎪', key: 'themeCirco',      cost: 6860 },
+  { id: 'natal',      icon: '🎄', key: 'themeNatal',      cost: 7640 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
@@ -381,6 +394,8 @@ const STICKERS = [
   ...stickerSet('elementos', 'elementos', 'el', 12),
   ...stickerSet('duendes', 'duendes', 'du', 12),
   ...stickerSet('flores', 'flores', 'fl', 12),
+  ...stickerSet('circo', 'circo', 'ci', 12),
+  ...stickerSet('natal', 'natal', 'na', 12),
   // Lendárias douradas (raras) — 24 figuras épicas (imagens)
   ...Array.from({ length: 24 }, (_, i) => ({ id: `leg${i + 1}`, cat: 'lendarias', img: `img/lendarias/l${i + 1}.webp`, legendary: true })),
 ];
@@ -397,6 +412,8 @@ const CATEGORIES = [
   { id: 'elementos', key: 'catElementos', emoji: '🔥' },
   { id: 'duendes', key: 'catDuendes', emoji: '🍄' },
   { id: 'flores',  key: 'catFlores',  emoji: '🌸' },
+  { id: 'circo',   key: 'catCirco',   emoji: '🎪' },
+  { id: 'natal',   key: 'catNatal',   emoji: '🎄' },
   { id: 'lendarias', key: 'catLendarias', emoji: '✨', legendary: true },
 ];
 

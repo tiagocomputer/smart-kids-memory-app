@@ -352,6 +352,12 @@ const THEME_LIST = [
   { id: 'circo',      icon: '🎪', key: 'themeCirco',      cost: 6860 },
   { id: 'natal',      icon: '🎄', key: 'themeNatal',      cost: 7640 },
 ];
+// >>> TESTE TEMPORÁRIO: desbloqueia os 2 últimos mundos (Circo, Natal) de
+// graça para testar em produção. REMOVER este bloco depois do teste. <<<
+['circo', 'natal'].forEach((id) => {
+  const th = THEME_LIST.find((t) => t.id === id);
+  if (th) th.cost = 0;
+});
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
 const LEVELS = {

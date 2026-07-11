@@ -718,6 +718,7 @@ function setLang(next) {
   updatePlayerImages();    // cards de jogador (imagem por idioma)
   updateLevelImages();     // cards de nível (imagem por idioma)
   updateMenuImages();      // botões da tela inicial (imagem por idioma)
+  updateContinueImage();   // botão Continuar (imagem por idioma)
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -886,6 +887,11 @@ function updateMenuImages() {
   ['play', 'album', 'records'].forEach((k) => {
     const el = $(`#menu-img-${k}`); if (el) el.src = `img/menu/${k}-${l}.webp`;
   });
+}
+// Botão "Continuar" ilustrado (imagem com texto por idioma).
+function updateContinueImage() {
+  const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
+  const el = $('#continue-img'); if (el) el.src = `img/continue/continue-${l}.webp`;
 }
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
@@ -2688,6 +2694,7 @@ applyI18n();
 updatePlayerImages();
 updateLevelImages();
 updateMenuImages();
+updateContinueImage();
 setupProfileControls();
 renderThemeOptions();
 renderMusicMenu();

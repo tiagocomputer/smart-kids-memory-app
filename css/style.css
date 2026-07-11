@@ -1957,3 +1957,12 @@ body {
   .coins-chip .coins-ico { width: 36px; height: 36px; }
   .topbar-right { gap: 3px; }
 }
+
+/* ---- Botão "Continuar" ilustrado (imagem por idioma) ---- */
+.continue-btn {
+  width: min(88vw, 400px); margin: 4px auto 0;
+  background: none; border: none; padding: 0; cursor: pointer; line-height: 0;
+  transition: transform 0.12s ease;
+}
+.continue-btn img { width: 100%; height: auto; display: block; }
+.continue-btn:active { transform: scale(0.96); }

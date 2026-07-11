@@ -19,7 +19,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css?v=66" />
+  <link rel="stylesheet" href="css/style.css?v=67" />
 </head>
 <body>
 
@@ -107,7 +107,7 @@
 
   <!-- TELA: PERFIL (nome + avatar, antes de jogar) -->
   <main id="screen-profile" class="screen">
-    <h2 class="screen-title" data-i18n="profileTitle">Quem é você? 🙋</h2>
+    <h2 class="screen-title" data-i18n="profileTitle">Quem é você?</h2>
 
     <section class="setup-block">
       <h3 data-i18n="yourName">Seu nome</h3>
@@ -117,14 +117,12 @@
       </label>
     </section>
 
-    <section class="setup-block">
-      <h3 data-i18n="chooseSkin">Cor da pele</h3>
-      <div class="skin-row" id="profile-skin-options"></div>
+    <section class="setup-block avatar-block">
       <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>
       <div class="avatar-row" id="profile-avatar-options"></div>
     </section>
 
-    <button class="continue-btn" id="btn-profile-continue" data-i18n-aria="continueBtn" aria-label="Continuar"><img id="continue-img" src="img/continue/continue-pt.webp" alt="" draggable="false"></button>
+    <button class="continue-btn profile-continue" id="btn-profile-continue" data-i18n-aria="continueBtn" aria-label="Continuar"><img id="continue-img" src="img/continue/continue-pt.webp" alt="" draggable="false"></button>
   </main>
 
   <!-- TELA: PREPARAR JOGO -->
@@ -194,8 +192,6 @@
         <span class="name-field-avatar" id="join-name-avatar" aria-hidden="true"></span>
         <input type="text" id="join-name-input" class="name-input" maxlength="12" autocomplete="off" data-i18n-placeholder="yourName" />
       </label>
-      <h3 data-i18n="chooseSkin">Cor da pele</h3>
-      <div class="skin-row" id="join-skin-options"></div>
       <h3 data-i18n="chooseAvatar">Escolha seu avatar</h3>
       <div class="avatar-row" id="join-avatar-options"></div>
     </section>
@@ -277,7 +273,7 @@
     <p class="album-progress" id="album-progress"></p>
     <div class="album-bar"><span id="album-bar-fill"></span></div>
     <div id="album-content"></div>
-    <button class="btn btn-big btn-play" id="btn-album-play"><span data-i18n="albumPlay">Jogar para ganhar mais!</span> ▶️</button>
+    <button class="continue-btn album-play-btn" id="btn-album-play" data-i18n-aria="albumPlay" aria-label="Jogar para ganhar mais!"><img id="album-play-img" src="img/album/albumplay-pt.webp" alt="" draggable="false"></button>
   </main>
 
   <!-- TELA: RECORDES / RANKING -->
@@ -401,6 +397,15 @@
     </div>
   </div>
 
+  <!-- MODAL: FIGURINHA AMPLIADA (clique na figurinha do álbum) -->
+  <div class="modal" id="sticker-modal" hidden>
+    <div class="modal-card sticker-card" id="sticker-card">
+      <button class="modal-x" id="sticker-close" aria-label="Fechar">✕</button>
+      <div class="sticker-big" id="sticker-big"></div>
+      <div class="sticker-shine" aria-hidden="true"></div>
+    </div>
+  </div>
+
   <!-- MODAL: PORTÃO DOS PAIS (antes de login/links externos) -->
   <div class="modal" id="gate-modal" hidden>
     <div class="modal-card gate-card">
@@ -426,7 +431,7 @@
   <script src="js/characters.js?v=33"></script>
   <script src="js/avatars.js?v=33"></script>
   <script src="js/cloud.js?v=59"></script>
-  <script src="js/app.js?v=66"></script>
+  <script src="js/app.js?v=67"></script>
   <script>
     // PWA: registra o service worker (offline + instalável)
     if ('serviceWorker' in navigator) {

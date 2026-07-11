@@ -12,7 +12,7 @@ const I18N = {
     owlGreeting: 'Vamos aprender a memorizar juntos?',
     play: 'Jogar', album: 'Álbum de Figurinhas', records: 'Recordes',
     setupTitle: 'Preparar Jogo 🎮',
-    profileTitle: 'Quem é você? 🙋', continueBtn: 'Continuar',
+    profileTitle: 'Quem é você?', continueBtn: 'Continuar',
     nameNeeded: 'Escreva seu nome! ✏️',
     yourName: 'Seu nome', chooseAvatar: 'Escolha seu avatar', chooseSkin: 'Cor da pele',
     qPlayers: 'Quantos jogadores?', qTheme: 'Escolha a fase', qLevel: 'Escolha o nível',
@@ -87,7 +87,7 @@ const I18N = {
     owlGreeting: 'Shall we learn to memorize together?',
     play: 'Play', album: 'Sticker Album', records: 'Records',
     setupTitle: 'Set Up Game 🎮',
-    profileTitle: 'Who are you? 🙋', continueBtn: 'Continue',
+    profileTitle: 'Who are you?', continueBtn: 'Continue',
     nameNeeded: 'Write your name! ✏️',
     yourName: 'Your name', chooseAvatar: 'Choose your avatar', chooseSkin: 'Skin tone',
     qPlayers: 'How many players?', qTheme: 'Choose the stage', qLevel: 'Choose the level',
@@ -162,7 +162,7 @@ const I18N = {
     owlGreeting: 'Apprenons à mémoriser ensemble ?',
     play: 'Jouer', album: "Album d'autocollants", records: 'Records',
     setupTitle: 'Préparer le jeu 🎮',
-    profileTitle: 'Qui es-tu? 🙋', continueBtn: 'Continuer',
+    profileTitle: 'Qui es-tu ?', continueBtn: 'Continuer',
     nameNeeded: 'Écris ton prénom! ✏️',
     yourName: 'Ton prénom', chooseAvatar: 'Choisis ton avatar', chooseSkin: 'Couleur de peau',
     qPlayers: 'Combien de joueurs?', qTheme: 'Choisis le niveau', qLevel: 'Choisis la difficulté',
@@ -720,6 +720,7 @@ function setLang(next) {
   updateMenuImages();      // botões da tela inicial (imagem por idioma)
   updateContinueImage();   // botão Continuar (imagem por idioma)
   updateStartImage();      // botão Iniciar (imagem por idioma)
+  updateAlbumPlayImage();  // botão do álbum (imagem por idioma)
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -752,10 +753,12 @@ function toggleTheme() {
 const AVATAR_PICKERS = ['profile-avatar-options', 'join-avatar-options'];
 const SKIN_PICKERS = ['profile-skin-options', 'join-skin-options'];
 
+// Só avatares de imagem (removidos os de "cor de pele" desenhados).
+const IMG_AVATARS = AVATARS.list.filter((a) => a.img);
 function renderAvatarPicker(id) {
   const row = document.getElementById(id);
   if (!row) return;
-  row.innerHTML = AVATARS.list.map((a) =>
+  row.innerHTML = IMG_AVATARS.map((a) =>
     `<button class="avatar-opt ${a.id === storage.avatar ? 'selected' : ''}" data-avatar="${a.id}" aria-label="avatar">${avatarSVG(a.id, storage.skin)}</button>`
   ).join('');
 }
@@ -898,6 +901,11 @@ function updateContinueImage() {
 function updateStartImage() {
   const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
   const el = $('#start-img'); if (el) el.src = `img/start/iniciar-${l}.webp`;
+}
+// Botão "Jogar para ganhar mais" do álbum (imagem por idioma).
+function updateAlbumPlayImage() {
+  const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
+  const el = $('#album-play-img'); if (el) el.src = `img/album/albumplay-${l}.webp`;
 }
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
@@ -1854,7 +1862,7 @@ function bookPageHTML(pg, highlightId) {
   return slice.map((s) => {
     const has = owned.includes(s.id);
     return `
-      <div class="book-card ${has ? '' : 'locked'} ${s.legendary ? 'legendary' : ''} ${s.id === highlightId ? 'new' : ''}">
+      <div class="book-card ${has ? '' : 'locked'} ${s.legendary ? 'legendary' : ''} ${s.id === highlightId ? 'new' : ''}" ${has ? `data-sticker="${s.id}"` : ''}>
         ${has
           ? `<img src="${s.img}" alt="" draggable="false">`
           : `<span class="bc-emboss">${cat.emoji}</span><span class="bc-q">?</span>`}
@@ -1935,9 +1943,29 @@ function goBookPage(target) {
 }
 function turnBookPage(dir) { goBookPage(albumBook.page + dir); }
 
+// Figurinha ampliada: clique numa figurinha que você tem abre ela na tela.
+function openSticker(id) {
+  const s = STICKERS.find((x) => x.id === id);
+  if (!s || !storage.stickers.includes(id)) return;
+  const box = $('#sticker-big');
+  if (box) box.innerHTML = s.img ? `<img src="${s.img}" alt="" draggable="false">` : `<span class="s-emoji-big">${s.emoji || '⭐'}</span>`;
+  const card = $('#sticker-card'); if (card) card.classList.toggle('legendary', !!s.legendary);
+  $('#sticker-modal').hidden = false;
+  sound.play('reveal');
+}
+function closeSticker() { const m = $('#sticker-modal'); if (m) m.hidden = true; }
+
 function wireAlbumBook() {
   $('#book-close').addEventListener('click', () => { sound.play('click'); closeAlbumBook(); });
   $('#album-book').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeAlbumBook(); });
+  // Tocar numa figurinha que você tem -> abre ampliada
+  $('#book-page').addEventListener('click', (e) => {
+    const c = e.target.closest('.book-card[data-sticker]');
+    if (c && !albumBook.turning) { sound.play('click'); openSticker(c.dataset.sticker); }
+  });
+  $('#sticker-close').addEventListener('click', () => { sound.play('click'); closeSticker(); });
+  $('#sticker-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closeSticker(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !$('#sticker-modal').hidden) closeSticker(); });
   $('#book-prev').addEventListener('click', () => turnBookPage(-1));
   $('#book-next').addEventListener('click', () => turnBookPage(1));
   $('#book-dots').addEventListener('click', (e) => {
@@ -2705,6 +2733,9 @@ updateLevelImages();
 updateMenuImages();
 updateContinueImage();
 updateStartImage();
+updateAlbumPlayImage();
+// Se o avatar salvo for um dos antigos (cor de pele), volta pra um de imagem.
+if (!IMG_AVATARS.some((a) => a.id === storage.avatar)) storage.avatar = (IMG_AVATARS[0] || {}).id || storage.avatar;
 setupProfileControls();
 renderThemeOptions();
 renderMusicMenu();

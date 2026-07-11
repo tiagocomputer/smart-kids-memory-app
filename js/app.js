@@ -286,7 +286,7 @@ const DINO_SPECIES = [];
 });
 
 // Fases com IMAGENS (arquivos fornecidos). Cada item é uma figura recortada.
-const IMG_ASSET_VERSION = '43';
+const IMG_ASSET_VERSION = '44';
 const imgTheme = (prefix, dir, n) =>
   Array.from({ length: n }, (_, i) => ({ id: prefix + (i + 1), img: 'img/' + dir + '/' + prefix + (i + 1) + `.webp?v=${IMG_ASSET_VERSION}` }));
 const IMG_THEMES = {

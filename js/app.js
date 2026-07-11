@@ -719,6 +719,7 @@ function setLang(next) {
   updateLevelImages();     // cards de nível (imagem por idioma)
   updateMenuImages();      // botões da tela inicial (imagem por idioma)
   updateContinueImage();   // botão Continuar (imagem por idioma)
+  updateStartImage();      // botão Iniciar (imagem por idioma)
   renderThemeOptions();
   renderMusicMenu();
   updateStartButton();
@@ -893,11 +894,19 @@ function updateContinueImage() {
   const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
   const el = $('#continue-img'); if (el) el.src = `img/continue/continue-${l}.webp`;
 }
+// Botão "Iniciar" ilustrado (imagem com texto por idioma).
+function updateStartImage() {
+  const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
+  const el = $('#start-img'); if (el) el.src = `img/start/iniciar-${l}.webp`;
+}
 bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
 
 function updateStartButton() {
-  if (duelPicking) { $('#start-label').textContent = `${t('rematchYes')} ⚔️`; return; }
-  $('#start-label').textContent = config.players === 2 ? t('startQR') : `${t('start')} 🎉`;
+  const btn = $('#btn-start'); if (!btn) return;
+  // Botão "Iniciar" é imagem; o texto do modo vai no aria-label (acessibilidade).
+  let label = config.players === 2 ? t('startQR') : t('start');
+  if (duelPicking) label = t('rematchYes');
+  btn.setAttribute('aria-label', label);
 }
 
 // ---------- Fases (temas) com cadeado ----------
@@ -2695,6 +2704,7 @@ updatePlayerImages();
 updateLevelImages();
 updateMenuImages();
 updateContinueImage();
+updateStartImage();
 setupProfileControls();
 renderThemeOptions();
 renderMusicMenu();

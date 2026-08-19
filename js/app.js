@@ -371,7 +371,7 @@ const DEFAULT_AVATAR = AVATAR_IDS[0] || 'k1';
 function avatarSVG(id, skinIdx) {
   const a = AVATAR_MAP[id] || AVATARS.list[0];
   if (!a) return '';
-  if (a.img) return `<img class="avatar-img" src="${a.img}" alt="" draggable="false">`;
+  if (a.img) return `<img class="avatar-img" src="${a.img}" alt="" draggable="false" loading="lazy" decoding="async">`;
   const skin = AVATARS.skins[skinIdx] != null ? AVATARS.skins[skinIdx] : (AVATARS.skins[1] || AVATARS.skins[0]);
   return a.svg(a.human ? skin : undefined);
 }
@@ -648,7 +648,7 @@ const owlVoice = (() => {
   // real (voz humana natural) no lugar da síntese do navegador.
   const FILES = { pt: 'audio/owl-home.m4a?v=40', en: 'audio/owl-en.mp3?v=30', fr: 'audio/owl-fr.mp3?v=30' };
   const clips = {};
-  for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'auto'; clips[k] = a; } catch { /* ignora */ } }
+  for (const k in FILES) { try { const a = new Audio(FILES[k]); a.preload = 'none'; clips[k] = a; } catch { /* ignora */ } }
   function speakTTS() {
     if (!synth) return;
     try {
@@ -668,7 +668,7 @@ const owlVoice = (() => {
     if (!img) return;
     const base = img.dataset.animSrc || img.src.split('?')[0];
     img.dataset.animSrc = base;
-    img.src = `${base}?v=41&talk=${Date.now()}`;
+    img.src = `${base}?v=41`;
   }
   function speak() {
     if (!storage.sound) return;
@@ -698,6 +698,11 @@ function showScreen(name) {
   Object.values(screens).forEach((s) => s.classList.remove('active'));
   screens[name].classList.add('active');
   window.scrollTo(0, 0);
+  if (name === 'home') updateMenuImages();
+  if (name === 'profile') updateContinueImage();
+  if (name === 'setup') { updatePlayerImages(); updateLevelImages(); updateStartImage(); }
+  if (name === 'album') updateAlbumPlayImage();
+  if (name === 'profile' || name === 'join') renderPickersForScreen(name);
   if (name === 'setup') renderProfileChip();
   if (name === 'home') renderHomeAccount();
   if (name === 'join') renderJoinIdentity();
@@ -732,16 +737,13 @@ function setLang(next) {
   localStorage.setItem('mm_lang', lang);
   applyI18n();
   applyCloudTexts();       // textos dos modais de login/conta no novo idioma
-  updatePlayerImages();    // cards de jogador (imagem por idioma)
-  updateLevelImages();     // cards de nível (imagem por idioma)
-  updateMenuImages();      // botões da tela inicial (imagem por idioma)
-  updateContinueImage();   // botão Continuar (imagem por idioma)
-  updateStartImage();      // botão Iniciar (imagem por idioma)
-  updateAlbumPlayImage();  // botão do álbum (imagem por idioma)
-  renderThemeOptions();
+  const cur = currentScreen();
+  if (cur === 'home') updateMenuImages();
+  if (cur === 'profile') updateContinueImage();
+  if (cur === 'setup') { updatePlayerImages(); updateLevelImages(); updateStartImage(); renderThemeOptions(); }
+  if (cur === 'album') updateAlbumPlayImage();
   renderMusicMenu();
   updateStartButton();
-  const cur = currentScreen();
   if (cur === 'game') { renderScoreboard(); updateMoves(); }
   if (cur === 'album') {
     renderAlbum();
@@ -791,6 +793,16 @@ function renderAllPickers() {
   SKIN_PICKERS.forEach(renderSkinPicker);
   renderNameAvatars();
 }
+function renderPickersForScreen(name) {
+  if (name === 'profile') {
+    renderAvatarPicker('profile-avatar-options');
+    renderSkinPicker('profile-skin-options');
+  } else if (name === 'join') {
+    renderAvatarPicker('join-avatar-options');
+    renderSkinPicker('join-skin-options');
+  }
+  renderNameAvatars();
+}
 function renderNameAvatars() {
   ['profile-name-avatar', 'join-name-avatar'].forEach((id) => {
     const el = document.getElementById(id);
@@ -800,15 +812,13 @@ function renderNameAvatars() {
 
 function setupProfileControls() {
   AVATAR_PICKERS.forEach((id) => {
-    renderAvatarPicker(id);
     const row = document.getElementById(id);
     if (row) row.addEventListener('click', (e) => {
       const b = e.target.closest('[data-avatar]');
       if (!b) return;
       storage.avatar = b.dataset.avatar;
       sound.play('click');
-      AVATAR_PICKERS.forEach(renderAvatarPicker);
-      renderNameAvatars();
+      renderPickersForScreen(currentScreen());
     });
   });
   // Sem tom de pele (avatares são imagens prontas): esconde o seletor
@@ -821,13 +831,12 @@ function setupProfileControls() {
       if (h && h.tagName === 'H3') h.hidden = true;
       return;
     }
-    renderSkinPicker(id);
     row.addEventListener('click', (e) => {
       const b = e.target.closest('[data-skin]');
       if (!b) return;
       storage.skin = b.dataset.skin;
       sound.play('click');
-      renderAllPickers();
+      renderPickersForScreen(currentScreen());
     });
   });
   renderNameAvatars();
@@ -940,7 +949,7 @@ const coinTiny = '<span class="coin-badge tiny" aria-hidden="true">★</span>';
 
 function themeIcon(th) {
   if (IMG_THEMES[th.id] && IMG_THEMES[th.id][0]) {
-    return `<span class="opt-svg"><img class="opt-img" src="${IMG_THEMES[th.id][0].img}" alt=""></span>`;
+    return `<span class="opt-svg"><img class="opt-img" src="${IMG_THEMES[th.id][0].img}" alt="" loading="lazy" decoding="async"></span>`;
   }
   const art = ART_THEMES[th.id];
   if (art && art[0]) return `<span class="opt-svg">${art[0].svg}</span>`;
@@ -1022,25 +1031,92 @@ let peer = null;
 let conn = null;
 let netGuestProfile = null;
 const remoteQueue = [];
+const lazyScripts = {};
+
+function loadScriptOnce(src, isReady) {
+  if (isReady && isReady()) return Promise.resolve();
+  if (lazyScripts[src]) return lazyScripts[src];
+  lazyScripts[src] = new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = src;
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('script-load'));
+    document.head.appendChild(script);
+  }).then(() => {
+    if (isReady && !isReady()) throw new Error('script-not-ready');
+  }).catch((err) => {
+    delete lazyScripts[src];
+    throw err;
+  });
+  return lazyScripts[src];
+}
+
+function ensureMultiplayerLibs() {
+  return Promise.all([
+    loadScriptOnce('js/vendor/qrcode.js?v=33', () => typeof window.qrcode === 'function'),
+    loadScriptOnce('js/vendor/peerjs.min.js?v=33', () => typeof window.Peer === 'function'),
+  ]);
+}
+
+let netConnectTimeout = null;
+let netHeartbeat = null;
+let netLastSeen = 0;
+let netAttempt = 0;
+
+function clearNetTimers() {
+  clearTimeout(netConnectTimeout);
+  clearInterval(netHeartbeat);
+  netConnectTimeout = null;
+  netHeartbeat = null;
+}
+
+function markNetSeen() {
+  netLastSeen = Date.now();
+}
+
+function armNetConnectTimeout(ms = 35000) {
+  clearTimeout(netConnectTimeout);
+  netConnectTimeout = setTimeout(() => {
+    if (conn && conn.open) return;
+    if (currentScreen() === 'invite') inviteFailed();
+    else handleDisconnect();
+  }, ms);
+}
+
+function startNetHeartbeat() {
+  clearInterval(netHeartbeat);
+  markNetSeen();
+  netHeartbeat = setInterval(() => {
+    if (!conn || !conn.open) { handleDisconnect(); return; }
+    if (Date.now() - netLastSeen > 45000) { handleDisconnect(); return; }
+    netSend({ type: 'ping', at: Date.now() });
+  }, 10000);
+}
 
 // STUN + TURN (relay) para conectar mesmo em redes de celular (CGNAT),
 // onde a conexão direta entre os aparelhos costuma falhar só com STUN.
 const PEER_CONFIG = {
   config: {
+    iceCandidatePoolSize: 4,
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       { urls: 'stun:stun1.l.google.com:19302' },
       { urls: 'turn:openrelay.metered.ca:80', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:openrelay.metered.ca:443', username: 'openrelayproject', credential: 'openrelayproject' },
       { urls: 'turn:openrelay.metered.ca:443?transport=tcp', username: 'openrelayproject', credential: 'openrelayproject' },
+      { urls: ['turn:us-0.turn.peerjs.com:3478', 'turn:eu-0.turn.peerjs.com:3478'], username: 'peerjs', credential: 'peerjsp' },
     ],
   },
 };
 
 function netDestroy() {
+  netAttempt++;
+  clearNetTimers();
   try { if (conn) conn.close(); } catch { /* já fechada */ }
   try { if (peer) peer.destroy(); } catch { /* já destruído */ }
   peer = null; conn = null; netGuestProfile = null;
+  remoteQueue.length = 0;
 }
 function netSend(msg) {
   try { if (conn && conn.open) conn.send(msg); } catch { /* caiu; o close trata */ }
@@ -1068,11 +1144,22 @@ function inviteFailed() {
   $('#btn-invite-retry').hidden = false;
 }
 
-function hostInvite() {
+async function hostInvite() {
   netDestroy();
+  const attempt = ++netAttempt;
   clearTimeout(inviteTimeout);
   showScreen('invite');
   $('#btn-invite-retry').hidden = true;
+  $('#qr-box').innerHTML = '';
+  $('#invite-status').textContent = t('connecting');
+
+  try { await ensureMultiplayerLibs(); }
+  catch {
+    if (attempt !== netAttempt) return;
+    inviteFailed();
+    return;
+  }
+  if (attempt !== netAttempt) return;
 
   const roomId = makeRoomId();
   inviteUrl = `${location.origin}${location.pathname}?join=${encodeURIComponent(roomId)}`;
@@ -1080,7 +1167,6 @@ function hostInvite() {
   qr.addData(inviteUrl);
   qr.make();
   $('#qr-box').innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2 });
-  $('#invite-status').textContent = t('connecting');
 
   peer = new Peer(roomId, PEER_CONFIG);
   peer.on('open', () => {
@@ -1091,6 +1177,11 @@ function hostInvite() {
   peer.on('connection', (c) => {
     if (conn) { try { c.close(); } catch { /* lotado */ } return; }
     conn = c;
+    armNetConnectTimeout();
+    conn.on('open', () => {
+      clearTimeout(netConnectTimeout);
+      startNetHeartbeat();
+    });
     conn.on('data', handleNetData);
     conn.on('close', handleDisconnect);
     conn.on('error', handleDisconnect);
@@ -1111,18 +1202,32 @@ async function shareInviteLink() {
 
 let joinHostId = null;
 
-function joinGame() {
+async function joinGame() {
   if (!joinHostId) return;
   if (!requireName('join-name-input')) return;
   const btn = $('#btn-join');
   btn.disabled = true;
   $('#join-status').textContent = t('connecting');
   netDestroy();
+  const attempt = ++netAttempt;
+  armNetConnectTimeout();
+  try { await ensureMultiplayerLibs(); }
+  catch {
+    if (attempt !== netAttempt) return;
+    showToast(t('connLost'));
+    netDestroy();
+    btn.disabled = false;
+    if (currentScreen() === 'join') $('#join-status').textContent = '';
+    return;
+  }
+  if (attempt !== netAttempt) return;
   peer = new Peer(PEER_CONFIG);
   peer.on('disconnected', () => { try { peer.reconnect(); } catch { /* ignora */ } });
   peer.on('open', () => {
     conn = peer.connect(joinHostId, { reliable: true });
     conn.on('open', () => {
+      clearTimeout(netConnectTimeout);
+      startNetHeartbeat();
       $('#join-status').textContent = t('waitingPlayer');
       netSend({ type: 'hello', ...myProfile() });
     });
@@ -1225,7 +1330,13 @@ function chooseNewPhase() {
 
 function handleNetData(data) {
   if (!data || typeof data !== 'object') return;
+  markNetSeen();
   switch (data.type) {
+    case 'ping':
+      netSend({ type: 'pong', at: data.at || Date.now() });
+      break;
+    case 'pong':
+      break;
     case 'hello':
       if (currentScreen() !== 'invite') return;
       netGuestProfile = sanitizeProfile(data);
@@ -2237,6 +2348,7 @@ let loginDone = null;
 
 function openLoginModal(onDone) {
   if (!cloud.enabled) { if (onDone) onDone(); return; }
+  cloud.init();
   loginDone = typeof onDone === 'function' ? onDone : null;
   cloudRegisterMode = false;
   const form = $('#login-form'); if (form) form.hidden = true;
@@ -2350,7 +2462,7 @@ function wireCloudUI() {
     // Portão dos pais antes de coletar dados de conta (compliance infantil).
     parentalGate(async () => {
       const btn = $('#login-google'); btn.disabled = true;
-      try { await cloud.signInGoogle(); await afterSignIn(); closeLoginModal(); }
+      try { await cloud.init(); await cloud.signInGoogle(); await afterSignIn(); closeLoginModal(); }
       catch (e) { showToast(cstr(e && e.message === 'cloud-off' ? 'loading' : 'authErr')); }
       finally { btn.disabled = false; }
     });
@@ -2378,6 +2490,7 @@ function wireCloudUI() {
     parentalGate(async () => {
       st.hidden = false; st.textContent = cstr('syncing');
       try {
+        await cloud.init();
         if (cloudRegisterMode) await cloud.registerEmail(email, pass);
         else await cloud.signInEmail(email, pass);
         await afterSignIn();
@@ -2465,6 +2578,7 @@ async function loadRanking() {
   const el = $('#cloud-rank');
   if (!el) return;
   el.innerHTML = `<p class="cloud-muted">${cstr('rankLoading')}</p>`;
+  await cloud.init();
   let path = 'leaderboard';
   if (rankTab === 'week') path = 'weekly/' + cloud.weekId();
   else if (rankTab === 'world') path = 'world/' + rankWorld;
@@ -2615,22 +2729,10 @@ $('#btn-go-setup').addEventListener('click', () => {
   }
   showScreen('profile');
 });
-// Toque na coruja (ou no balão) -> ela fala no idioma atual; e fala AUTOMÁTICA
-// assim que o app abre (no 1º gesto do usuário, pois navegadores bloqueiam
-// áudio automático sem interação).
+// Toque na coruja (ou no balão) -> ela fala no idioma atual.
 (function () {
   const stage = document.querySelector('.home-owl');
   if (stage) stage.addEventListener('click', () => owlVoice.speak());
-  let greeted = false;
-  function autoGreet() {
-    if (greeted) return;
-    if (currentScreen() === 'home') { greeted = true; owlVoice.speak(); }
-  }
-  // tenta já na abertura (funciona em parte dos aparelhos)…
-  window.addEventListener('load', () => setTimeout(autoGreet, 350));
-  // …e garante no primeiro toque/tecla
-  ['pointerdown', 'touchstart', 'keydown'].forEach((ev) =>
-    document.addEventListener(ev, autoGreet, { once: false, passive: true, capture: true }));
 })();
 $('#btn-profile-continue').addEventListener('click', () => {
   if (!requireName('profile-name-input')) return;
@@ -2741,20 +2843,21 @@ document.addEventListener('pointerdown', () => {
   if (storage.sound && MENU_SCREENS.has(currentScreen())) { music.stop(); music.playMenu(); }
 }, { once: true, capture: true });
 
+function startCloudInitSoon() {
+  if (!cloud.enabled) { cloud.init(); return; }
+  const run = () => cloud.init();
+  if (window.requestIdleCallback) window.requestIdleCallback(run, { timeout: 2500 });
+  else setTimeout(run, 1500);
+}
+
 // ---------- Início ----------
 
 applyTheme();
 applyI18n();
-updatePlayerImages();
-updateLevelImages();
 updateMenuImages();
-updateContinueImage();
-updateStartImage();
-updateAlbumPlayImage();
 // Se o avatar salvo for um dos antigos (cor de pele), volta pra um de imagem.
 if (!IMG_AVATARS.some((a) => a.id === storage.avatar)) storage.avatar = (IMG_AVATARS[0] || {}).id || storage.avatar;
 setupProfileControls();
-renderThemeOptions();
 renderMusicMenu();
 updateStartButton();
 updateCoinChip();
@@ -2769,7 +2872,7 @@ wireAlbumBook();
 wireCloudUI();
 applyCloudTexts();
 renderHomeAccount();
-cloud.init();
+startCloudInitSoon();
 cloud.onReady(() => { renderHomeAccount(); if (currentScreen() === 'join') renderJoinIdentity(); });
 cloud.onAuthChange(() => {
   renderHomeAccount();

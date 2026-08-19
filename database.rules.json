@@ -9,7 +9,10 @@
         "wins": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
         "ppm":  { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000" },
         "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-        "$other": { ".validate": true }
+        "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
+        "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
+        "updatedAt": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
       }
     },
     "weekly": {
@@ -20,7 +23,10 @@
           ".write": "auth != null && auth.uid === $uid",
           "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
           "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-          "$other": { ".validate": true }
+          "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
+          "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
         }
       }
     },
@@ -32,7 +38,10 @@
           ".write": "auth != null && auth.uid === $uid",
           "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
           "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-          "$other": { ".validate": true }
+          "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
+          "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
         }
       }
     },

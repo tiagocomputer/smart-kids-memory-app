@@ -29,6 +29,7 @@ const cloud = (() => {
   const state = { ready: false, user: null };
   const readyCbs = [];
   let fb = null; // { auth, db, authApi, dbApi }
+  let initPromise = null;
 
   // ---------- Identidade ----------
   // uid de convidado persistente: mesmo antes de logar, o dispositivo tem uma
@@ -69,29 +70,34 @@ const cloud = (() => {
 
   // ---------- Init ----------
   async function init() {
-    if (!enabled) { fireReady(); return; }
-    try {
-      const [appMod, authApi, dbApi] = await Promise.all([
-        import(`${SDK}/firebase-app.js`),
-        import(`${SDK}/firebase-auth.js`),
-        import(`${SDK}/firebase-database.js`),
-      ]);
-      const app = appMod.initializeApp(FIREBASE_CONFIG);
-      const auth = authApi.getAuth(app);
-      // Mantém o login salvo no navegador (sobrevive a reloads/novas abas/QR).
-      try { await authApi.setPersistence(auth, authApi.browserLocalPersistence); } catch (e) { /* ignora */ }
-      const db = dbApi.getDatabase(app);
-      fb = { auth, db, authApi, dbApi };
-      authApi.onAuthStateChanged(auth, (user) => {
-        const was = state.user && state.user.uid;
-        state.user = user;
+    if (initPromise) return initPromise;
+    initPromise = (async () => {
+      if (!enabled) { fireReady(); return; }
+      try {
+        const [appMod, authApi, dbApi] = await Promise.all([
+          import(`${SDK}/firebase-app.js`),
+          import(`${SDK}/firebase-auth.js`),
+          import(`${SDK}/firebase-database.js`),
+        ]);
+        const app = appMod.initializeApp(FIREBASE_CONFIG);
+        const auth = authApi.getAuth(app);
+        // Mantém o login salvo no navegador (sobrevive a reloads/novas abas/QR).
+        try { await authApi.setPersistence(auth, authApi.browserLocalPersistence); } catch (e) { /* ignora */ }
+        const db = dbApi.getDatabase(app);
+        fb = { auth, db, authApi, dbApi };
+        authApi.onAuthStateChanged(auth, (user) => {
+          const was = state.user && state.user.uid;
+          state.user = user;
+          fireReady();
+          if ((user && user.uid) !== was) fireChange();
+        });
+      } catch (e) {
+        console.warn('[cloud] Firebase indisponível, seguindo offline:', e);
         fireReady();
-        if ((user && user.uid) !== was) fireChange();
-      });
-    } catch (e) {
-      console.warn('[cloud] Firebase indisponível, seguindo offline:', e);
-      fireReady();
-    }
+        initPromise = null;
+      }
+    })();
+    return initPromise;
   }
 
   // ---------- Login ----------

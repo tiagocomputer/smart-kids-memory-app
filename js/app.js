@@ -238,10 +238,54 @@ const I18N = {
   },
 };
 
-let lang = localStorage.getItem('mm_lang');
-if (!I18N[lang]) {
+// Falhas de armazenamento não devem impedir uma criança de jogar.
+const sessionStorageFallback = new Map();
+const localStore = {
+  getItem(key) {
+    if (sessionStorageFallback.has(key)) return sessionStorageFallback.get(key);
+    try { return localStorage.getItem(key); } catch { return null; }
+  },
+  setItem(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+      sessionStorageFallback.delete(key);
+    } catch { sessionStorageFallback.set(key, String(value)); }
+  },
+};
+
+Object.assign(I18N.pt, {
+  yourName: 'Seu apelido',
+  qPace: 'Qual é o seu ritmo?', paceRelaxed: '🌿 Tranquilo · sem tempo', paceChallenge: '⏱️ Desafio · com tempo',
+  paceHelp: 'Os dois ritmos dão moedas e figurinhas. No Desafio, você também disputa seu melhor tempo.',
+  nextWorld: 'Próxima descoberta: {name}', unlockProgress: '{have} de {cost} moedas · faltam {left}',
+  unlockReady: 'Você já pode abrir esta fase!', worldsComplete: 'Todos os mundos estão abertos!',
+  exploreWorlds: 'Experimente outros níveis e conquiste mais estrelas.', firstClear: 'Inclui +{n} pela primeira conclusão deste nível!',
+  hiddenCard: 'Carta {n}, virada para baixo', revealedCard: 'Carta {n}, figura {face}', matchedCard: 'Carta {n}, par encontrado',
+  pairFound: 'Par encontrado! {n} de {total}.', tryPair: 'Observe as figuras e tente outro par.', syncPending: 'Seu progresso está neste aparelho. A nuvem não sincronizou agora.',
+});
+Object.assign(I18N.en, {
+  yourName: 'Your nickname',
+  qPace: 'Choose your pace', paceRelaxed: '🌿 Relaxed · no timer', paceChallenge: '⏱️ Challenge · timed',
+  paceHelp: 'Both modes earn coins and stickers. Challenge also tracks your best time.',
+  nextWorld: 'Next discovery: {name}', unlockProgress: '{have} of {cost} coins · {left} to go', unlockReady: 'You can unlock this world!',
+  worldsComplete: 'All worlds are open!', exploreWorlds: 'Try other levels and earn more stars.', firstClear: 'Includes +{n} for your first completion of this level!',
+  hiddenCard: 'Card {n}, face down', revealedCard: 'Card {n}, picture {face}', matchedCard: 'Card {n}, pair found',
+  pairFound: 'Pair found! {n} of {total}.', tryPair: 'Look at the pictures and try another pair.', syncPending: 'Progress is saved on this device. Cloud sync is unavailable right now.',
+});
+Object.assign(I18N.fr, {
+  yourName: 'Ton pseudo',
+  qPace: 'Choisis ton rythme', paceRelaxed: '🌿 Tranquille · sans chrono', paceChallenge: '⏱️ Défi · avec chrono',
+  paceHelp: 'Les deux modes donnent des pièces et des autocollants. Le Défi enregistre aussi ton meilleur temps.',
+  nextWorld: 'Prochaine découverte : {name}', unlockProgress: '{have} sur {cost} pièces · encore {left}', unlockReady: 'Tu peux ouvrir ce monde !',
+  worldsComplete: 'Tous les mondes sont ouverts !', exploreWorlds: 'Essaie les autres niveaux pour gagner des étoiles.', firstClear: 'Dont +{n} pour ta première réussite de ce niveau !',
+  hiddenCard: 'Carte {n}, face cachée', revealedCard: 'Carte {n}, image {face}', matchedCard: 'Carte {n}, paire trouvée',
+  pairFound: 'Paire trouvée ! {n} sur {total}.', tryPair: 'Observe les images et essaie une autre paire.', syncPending: 'La progression est sur cet appareil. La synchronisation est indisponible.',
+});
+
+let lang = localStore.getItem('mm_lang');
+if (!Object.hasOwn(I18N, lang)) {
   const nav = (navigator.language || 'pt').slice(0, 2);
-  lang = I18N[nav] ? nav : 'pt';
+  lang = Object.hasOwn(I18N, nav) ? nav : 'pt';
 }
 
 function t(key, vars) {
@@ -333,24 +377,24 @@ const THEME_LIST = [
   { id: 'animais',    icon: '🐶', key: 'themeAnimais',    cost: 0 },
   { id: 'frutas',     icon: '🍎', key: 'themeFrutas',     cost: 0 },
   { id: 'espaco',     icon: '🚀', key: 'themeEspaco',     cost: 0 },
-  { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 140 },
-  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 260 },
-  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 420 },
-  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 620 },
-  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 860 },
-  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 1140 },
-  { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 1460 },
-  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 1820 },
-  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 2220 },
-  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 2660 },
-  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 3140 },
-  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 3660 },
-  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 4220 },
-  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 4820 },
-  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 5460 },
-  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 6140 },
-  { id: 'circo',      icon: '🎪', key: 'themeCirco',      cost: 6860 },
-  { id: 'natal',      icon: '🎄', key: 'themeNatal',      cost: 7640 },
+  { id: 'oceano',     icon: '🐠', key: 'themeOceano',     cost: 60 },
+  { id: 'comida',     icon: '🍕', key: 'themeComida',     cost: 90 },
+  { id: 'brinquedos', icon: '🧸', key: 'themeBrinquedos', cost: 120 },
+  { id: 'dinos',      icon: '🦖', key: 'themeDinos',      cost: 150 },
+  { id: 'emocoes',    icon: '😊', key: 'themeEmocoes',    cost: 180 },
+  { id: 'flores',     icon: '🌸', key: 'themeFlores',     cost: 210 },
+  { id: 'monstrinhos',icon: '👾', key: 'themeMonstrinhos',cost: 240 },
+  { id: 'herois',     icon: '🦸', key: 'themeHerois',     cost: 270 },
+  { id: 'mario',      icon: '🍄', key: 'themeMario',      cost: 300 },
+  { id: 'encanadores',icon: '🔧', key: 'themeEncanadores',cost: 330 },
+  { id: 'robos',      icon: '🤖', key: 'themeRobos',      cost: 360 },
+  { id: 'fantasia',   icon: '🏰', key: 'themeFantasia',   cost: 390 },
+  { id: 'aventureiros', icon: '🧭', key: 'themeAventureiros', cost: 420 },
+  { id: 'duendes',    icon: '🍄', key: 'themeDuendes',    cost: 450 },
+  { id: 'gelo',       icon: '❄️', key: 'themeGelo',       cost: 480 },
+  { id: 'elementos',  icon: '🔥', key: 'themeElementos',  cost: 510 },
+  { id: 'circo',      icon: '🎪', key: 'themeCirco',      cost: 540 },
+  { id: 'natal',      icon: '🎄', key: 'themeNatal',      cost: 600 },
 ];
 const THEME_IDS = new Set(THEME_LIST.map((x) => x.id));
 
@@ -360,11 +404,11 @@ const LEVELS = {
   dificil: { pairs: 12, cols: 4, bonus: 20, time: 160, key: 'levelDificil' },
 };
 const EXTRA_TIME_PER_PLAYER = 40;
-const CONSOLATION_COINS = 3;
+const FIRST_CLEAR_COINS = 15;
 
 // Avatares ilustrados (com tom de pele) — ver js/avatars.js
 const AVATARS = window.MM_AVATARS || { skins: ['#f1c27d'], list: [] };
-const AVATAR_MAP = {};
+const AVATAR_MAP = Object.create(null);
 AVATARS.list.forEach((a) => { AVATAR_MAP[a.id] = a; });
 const AVATAR_IDS = AVATARS.list.map((a) => a.id);
 const DEFAULT_AVATAR = AVATAR_IDS[0] || 'k1';
@@ -373,7 +417,7 @@ function avatarSVG(id, skinIdx) {
   if (!a) return '';
   if (a.img) return `<img class="avatar-img" src="${a.img}" alt="" draggable="false" loading="lazy" decoding="async">`;
   const skin = AVATARS.skins[skinIdx] != null ? AVATARS.skins[skinIdx] : (AVATARS.skins[1] || AVATARS.skins[0]);
-  return a.svg(a.human ? skin : undefined);
+  return typeof a.svg === 'function' ? a.svg(a.human ? skin : undefined) : '';
 }
 const PLAYER_KEYS = ['p1', 'p2', 'p3', 'p4'];
 
@@ -433,37 +477,68 @@ function nextRankFor(xp) { return RANK_TIERS.find((tier) => tier.min > xp) || nu
 
 // ---------- Estado salvo no dispositivo ----------
 
+function safeNumber(value, max = 100000000) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(0, Math.min(max, Math.floor(n))) : 0;
+}
+function readJSON(key, fallback) {
+  try { return JSON.parse(localStore.getItem(key)) ?? fallback; } catch { return fallback; }
+}
+function validList(list, ids) { return Array.isArray(list) ? [...new Set(list.filter((id) => ids.has(id)))] : []; }
+function cleanMastery(value) {
+  const result = {};
+  for (const th of THEME_LIST) for (const lv of Object.keys(LEVELS)) {
+    const key = `${th.id}_${lv}`;
+    if (Number.isInteger(value?.[key]) && value[key] >= 1 && value[key] <= 3) result[key] = value[key];
+  }
+  return result;
+}
+function touchWallet() { localStore.setItem('mm_wallet_updated', Date.now()); }
+function migrateLegacyWallet() {
+  // Sem timestamp não há como ordenar saves antigos: preserva o progresso
+  // deste aparelho no primeiro upgrade. Aparelhos vazios adotam a nuvem.
+  if (!storage.walletUpdatedAt && (storage.coins > 0 || storage.unlocked.length > 0)) touchWallet();
+}
+
 const storage = {
-  get coins() { return parseInt(localStorage.getItem('mm_coins') || '0', 10); },
-  set coins(v) { localStorage.setItem('mm_coins', String(v)); },
-  get stickers() { try { return JSON.parse(localStorage.getItem('mm_stickers') || '[]'); } catch { return []; } },
-  set stickers(list) { localStorage.setItem('mm_stickers', JSON.stringify(list)); },
-  get unlocked() { try { return JSON.parse(localStorage.getItem('mm_unlocked') || '[]'); } catch { return []; } },
-  set unlocked(list) { localStorage.setItem('mm_unlocked', JSON.stringify(list)); },
-  get sound() { return localStorage.getItem('mm_sound') !== 'off'; },
-  set sound(on) { localStorage.setItem('mm_sound', on ? 'on' : 'off'); },
-  get theme() { return localStorage.getItem('mm_theme') || 'dark'; },
-  set theme(v) { localStorage.setItem('mm_theme', v); },
-  get menuMusic() { const m = localStorage.getItem('mm_music'); return MUSIC_IDS.has(m) ? m : 'home'; },
-  set menuMusic(v) { if (MUSIC_IDS.has(v)) localStorage.setItem('mm_music', v); },
-  get name() { return (localStorage.getItem('mm_name') || '').slice(0, 12); },
-  set name(v) { localStorage.setItem('mm_name', String(v).slice(0, 12)); },
-  get avatar() { const a = localStorage.getItem('mm_avatar'); return AVATAR_IDS.includes(a) ? a : DEFAULT_AVATAR; },
-  set avatar(v) { if (AVATAR_IDS.includes(v)) localStorage.setItem('mm_avatar', v); },
-  get skin() { const n = parseInt(localStorage.getItem('mm_skin') || '1', 10); return (n >= 0 && n < AVATARS.skins.length) ? n : 1; },
-  set skin(v) { const n = parseInt(v, 10); if (n >= 0 && n < AVATARS.skins.length) localStorage.setItem('mm_skin', String(n)); },
-  get records() { try { return JSON.parse(localStorage.getItem('mm_records') || '{}'); } catch { return {}; } },
-  set records(v) { localStorage.setItem('mm_records', JSON.stringify(v)); },
+  get coins() { return safeNumber(localStore.getItem('mm_coins')); },
+  set coins(v) { localStore.setItem('mm_coins', safeNumber(v)); touchWallet(); },
+  get walletUpdatedAt() { return safeNumber(localStore.getItem('mm_wallet_updated'), 1e15); },
+  get stickers() { return validList(readJSON('mm_stickers', []), STICKER_IDS); },
+  set stickers(list) { localStore.setItem('mm_stickers', JSON.stringify(validList(list, STICKER_IDS))); },
+  get unlocked() { return validList(readJSON('mm_unlocked', []), THEME_IDS); },
+  set unlocked(list) { localStore.setItem('mm_unlocked', JSON.stringify(validList(list, THEME_IDS))); touchWallet(); },
+  get mastery() { return cleanMastery(readJSON('mm_mastery', {})); },
+  set mastery(v) { localStore.setItem('mm_mastery', JSON.stringify(cleanMastery(v))); },
+  get sound() { return localStore.getItem('mm_sound') !== 'off'; },
+  set sound(on) { localStore.setItem('mm_sound', on ? 'on' : 'off'); },
+  get theme() { return localStore.getItem('mm_theme') || 'dark'; },
+  set theme(v) { localStore.setItem('mm_theme', v); },
+  get menuMusic() { const m = localStore.getItem('mm_music'); return MUSIC_IDS.has(m) ? m : 'home'; },
+  set menuMusic(v) { if (MUSIC_IDS.has(v)) localStore.setItem('mm_music', v); },
+  get name() { return (localStore.getItem('mm_name') || '').slice(0, 12); },
+  set name(v) { localStore.setItem('mm_name', String(v).slice(0, 12)); },
+  get avatar() { const a = localStore.getItem('mm_avatar'); return AVATAR_IDS.includes(a) ? a : DEFAULT_AVATAR; },
+  set avatar(v) { if (AVATAR_IDS.includes(v)) localStore.setItem('mm_avatar', v); },
+  get skin() { const n = parseInt(localStore.getItem('mm_skin') || '1', 10); return (n >= 0 && n < AVATARS.skins.length) ? n : 1; },
+  set skin(v) { const n = parseInt(v, 10); if (n >= 0 && n < AVATARS.skins.length) localStore.setItem('mm_skin', String(n)); },
+  get records() { try { return JSON.parse(localStore.getItem('mm_records') || '{}'); } catch { return {}; } },
+  set records(v) { localStore.setItem('mm_records', JSON.stringify(v)); },
 };
 
 function getRecords() {
-  const r = storage.records;
-  return { xp: r.xp || 0, wins: r.wins || 0, fast: r.fast || {}, ppm: r.ppm || 0 };
+  const r = storage.records || {};
+  const fast = {};
+  for (const lv of Object.keys(LEVELS)) {
+    const n = safeNumber(r.fast?.[lv], 86400);
+    if (n > 0) fast[lv] = n;
+  }
+  return { xp: safeNumber(r.xp), wins: safeNumber(r.wins), fast, ppm: safeNumber(r.ppm, 2000) };
 }
 
 function isThemeUnlocked(id) {
   const th = THEME_LIST.find((x) => x.id === id);
-  return !th || th.cost === 0 || storage.unlocked.includes(id);
+  return !!th && (th.cost === 0 || storage.unlocked.includes(id));
 }
 
 // ---------- Sons (Web Audio, sem arquivos) ----------
@@ -733,8 +808,9 @@ function applyI18n() {
 }
 
 function setLang(next) {
+  if (!Object.hasOwn(I18N, next)) return;
   lang = next;
-  localStorage.setItem('mm_lang', lang);
+  localStore.setItem('mm_lang', lang);
   applyI18n();
   applyCloudTexts();       // textos dos modais de login/conta no novo idioma
   const cur = currentScreen();
@@ -880,15 +956,16 @@ function goSetup() {
 
 // ---------- Configuração escolhida ----------
 
-const config = { players: 1, theme: 'animais', level: 'facil' };
+const config = { players: 1, theme: 'animais', level: 'facil', pace: 'relaxed' };
 
 function bindOptionRow(rowId, dataKey, onPick, sel = '.opt') {
   const row = document.getElementById(rowId);
   row.addEventListener('click', (e) => {
     const btn = e.target.closest(sel);
     if (!btn) return;
-    row.querySelectorAll(sel).forEach((o) => o.classList.remove('selected'));
+    row.querySelectorAll(sel).forEach((o) => { o.classList.remove('selected'); o.setAttribute('aria-pressed', 'false'); });
     btn.classList.add('selected');
+    btn.setAttribute('aria-pressed', 'true');
     sound.play('click');
     onPick(btn.dataset[dataKey]);
   });
@@ -933,7 +1010,8 @@ function updateAlbumPlayImage() {
   const l = ['pt', 'en', 'fr'].includes(lang) ? lang : 'pt';
   const el = $('#album-play-img'); if (el) el.src = `img/album/albumplay-${l}.webp`;
 }
-bindOptionRow('level-options', 'level', (v) => (config.level = v), '.level-card');
+bindOptionRow('level-options', 'level', (v) => { config.level = v; renderThemeOptions(); }, '.level-card');
+bindOptionRow('pace-options', 'pace', (v) => { config.pace = v; });
 
 function updateStartButton() {
   const btn = $('#btn-start'); if (!btn) return;
@@ -941,6 +1019,7 @@ function updateStartButton() {
   let label = config.players === 2 ? t('startQR') : t('start');
   if (duelPicking) label = t('rematchYes');
   btn.setAttribute('aria-label', label);
+  $('#pace-block').hidden = config.players !== 1 || duelPicking;
 }
 
 // ---------- Fases (temas) com cadeado ----------
@@ -961,19 +1040,35 @@ function themeIcon(th) {
 
 function renderThemeOptions() {
   const row = $('#theme-options');
+  const mastery = storage.mastery;
   row.innerHTML = THEME_LIST.map((th) => {
     const locked = !isThemeUnlocked(th.id);
     const sel = config.theme === th.id;
     return `
-      <button class="theme-badge ${sel ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}">
+      <button class="theme-badge ${sel ? 'selected' : ''} ${locked ? 'locked' : ''}" data-theme="${th.id}" aria-pressed="${sel}" aria-label="${esc(t(th.key))}${locked ? ` · ${th.cost} ${t('coins')}` : ''}">
         <span class="tb-circle">
           ${themeIcon(th)}
           ${locked ? '<span class="tb-lock">🔒</span>' : ''}
         </span>
         <span class="tb-name">${t(th.key)}</span>
+        ${mastery[`${th.id}_${config.level}`] ? `<span class="tb-stars" aria-hidden="true">${'⭐'.repeat(mastery[`${th.id}_${config.level}`])}</span>` : ''}
         ${locked ? `<span class="tb-cost">🗝️ ${th.cost}${coinTiny}</span>` : ''}
       </button>`;
   }).join('');
+  renderProgress();
+}
+
+function renderProgress() {
+  const next = THEME_LIST.find((th) => !isThemeUnlocked(th.id));
+  const balance = storage.coins;
+  $('#progress-title').textContent = next ? t('nextWorld', { name: t(next.key) }) : t('worldsComplete');
+  $('#progress-detail').textContent = next
+    ? (balance >= next.cost ? t('unlockReady') : t('unlockProgress', { have: balance, cost: next.cost, left: next.cost - balance }))
+    : t('exploreWorlds');
+  const percent = next ? Math.min(100, Math.floor(balance / next.cost * 100)) : 100;
+  $('#progress-fill').style.width = `${percent}%`;
+  $('#unlock-progress').setAttribute('aria-valuenow', String(percent));
+  $('#unlock-progress').setAttribute('aria-label', $('#progress-title').textContent);
 }
 
 $('#theme-options').addEventListener('click', (e) => {
@@ -990,7 +1085,7 @@ let pendingUnlock = null;
 
 function openUnlockModal(id) {
   pendingUnlock = THEME_LIST.find((x) => x.id === id);
-  if (!pendingUnlock) return;
+  if (!pendingUnlock || isThemeUnlocked(id)) return;
   $('#unlock-title').textContent = `${pendingUnlock.icon} ${t(pendingUnlock.key)}`;
   $('#unlock-msg').textContent = t('unlockMsg', { n: pendingUnlock.cost });
   $('#btn-unlock-yes').textContent = t('unlockYes');
@@ -1002,6 +1097,7 @@ function closeUnlockModal() { $('#unlock-modal').hidden = true; pendingUnlock = 
 
 $('#btn-unlock-yes').addEventListener('click', () => {
   if (!pendingUnlock) return;
+  if (isThemeUnlocked(pendingUnlock.id)) { closeUnlockModal(); return; }
   const cost = pendingUnlock.cost;
   if (storage.coins >= cost) {
     storage.coins -= cost;
@@ -1011,6 +1107,7 @@ $('#btn-unlock-yes').addEventListener('click', () => {
     sound.play('unlock');
     closeUnlockModal();
     renderThemeOptions();
+    saveProgressSoon();
   } else {
     const err = $('#unlock-error');
     err.textContent = t('needCoins', { n: cost - storage.coins });
@@ -1030,6 +1127,7 @@ $('#unlock-modal').addEventListener('click', (e) => { if (e.target.id === 'unloc
 let peer = null;
 let conn = null;
 let netGuestProfile = null;
+let netRole = null;
 const remoteQueue = [];
 const lazyScripts = {};
 
@@ -1111,6 +1209,7 @@ const PEER_CONFIG = {
 };
 
 function netDestroy() {
+  netRole = null;
   netAttempt++;
   clearNetTimers();
   try { if (conn) conn.close(); } catch { /* já fechada */ }
@@ -1146,6 +1245,7 @@ function inviteFailed() {
 
 async function hostInvite() {
   netDestroy();
+  netRole = 'host';
   const attempt = ++netAttempt;
   clearTimeout(inviteTimeout);
   showScreen('invite');
@@ -1203,12 +1303,13 @@ async function shareInviteLink() {
 let joinHostId = null;
 
 async function joinGame() {
-  if (!joinHostId) return;
+  if (!/^mm-[a-zA-Z0-9-]{8,80}$/.test(joinHostId || '')) return;
   if (!requireName('join-name-input')) return;
   const btn = $('#btn-join');
   btn.disabled = true;
   $('#join-status').textContent = t('connecting');
   netDestroy();
+  netRole = 'guest';
   const attempt = ++netAttempt;
   armNetConnectTimeout();
   try { await ensureMultiplayerLibs(); }
@@ -1329,27 +1430,28 @@ function chooseNewPhase() {
 }
 
 function handleNetData(data) {
-  if (!data || typeof data !== 'object') return;
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return;
   markNetSeen();
   switch (data.type) {
     case 'ping':
-      netSend({ type: 'pong', at: data.at || Date.now() });
+      netSend({ type: 'pong', at: Date.now() });
       break;
     case 'pong':
       break;
     case 'hello':
-      if (currentScreen() !== 'invite') return;
+      if (netRole !== 'host' || currentScreen() !== 'invite') return;
       netGuestProfile = sanitizeProfile(data);
       hostStartMatch();
       break;
     case 'rematch':
+      if (!game.online || currentScreen() !== 'win') return;
       rematchPeer = true;
       if (currentScreen() === 'win') updateRematchUI();
       tryStartRematch();
       break;
     case 'pickphase':
       // o outro jogador pediu para trocar de fase; só o anfitrião escolhe
-      if (game.myIndex === 0 && !peerLeft) {
+      if (netRole === 'host' && game.online && game.over && currentScreen() === 'win' && !peerLeft) {
         resetRematch();
         closeRematchModal();
         duelPicking = true;
@@ -1360,11 +1462,10 @@ function handleNetData(data) {
       }
       break;
     case 'start': {
-      if (!THEME_IDS.has(data.theme) || !LEVELS[data.level] || !Array.isArray(data.deck)) return;
-      const faces = themeFaces(data.theme);
-      const maxPairs = Math.min(LEVELS[data.level].pairs, faces.length);
-      const deck = data.deck.map((i) => parseInt(i, 10)).filter((i) => i >= 0 && i < faces.length);
-      if (deck.length < 4 || deck.length % 2 !== 0 || deck.length > maxPairs * 2) return;
+      if (netRole !== 'guest' || (!['join', 'win'].includes(currentScreen()) && !game.finishing)) return;
+      if (!validRemoteDeck(data)) return;
+      if (game.finishing && !game.over) endGame();
+      const deck = data.deck.slice();
       config.theme = data.theme;
       config.level = data.level;
       const profiles = (Array.isArray(data.profiles) ? data.profiles : []).slice(0, 2).map(sanitizeProfile);
@@ -1373,12 +1474,25 @@ function handleNetData(data) {
       break;
     }
     case 'flip':
-      applyRemoteFlip(parseInt(data.idx, 10));
+      applyRemoteFlip(data.idx);
       break;
     case 'bye':
       handleDisconnect();
       break;
   }
+}
+
+function validRemoteDeck(data) {
+  if (!THEME_IDS.has(data.theme) || !Object.hasOwn(LEVELS, data.level) || !Array.isArray(data.deck)) return false;
+  const faces = themeFaces(data.theme);
+  const pairs = Math.min(LEVELS[data.level].pairs, faces.length);
+  if (data.deck.length !== pairs * 2) return false;
+  const counts = new Map();
+  for (const idx of data.deck) {
+    if (!Number.isInteger(idx) || idx < 0 || idx >= faces.length) return false;
+    counts.set(idx, (counts.get(idx) || 0) + 1);
+  }
+  return counts.size === pairs && [...counts.values()].every((n) => n === 2);
 }
 
 function handleDisconnect() {
@@ -1401,8 +1515,15 @@ function handleDisconnect() {
 }
 
 function applyRemoteFlip(idx) {
-  if (!game.online || game.over || !Number.isInteger(idx)) return;
-  if (game.lock) { remoteQueue.push(idx); return; }
+  if (!game.online || game.over || !Number.isInteger(idx) || idx < 0 || idx >= game.deck.length) return;
+  if (game.lock) {
+    // Preserva ordem/repetições legítimas quando o outro aparelho está atrasado.
+    // Ao exceder o limite, encerra explicitamente: descartar só alguns pacotes
+    // criaria dois tabuleiros diferentes para a mesma partida.
+    if (remoteQueue.length >= 128) { handleDisconnect(); return; }
+    remoteQueue.push(idx);
+    return;
+  }
   const el = $('#board').children[idx];
   if (el) flipCard(idx, el, true);
 }
@@ -1421,6 +1542,23 @@ const game = {
   moves: 0, matchedPairs: 0, totalPairs: 0, online: false, myIndex: 0,
 };
 let lastWin = null;
+let matchGeneration = 0;
+const matchTimers = new Set();
+function clearMatchTimers() {
+  matchGeneration++;
+  matchTimers.forEach(clearTimeout);
+  matchTimers.clear();
+}
+function afterMatchDelay(callback, ms) {
+  const generation = matchGeneration;
+  const run = () => {
+    if (generation !== matchGeneration || game.over) return;
+    if (game.paused) { afterMatchDelay(callback, 100); return; }
+    callback();
+  };
+  const id = setTimeout(() => { matchTimers.delete(id); run(); }, ms);
+  matchTimers.add(id);
+}
 
 function shuffle(arr) {
   const a = [...arr];
@@ -1432,6 +1570,11 @@ function shuffle(arr) {
 }
 
 function startGame(opts = {}) {
+  if (!Object.hasOwn(LEVELS, config.level) || !THEME_IDS.has(config.theme)) return;
+  if (!opts.online && !isThemeUnlocked(config.theme)) { openUnlockModal(config.theme); return; }
+  clearMatchTimers();
+  lastWin = null;
+  stopTimer();
   const level = LEVELS[config.level];
   const faces = themeFaces(config.theme);
   game.online = !!opts.online;
@@ -1475,6 +1618,9 @@ function startGame(opts = {}) {
   game.matchedPairs = 0;
   game.totalPairs = opts.deck ? opts.deck.length / 2 : need;
   game.startTime = Date.now();
+  game.pausedMs = 0;
+  game.pauseStarted = 0;
+  game.relaxed = !game.online && config.players === 1 && config.pace === 'relaxed';
 
   closeRematchModal();
   clearPause();
@@ -1484,8 +1630,9 @@ function startGame(opts = {}) {
   updateMoves();
   showScreen('game');
 
-  $('#timer-wrap').hidden = game.online;
-  if (game.online) stopTimer();
+  $('#timer-wrap').hidden = game.online || game.relaxed;
+  $('#game-status').textContent = '';
+  if (game.online || game.relaxed) { timeLeft = 0; stopTimer(); }
   else startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
 
   music.play(config.level);
@@ -1501,7 +1648,8 @@ function renderBoard(level) {
     el.className = 'card';
     el.dataset.index = idx;
     el.style.animationDelay = `${idx * 35}ms`;
-    el.setAttribute('aria-label', '?');
+    el.setAttribute('aria-label', t('hiddenCard', { n: idx + 1 }));
+    el.setAttribute('aria-pressed', 'false');
     let front, frontClass = '', frontStyle = '';
     if (card.img) {
       const hf = card.hue ? ` style="filter:hue-rotate(${card.hue}deg)"` : '';
@@ -1543,7 +1691,7 @@ function fitBoard() {
   if (availW <= 0 || availH <= 0) return;
 
   let best = { cols: 2, size: 0 };
-  const maxCols = Math.min(n, 4);
+  const maxCols = Math.min(n, window.innerWidth > window.innerHeight ? 8 : 6);
   for (let cols = 2; cols <= maxCols; cols++) {
     const rows = Math.ceil(n / cols);
     const w = (availW - gap * (cols - 1)) / cols;
@@ -1551,7 +1699,7 @@ function fitBoard() {
     const size = Math.min(w, h / ratio);
     if (size > best.size) best = { cols, size };
   }
-  const size = Math.max(28, Math.min(best.size, 116));
+  const size = Math.max(44, Math.min(best.size, 116));
   board.dataset.cols = best.cols;
   board.classList.add('fitted');
   board.style.gridTemplateColumns = `repeat(${best.cols}, ${size}px)`;
@@ -1610,6 +1758,8 @@ function renderTimer() {
 }
 function timeUp() {
   if (game.over) return;
+  clearMatchTimers();
+  stopTimer();
   game.over = true; game.lock = true;
   music.stop(); sound.play('timeup');
   showScreen('timeup');
@@ -1617,8 +1767,9 @@ function timeUp() {
 
 // ---------- Pausa (solo) ----------
 function pauseGame() {
-  if (game.over || game.paused || currentScreen() !== 'game') return;
+  if (game.online || game.players.length !== 1 || game.over || game.paused || currentScreen() !== 'game') return;
   game.paused = true;
+  game.pauseStarted = Date.now();
   stopTimer();
   music.stop();
   $('#board').classList.add('paused');
@@ -1626,10 +1777,11 @@ function pauseGame() {
 }
 function resumeGame() {
   if (!game.paused) return;
+  game.pausedMs += Math.max(0, Date.now() - game.pauseStarted);
   game.paused = false;
   $('#board').classList.remove('paused');
   $('#pause-modal').hidden = true;
-  if (!game.online && timeLeft > 0 && !game.over && !timerInt) timerInt = setInterval(timerTick, 1000);
+  if (!game.online && !game.relaxed && timeLeft > 0 && !game.over && !timerInt) timerInt = setInterval(timerTick, 1000);
   if (storage.sound) music.play(config.level);
 }
 function clearPause() {
@@ -1642,9 +1794,9 @@ document.addEventListener('visibilitychange', () => {
   const cur = currentScreen();
   if (document.hidden) {
     music.stop();
-    if (cur === 'game') stopTimer();
+    if (cur === 'game' && !game.online) pauseGame();
   } else if (sound.resume(), cur === 'game' && !game.over && !game.paused) {
-    if (!game.online && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
+    if (!game.online && !game.relaxed && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
     music.play(config.level);
   } else if (MENU_SCREENS.has(cur)) {
     music.playMenu();
@@ -1654,12 +1806,15 @@ document.addEventListener('visibilitychange', () => {
 // ---------- Virar cartas ----------
 
 function flipCard(idx, el, remote = false) {
-  if (game.lock || game.over || game.paused || game.deck[idx].matched || game.flipped.includes(idx)) return;
+  if (!Number.isInteger(idx) || !game.deck[idx] || !el || game.lock || game.over || game.paused || game.deck[idx].matched || game.flipped.includes(idx)) return;
   if (game.online && !remote && game.current !== game.myIndex) return;
+  if (game.online && remote && game.current === game.myIndex) return;
   if (game.online && !remote) netSend({ type: 'flip', idx });
 
   sound.play('flip');
   el.classList.add('flipped');
+  el.setAttribute('aria-pressed', 'true');
+  el.setAttribute('aria-label', t('revealedCard', { n: idx + 1, face: game.deck[idx].face }));
   game.flipped.push(idx);
   if (game.flipped.length < 2) return;
 
@@ -1677,24 +1832,34 @@ function flipCard(idx, el, remote = false) {
     game.players[game.current].pairs++;
     if (game.matchedPairs === game.totalPairs) { game.finishing = true; stopTimer(); }
     if (navigator.vibrate) navigator.vibrate(60);
-    setTimeout(() => {
+    afterMatchDelay(() => {
       sound.play('match');
       cards[a].classList.add('matched');
       cards[b].classList.add('matched');
+      [a, b].forEach((i) => {
+        cards[i].setAttribute('aria-label', t('matchedCard', { n: i + 1 }));
+        cards[i].setAttribute('aria-disabled', 'true');
+      });
+      $('#game-status').textContent = t('pairFound', { n: game.matchedPairs, total: game.totalPairs });
       game.flipped = [];
       game.lock = false;
       renderScoreboard();
-      if (game.matchedPairs === game.totalPairs) setTimeout(endGame, 700);
+      if (game.matchedPairs === game.totalPairs) afterMatchDelay(endGame, 700);
       else drainRemoteQueue();
     }, 450);
   } else {
-    setTimeout(() => {
+    afterMatchDelay(() => {
       sound.play('miss');
       cards[a].classList.add('shake');
       cards[b].classList.add('shake');
-      setTimeout(() => {
+      afterMatchDelay(() => {
         cards[a].classList.remove('flipped', 'shake');
         cards[b].classList.remove('flipped', 'shake');
+        [a, b].forEach((i) => {
+          cards[i].setAttribute('aria-label', t('hiddenCard', { n: i + 1 }));
+          cards[i].setAttribute('aria-pressed', 'false');
+        });
+        $('#game-status').textContent = t('tryPair');
         game.flipped = [];
         game.lock = false;
         game.current = (game.current + 1) % game.players.length;
@@ -1742,7 +1907,8 @@ function addXp(pairs, won) {
 // ---------- Fim de jogo e recompensas ----------
 
 function endGame() {
-  if (game.over) return;
+  if (game.over || game.matchedPairs !== game.totalPairs || !game.totalPairs) return;
+  clearMatchTimers();
   game.over = true;
   stopTimer();
   music.stop();
@@ -1762,15 +1928,24 @@ function endGame() {
   }
 
   const iWin = !(game.online && result) || result.tie || result.winnerIndex === game.myIndex;
-  const secondsUsed = !game.online ? Math.max(1, Math.round((Date.now() - game.startTime) / 1000)) : 0;
-  const timeBonus = (!game.online && timeLeft > 0) ? Math.floor(timeLeft / 5) : 0;
+  const secondsUsed = !game.online ? Math.max(1, Math.round((Date.now() - game.startTime - game.pausedMs) / 1000)) : 0;
+  const timeBonus = (!game.online && !game.relaxed && timeLeft > 0) ? Math.floor(timeLeft / 5) : 0;
+  const mastery = storage.mastery;
+  const masteryKey = `${config.theme}_${config.level}`;
+  const solo = !game.online && game.players.length === 1;
+  const firstClear = solo && !mastery[masteryKey] ? FIRST_CLEAR_COINS : 0;
+  if (solo) {
+    const ratio = game.moves / game.totalPairs;
+    mastery[masteryKey] = Math.max(mastery[masteryKey] || 0, ratio <= 1.7 ? 3 : ratio <= 2.6 ? 2 : 1);
+    storage.mastery = mastery;
+  }
   // No duelo, cada jogador ganha moedas pelos pares que ELE encontrou
   // (+ bônus do nível para quem vence) e isso soma à carteira geral dele.
   let coinsEarned;
   if (game.online && result) {
     coinsEarned = Math.max(2, game.players[game.myIndex].pairs * 2 + (iWin ? level.bonus : 0));
   } else {
-    coinsEarned = game.totalPairs * 2 + level.bonus + timeBonus;
+    coinsEarned = game.totalPairs * 2 + level.bonus + timeBonus + firstClear;
   }
   storage.coins += coinsEarned;
 
@@ -1778,8 +1953,10 @@ function endGame() {
   let speed = null;
   let xpGained = 0;
   if (!game.online && config.players === 1) {
-    const rec = updateSoloRecords(secondsUsed, game.totalPairs);
-    speed = { ppm: rec.ppm, beat: rec.beat };
+    if (!game.relaxed) {
+      const rec = updateSoloRecords(secondsUsed, game.totalPairs);
+      speed = { ppm: rec.ppm, beat: rec.beat };
+    }
     xpGained = game.totalPairs;
     addXp(xpGained, true);
   } else if (game.online) {
@@ -1803,7 +1980,7 @@ function endGame() {
   if (cloud.enabled && cloud.isSignedIn()) {
     const prof = rankingProfile();
     cloud.submitScore(getRecords(), prof);
-    cloud.saveState(localSnapshot());
+    saveProgressSoon();
     if (xpGained > 0) {
       cloud.bumpBoard('weekly/' + cloud.weekId(), xpGained, prof);
       cloud.bumpBoard('world/' + config.theme, xpGained, prof);
@@ -1811,7 +1988,7 @@ function endGame() {
   }
 
   lastWin = {
-    coinsEarned, timeBonus, speed,
+    coinsEarned, timeBonus, speed, firstClear,
     stickerId: newSticker ? newSticker.id : null,
     stickerEmoji: newSticker ? (newSticker.emoji || null) : null,
     stickerImg: newSticker ? (newSticker.img || null) : null,
@@ -1828,13 +2005,15 @@ function endGame() {
   renderWinTexts();
   showScreen('win');
   sound.play(iWin ? 'win' : 'miss');
-  if (iWin) setTimeout(() => sound.play('coin'), 700);
+  const completedWin = lastWin;
+  const onWin = (action) => { if (lastWin === completedWin && currentScreen() === 'win') action(); };
+  if (iWin) setTimeout(() => onWin(() => sound.play('coin')), 700);
   launchConfetti(iWin ? 4500 : 1500);
 
   if (game.online) {
     // Mostra a recompensa sozinha e abre o popup "Continuar o duelo?"
-    if (iWin) setTimeout(openPack, 500);
-    setTimeout(() => { if (currentScreen() === 'win' && game.online) openRematchModal(); }, 1500);
+    if (iWin) setTimeout(() => onWin(openPack), 500);
+    setTimeout(() => onWin(() => { if (game.online) openRematchModal(); }), 1500);
   }
 }
 
@@ -1875,6 +2054,8 @@ function renderWinTexts() {
   const tb = $('#time-bonus');
   if (w.timeBonus > 0) { tb.textContent = t('timeBonus', { n: w.timeBonus }); tb.hidden = false; }
   else tb.hidden = true;
+  $('#reward-detail').hidden = !w.firstClear;
+  $('#reward-detail').textContent = w.firstClear ? t('firstClear', { n: w.firstClear }) : '';
 
   if (w.revealed) fillReveal();
 }
@@ -1916,7 +2097,9 @@ function openPack() {
   pack.classList.add('opening');
   sound.play(lastWin.stickerLegendary ? 'legendary' : 'reveal');
   launchConfetti(lastWin.stickerLegendary ? 4000 : 2500, lastWin.stickerLegendary);
+  const openingWin = lastWin;
   setTimeout(() => {
+    if (lastWin !== openingWin || currentScreen() !== 'win') return;
     pack.style.display = 'none';
     fillReveal();
     const reveal = $('#sticker-reveal');
@@ -2254,16 +2437,9 @@ function esc(s) {
   ));
 }
 
-// Nome mostrado no ranking: nome do perfil e, se vazio, o nome/e-mail da conta.
-function accountFirstName() {
-  const u = cloud.currentUser && cloud.currentUser();
-  if (!u) return '';
-  if (u.name) return u.name.trim().split(/\s+/)[0];
-  if (u.email) return u.email.split('@')[0];
-  return '';
-}
+// Identidade pública vem só do apelido do jogo, nunca de dados do login.
 function rankingName() {
-  return (storage.name || '').trim() || accountFirstName() || cstr('you');
+  return (storage.name || '').trim() || cstr('you');
 }
 function rankingProfile() {
   return { name: rankingName(), avatarId: storage.avatar, skin: storage.skin };
@@ -2318,7 +2494,7 @@ function renderHomeAccount() {
 }
 
 // ----- Identidade na tela de "Entrar no jogo" (join por QR/link) -----
-// Mostra quem está entrando e, se logado, preenche nome/avatar da conta.
+// Mostra o apelido escolhido para jogar, sem copiar dados da conta.
 // Se convidado, oferece login ali mesmo para preservar pontos/rank.
 function renderJoinIdentity() {
   const el = $('#join-account');
@@ -2326,11 +2502,6 @@ function renderJoinIdentity() {
   if (!cloud.enabled) { el.hidden = true; return; }
   el.hidden = false;
   if (cloud.isSignedIn()) {
-    // Adota o nome/avatar da conta para a partida (se ainda não houver nome).
-    if (!(storage.name || '').trim()) {
-      const fn = accountFirstName();
-      if (fn) storage.name = fn;
-    }
     const ni = $('#join-name-input'); if (ni) ni.value = storage.name;
     renderNameAvatars();
     el.innerHTML = `<div class="join-signed">${cstr('joiningAs', { n: esc(rankingName()) })}</div>`;
@@ -2379,7 +2550,7 @@ let gateOnPass = null;
 let gateA = 0, gateB = 0;
 function parentalGate(onPass) {
   const modal = $('#gate-modal');
-  if (!modal) { if (onPass) onPass(); return; }
+  if (!modal) return;
   gateOnPass = typeof onPass === 'function' ? onPass : null;
   gateA = 6 + Math.floor(Math.random() * 7); // 6..12
   gateB = 6 + Math.floor(Math.random() * 7);
@@ -2427,7 +2598,7 @@ function wirePwa() {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredInstall = e;
-    if (!localStorage.getItem('mm_install_dismissed') && !isStandalone()) showInstallBanner(false);
+    if (!localStore.getItem('mm_install_dismissed') && !isStandalone()) showInstallBanner(false);
   });
   window.addEventListener('appinstalled', () => { hideInstallBanner(); deferredInstall = null; });
   const btn = $('#install-btn');
@@ -2439,9 +2610,9 @@ function wirePwa() {
     deferredInstall = null; hideInstallBanner();
   });
   const x = $('#install-close');
-  if (x) x.addEventListener('click', () => { localStorage.setItem('mm_install_dismissed', '1'); hideInstallBanner(); });
+  if (x) x.addEventListener('click', () => { localStore.setItem('mm_install_dismissed', '1'); hideInstallBanner(); });
   // iOS não dispara beforeinstallprompt: mostra dica de "Adicionar à Tela de Início".
-  if (isIos() && !isStandalone() && !localStorage.getItem('mm_install_dismissed')) showInstallBanner(true);
+  if (isIos() && !isStandalone() && !localStore.getItem('mm_install_dismissed')) showInstallBanner(true);
   // Link externo (Instagram) passa pelo portão dos pais.
   const credit = $('#credit-link');
   if (credit) credit.addEventListener('click', (e) => {
@@ -2600,20 +2771,8 @@ async function loadRanking() {
   }).join('')}</ol>`;
 }
 
-// Ao entrar: adota o nome do Google (se não houver nome), funde progresso
-// local + nuvem (pega o melhor dos dois) e publica no ranking.
+// Coleções/recordes podem ser combinados. Carteira exige um snapshot coerente.
 async function afterSignIn() {
-  if (!(storage.name || '').trim()) {
-    const fn = accountFirstName();
-    if (fn) {
-      storage.name = fn;
-      // Atualiza os dois campos de nome (perfil e entrar) e ambos os avatares.
-      ['profile-name-input', 'join-name-input'].forEach((id) => {
-        const el = document.getElementById(id); if (el) el.value = storage.name;
-      });
-      renderNameAvatars();
-    }
-  }
   showToast(cstr('syncing'));
   try {
     const remote = await cloud.loadState();
@@ -2622,7 +2781,7 @@ async function afterSignIn() {
     await cloud.submitScore(getRecords(), rankingProfile());
     updateCoinChip();
     showToast(cstr('synced'));
-  } catch (e) { /* ignora — segue com o que tem local */ }
+  } catch (e) { showToast(t('syncPending')); }
   renderHomeAccount();
   if (currentScreen() === 'records') renderRecords();
 }
@@ -2633,32 +2792,48 @@ function localSnapshot() {
     name: rankingName(), avatarId: storage.avatar, skin: storage.skin,
     coins: storage.coins, xp: r.xp, wins: r.wins, ppm: r.ppm,
     fast: r.fast, stickers: storage.stickers, unlocked: storage.unlocked,
+    walletUpdatedAt: storage.walletUpdatedAt, mastery: storage.mastery,
   };
 }
 
 function mergeCloudIntoLocal(remote) {
+  if (!remote || typeof remote !== 'object' || Array.isArray(remote)) return;
+  migrateLegacyWallet();
   const r = getRecords();
   // Recordes: pega o melhor dos dois lados
-  r.xp = Math.max(r.xp || 0, remote.xp || 0);
-  r.wins = Math.max(r.wins || 0, remote.wins || 0);
-  r.ppm = Math.max(r.ppm || 0, remote.ppm || 0);
-  const fast = { ...(remote.fast || {}), ...(r.fast || {}) };
-  for (const lv in (remote.fast || {})) {
-    if (r.fast[lv] == null || remote.fast[lv] < r.fast[lv]) fast[lv] = remote.fast[lv];
+  r.xp = Math.max(r.xp, safeNumber(remote.xp));
+  r.wins = Math.max(r.wins, safeNumber(remote.wins));
+  r.ppm = Math.max(r.ppm, safeNumber(remote.ppm, 2000));
+  const fast = { ...r.fast };
+  for (const lv of Object.keys(LEVELS)) {
+    const n = safeNumber(remote.fast?.[lv], 86400);
+    if (n > 0 && (!fast[lv] || n < fast[lv])) fast[lv] = n;
   }
   r.fast = fast;
   storage.records = r;
-  // Moedas: mantém o maior saldo
-  if ((remote.coins || 0) > storage.coins) storage.coins = remote.coins;
-  // Coleções: união
-  if (Array.isArray(remote.stickers)) storage.stickers = Array.from(new Set([...storage.stickers, ...remote.stickers]));
-  if (Array.isArray(remote.unlocked)) storage.unlocked = Array.from(new Set([...storage.unlocked, ...remote.unlocked]));
+  // Nunca misturar saldo de antes da compra com desbloqueios de depois dela.
+  // LWW serve ao progresso recreativo; não resolve edições offline concorrentes.
+  const remoteTime = safeNumber(remote.walletUpdatedAt || remote.updatedAt, 1e15);
+  if (remoteTime > storage.walletUpdatedAt || storage.walletUpdatedAt === 0) {
+    storage.coins = remote.coins;
+    storage.unlocked = remote.unlocked;
+    storage.mastery = remote.mastery;
+    localStore.setItem('mm_wallet_updated', remoteTime);
+  }
+  storage.stickers = [...storage.stickers, ...validList(remote.stickers, STICKER_IDS)];
+}
+
+function saveProgressSoon() {
+  if (cloud.enabled && cloud.isSignedIn()) {
+    cloud.saveState(localSnapshot()).catch(() => showToast(t('syncPending')));
+  }
 }
 
 // ---------- Confete ----------
 
 let confettiAnim = null;
 function launchConfetti(durationMs = 4000, golden = false) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const canvas = $('#confetti');
   const ctx = canvas.getContext('2d');
   canvas.width = window.innerWidth;
@@ -2700,6 +2875,7 @@ function updateCoinChip() { $('#coin-count').textContent = storage.coins; }
 function updateSoundButton() { const si = $('#sound-ico'); if (si) si.src = storage.sound ? 'img/ui/sound-on.webp' : 'img/ui/sound-off.webp'; }
 
 function leaveGame() {
+  clearMatchTimers();
   stopTimer();
   music.stop();
   game.over = true;
@@ -2720,13 +2896,6 @@ function renderMusicMenu() {
 
 $('#btn-go-setup').addEventListener('click', () => {
   sound.play('click');
-  // No primeiro "Jogar", convida para o login (podendo seguir como convidado).
-  if (cloud.enabled && !cloud.isSignedIn() && !localStorage.getItem('mm_login_prompted')) {
-    // Marca só ao concluir (entrar/convidado/fechar), não antes de exibir —
-    // assim um reload com o modal aberto não suprime o convite para sempre.
-    openLoginModal(() => { localStorage.setItem('mm_login_prompted', '1'); showScreen('profile'); });
-    return;
-  }
   showScreen('profile');
 });
 // Toque na coruja (ou no balão) -> ela fala no idioma atual.
@@ -2850,8 +3019,70 @@ function startCloudInitSoon() {
   else setTimeout(run, 1500);
 }
 
+// Diálogos: foco contido, fundo inerte e retorno ao controle que abriu a janela.
+function wireDialogAccessibility() {
+  const dialogs = [...document.querySelectorAll('.modal, #album-book')];
+  const stack = [];
+  const returnFocus = new Map();
+  const focusable = (dialog) => [...dialog.querySelectorAll('button, input, a[href], [tabindex="0"]')]
+    .filter((el) => !el.disabled && el.getClientRects().length && !el.closest('[hidden]'));
+  const sync = () => {
+    const previous = stack[stack.length - 1];
+    for (const dialog of dialogs) {
+      if (!dialog.hidden && !stack.includes(dialog)) {
+        returnFocus.set(dialog, document.activeElement);
+        stack.push(dialog);
+      }
+    }
+    for (let i = stack.length - 1; i >= 0; i--) if (stack[i].hidden) stack.splice(i, 1);
+    const active = stack[stack.length - 1];
+    document.querySelectorAll('body > main, body > header, body > .modal, #album-book').forEach((el) => {
+      el.inert = !!active && el !== active && !el.contains(active);
+    });
+    if (active && active !== previous) (focusable(active)[0] || active).focus();
+    else if (!active && previous) {
+      const target = returnFocus.get(previous);
+      if (target?.isConnected && target.getClientRects().length) target.focus();
+    }
+  };
+  for (const dialog of dialogs) {
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('tabindex', '-1');
+    const title = dialog.querySelector('h2, h3');
+    if (title) {
+      if (!title.id) title.id = `${dialog.id}-heading`;
+      dialog.setAttribute('aria-labelledby', title.id);
+    } else dialog.setAttribute('aria-label', t('album'));
+    new MutationObserver(sync).observe(dialog, { attributes: true, attributeFilter: ['hidden'] });
+  }
+  const dismiss = {
+    'unlock-modal': closeUnlockModal, 'pause-modal': resumeGame, 'login-modal': closeLoginModal,
+    'account-modal': closeAccountModal, 'gate-modal': closeGate, 'sticker-modal': closeSticker,
+    'album-book': closeAlbumBook,
+  };
+  document.addEventListener('keydown', (event) => {
+    const active = stack[stack.length - 1];
+    if (!active) return;
+    if (event.key === 'Escape') {
+      event.preventDefault(); event.stopImmediatePropagation();
+      dismiss[active.id]?.();
+    }
+    if (event.key !== 'Tab') return;
+    const options = focusable(active);
+    const first = options[0] || active, last = options[options.length - 1] || active;
+    if (event.shiftKey && (document.activeElement === first || !active.contains(document.activeElement))) {
+      event.preventDefault(); last.focus();
+    } else if (!event.shiftKey && (document.activeElement === last || !active.contains(document.activeElement))) {
+      event.preventDefault(); first.focus();
+    }
+  }, true);
+  sync();
+}
+
 // ---------- Início ----------
 
+migrateLegacyWallet();
 applyTheme();
 applyI18n();
 updateMenuImages();
@@ -2867,6 +3098,7 @@ updateSoundButton();
 wireGate();
 wirePwa();
 wireAlbumBook();
+wireDialogAccessibility();
 
 // Nuvem (opcional): login + ranking. Inerte se FIREBASE_CONFIG estiver vazio.
 wireCloudUI();

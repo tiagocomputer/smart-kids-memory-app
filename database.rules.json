@@ -1,54 +1,162 @@
 {
   "rules": {
+    ".read": false,
+    ".write": false,
     "leaderboard": {
-      ".read": true,
-      ".indexOn": ["xp"],
+      ".read": "query.orderByChild === 'xp' && query.limitToLast > 0 && query.limitToLast <= 50",
+      ".indexOn": [
+        "xp"
+      ],
       "$uid": {
-        ".write": "auth != null && auth.uid === $uid",
-        "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-        "wins": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000" },
-        "ppm":  { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000" },
-        "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-        "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
-        "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
-        "updatedAt": { ".validate": "newData.isNumber()" },
-        "$other": { ".validate": false }
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+        ".validate": "newData.hasChildren(['name', 'xp', 'wins', 'ppm', 'updatedAt'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+        },
+        "avatarId": {
+          ".validate": "newData.isString() && newData.val().matches(/^([abc]([1-9]|1[0-2])|e[1-5]|k([1-9]|1[0-5]))$/)"
+        },
+        "skin": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5 && newData.val() % 1 === 0"
+        },
+        "xp": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+        },
+        "wins": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+        },
+        "ppm": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000"
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "weekly": {
       "$week": {
-        ".read": true,
-        ".indexOn": ["xp"],
+        ".read": "$week.matches(/^[0-9]{8}$/) && query.orderByChild === 'xp' && query.limitToLast > 0 && query.limitToLast <= 50",
+        ".validate": "$week.matches(/^[0-9]{8}$/)",
+        ".indexOn": [
+          "xp"
+        ],
         "$uid": {
-          ".write": "auth != null && auth.uid === $uid",
-          "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
-          "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-          "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
-          "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
-          "updatedAt": { ".validate": "newData.isNumber()" },
-          "$other": { ".validate": false }
+          ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+          ".validate": "newData.hasChildren(['name', 'xp', 'updatedAt'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+          },
+          "avatarId": {
+            ".validate": "newData.isString() && newData.val().matches(/^([abc]([1-9]|1[0-2])|e[1-5]|k([1-9]|1[0-5]))$/)"
+          },
+          "skin": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5 && newData.val() % 1 === 0"
+          },
+          "xp": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() === now"
+          },
+          "$other": {
+            ".validate": false
+          }
         }
       }
     },
     "world": {
       "$world": {
-        ".read": true,
-        ".indexOn": ["xp"],
+        ".read": "$world.matches(/^(animais|frutas|espaco|oceano|comida|brinquedos|dinos|emocoes|flores|monstrinhos|herois|mario|encanadores|robos|fantasia|aventureiros|duendes|gelo|elementos|circo|natal)$/) && query.orderByChild === 'xp' && query.limitToLast > 0 && query.limitToLast <= 50",
+        ".validate": "$world.matches(/^(animais|frutas|espaco|oceano|comida|brinquedos|dinos|emocoes|flores|monstrinhos|herois|mario|encanadores|robos|fantasia|aventureiros|duendes|gelo|elementos|circo|natal)$/)",
+        ".indexOn": [
+          "xp"
+        ],
         "$uid": {
-          ".write": "auth != null && auth.uid === $uid",
-          "xp":   { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000" },
-          "name": { ".validate": "newData.isString() && newData.val().length <= 24" },
-          "avatarId": { ".validate": "newData.isString() && newData.val().length <= 12" },
-          "skin": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 10" },
-          "updatedAt": { ".validate": "newData.isNumber()" },
-          "$other": { ".validate": false }
+          ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+          ".validate": "newData.hasChildren(['name', 'xp', 'updatedAt'])",
+          "name": {
+            ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+          },
+          "avatarId": {
+            ".validate": "newData.isString() && newData.val().matches(/^([abc]([1-9]|1[0-2])|e[1-5]|k([1-9]|1[0-5]))$/)"
+          },
+          "skin": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5 && newData.val() % 1 === 0"
+          },
+          "xp": {
+            ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+          },
+          "updatedAt": {
+            ".validate": "newData.isNumber() && newData.val() === now"
+          },
+          "$other": {
+            ".validate": false
+          }
         }
       }
     },
     "users": {
       "$uid": {
-        ".read":  "auth != null && auth.uid === $uid",
-        ".write": "auth != null && auth.uid === $uid"
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid && auth.token.firebase.sign_in_provider !== 'anonymous'",
+        ".validate": "newData.hasChildren(['name', 'coins', 'xp', 'wins', 'ppm', 'updatedAt'])",
+        "name": {
+          ".validate": "newData.isString() && newData.val().length > 0 && newData.val().length <= 24"
+        },
+        "avatarId": {
+          ".validate": "newData.isString() && newData.val().matches(/^([abc]([1-9]|1[0-2])|e[1-5]|k([1-9]|1[0-5]))$/)"
+        },
+        "skin": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5 && newData.val() % 1 === 0"
+        },
+        "coins": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+        },
+        "xp": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+        },
+        "wins": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100000000 && newData.val() % 1 === 0"
+        },
+        "ppm": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 2000"
+        },
+        "walletUpdatedAt": {
+          ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 1000000000000000 && newData.val() % 1 === 0"
+        },
+        "fast": {
+          ".validate": "newData.hasChildren()",
+          "$level": {
+            ".validate": "$level.matches(/^(facil|medio|dificil)$/) && newData.isNumber() && newData.val() > 0 && newData.val() <= 86400"
+          }
+        },
+        "mastery": {
+          ".validate": "newData.hasChildren()",
+          "$stage": {
+            ".validate": "$stage.matches(/^(animais|frutas|espaco|oceano|comida|brinquedos|dinos|emocoes|flores|monstrinhos|herois|mario|encanadores|robos|fantasia|aventureiros|duendes|gelo|elementos|circo|natal)_(facil|medio|dificil)$/) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 3 && newData.val() % 1 === 0"
+          }
+        },
+        "stickers": {
+          ".validate": "newData.hasChildren()",
+          "$index": {
+            ".validate": "$index.matches(/^(0|[1-9][0-9]?|[1-4][0-9]{2}|50[0-9]|51[01])$/) && newData.isString() && newData.val().matches(/^[a-zA-Z0-9_-]{1,32}$/)"
+          }
+        },
+        "unlocked": {
+          ".validate": "newData.hasChildren()",
+          "$index": {
+            ".validate": "$index.matches(/^(0|[1-9]|[1-5][0-9]|6[0-3])$/) && newData.isString() && newData.val().matches(/^(animais|frutas|espaco|oceano|comida|brinquedos|dinos|emocoes|flores|monstrinhos|herois|mario|encanadores|robos|fantasia|aventureiros|duendes|gelo|elementos|circo|natal)$/)"
+          }
+        },
+        "updatedAt": {
+          ".validate": "newData.isNumber() && newData.val() === now"
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     }
   }

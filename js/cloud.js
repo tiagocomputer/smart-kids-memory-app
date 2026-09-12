@@ -31,6 +31,53 @@ const cloud = (() => {
   let fb = null; // { auth, db, authApi, dbApi }
   let initPromise = null;
 
+  // Validação defensiva do cliente. Não autentica partidas nem compras:
+  // saldo pago e pontuação competitiva precisam de um servidor autoritativo.
+  const MAX_COUNTER = 100000000;
+  const ID = /^[a-zA-Z0-9_-]{1,32}$/;
+  const AVATAR_ID = /^([abc]([1-9]|1[0-2])|e[1-5]|k([1-9]|1[0-5]))$/;
+  const WORLDS = new Set(['animais', 'frutas', 'espaco', 'oceano', 'comida', 'brinquedos', 'dinos', 'emocoes', 'flores', 'monstrinhos', 'herois', 'mario', 'encanadores', 'robos', 'fantasia', 'aventureiros', 'duendes', 'gelo', 'elementos', 'circo', 'natal']);
+  const BOARD = /^(leaderboard|weekly\/[0-9]{8}|world\/[a-zA-Z0-9_-]{1,32})$/;
+  const record = (value) => value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+  function number(value, max = MAX_COUNTER, integer = true) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return 0;
+    const bounded = Math.max(0, Math.min(max, value));
+    return integer ? Math.floor(bounded) : bounded;
+  }
+  function publicProfile(value) {
+    const p = record(value);
+    return {
+      name: (typeof p.name === 'string' ? p.name.replace(/[\u0000-\u001f\u007f<>]/g, '').trim().slice(0, 24) : '') || 'Jogador',
+      avatarId: typeof p.avatarId === 'string' && AVATAR_ID.test(p.avatarId) ? p.avatarId : null,
+      skin: number(p.skin, 5),
+    };
+  }
+  function ids(value, limit) {
+    return Array.isArray(value) ? [...new Set(value.slice(0, limit).filter((v) => typeof v === 'string' && ID.test(v)))] : [];
+  }
+  function cleanSnapshot(value) {
+    const s = record(value);
+    const fast = {};
+    const mastery = {};
+    for (const level of ['facil', 'medio', 'dificil']) {
+      const best = record(s.fast)[level];
+      if (typeof best === 'number' && Number.isFinite(best) && best > 0 && best <= 86400) fast[level] = best;
+      for (const world of WORLDS) {
+        const key = `${world}_${level}`;
+        const stars = record(s.mastery)[key];
+        if (Number.isInteger(stars) && stars >= 1 && stars <= 3) mastery[key] = stars;
+      }
+    }
+    return {
+      ...publicProfile(s), coins: number(s.coins), xp: number(s.xp), wins: number(s.wins),
+      ppm: number(s.ppm, 2000, false), fast, mastery,
+      // Saves anteriores à carteira versionada usam o timestamp do servidor.
+      // Zero explícito continua zero; ele não deve virar uma carteira recente.
+      walletUpdatedAt: number(s.walletUpdatedAt == null ? s.updatedAt : s.walletUpdatedAt, 1000000000000000),
+      stickers: ids(s.stickers, 512), unlocked: ids(s.unlocked, 64).filter((id) => WORLDS.has(id)),
+    };
+  }
+
   // ---------- Identidade ----------
   // uid de convidado persistente: mesmo antes de logar, o dispositivo tem uma
   // identidade estável (não é recriada a cada QR/link).
@@ -125,18 +172,17 @@ const cloud = (() => {
   // ---------- Save/Load do progresso (identidade portável entre aparelhos) ----------
   async function loadState() {
     if (!fb || !isSignedIn()) return null;
-    try {
-      const snap = await fb.dbApi.get(fb.dbApi.ref(fb.db, `users/${uid()}`));
-      return snap.exists() ? snap.val() : null;
-    } catch (e) { console.warn('[cloud] loadState', e); return null; }
+    const owner = uid();
+    const snap = await fb.dbApi.get(fb.dbApi.ref(fb.db, `users/${owner}`));
+    if (!isSignedIn() || uid() !== owner) throw new Error('cloud-account-changed');
+    // Falha de rede não equivale a conta vazia: o chamador deve preservar o save.
+    return snap.exists() ? cleanSnapshot(snap.val()) : null;
   }
   async function saveState(snapshot) {
     if (!fb || !isSignedIn()) return;
-    try {
-      await fb.dbApi.update(fb.dbApi.ref(fb.db, `users/${uid()}`), {
-        ...snapshot, updatedAt: fb.dbApi.serverTimestamp(),
-      });
-    } catch (e) { console.warn('[cloud] saveState', e); }
+    await fb.dbApi.set(fb.dbApi.ref(fb.db, `users/${uid()}`), {
+      ...cleanSnapshot(snapshot), updatedAt: fb.dbApi.serverTimestamp(),
+    });
   }
 
   // ---------- Ranking mundial ----------
@@ -144,12 +190,10 @@ const cloud = (() => {
     if (!fb || !isSignedIn()) return; // só publica quem tem conta
     try {
       await fb.dbApi.set(fb.dbApi.ref(fb.db, `leaderboard/${uid()}`), {
-        name: (profile && profile.name) || 'Jogador',
-        avatarId: (profile && profile.avatarId) || null,
-        skin: (profile && profile.skin) != null ? profile.skin : null,
-        xp: rec.xp || 0,
-        wins: rec.wins || 0,
-        ppm: rec.ppm || 0,
+        ...publicProfile(profile),
+        xp: number(record(rec).xp),
+        wins: number(record(rec).wins),
+        ppm: number(record(rec).ppm, 2000, false),
         updatedAt: fb.dbApi.serverTimestamp(),
       });
     } catch (e) { console.warn('[cloud] submitScore', e); }
@@ -168,13 +212,12 @@ const cloud = (() => {
 
   // Soma XP (delta) num placar incremental — usado por semana e por mundo.
   async function bumpBoard(path, delta, profile) {
-    if (!fb || !isSignedIn() || !(delta > 0)) return;
+    if (!fb || !isSignedIn() || typeof path !== 'string' || !BOARD.test(path) || path === 'leaderboard') return;
+    if (!Number.isSafeInteger(delta) || delta <= 0 || delta > 10000) return;
     try {
       const { ref, update, increment, serverTimestamp } = fb.dbApi;
       await update(ref(fb.db, `${path}/${uid()}`), {
-        name: (profile && profile.name) || 'Jogador',
-        avatarId: (profile && profile.avatarId) || null,
-        skin: (profile && profile.skin) != null ? profile.skin : null,
+        ...publicProfile(profile),
         xp: increment(delta),
         updatedAt: serverTimestamp(),
       });
@@ -183,13 +226,17 @@ const cloud = (() => {
 
   // Top N de um placar qualquer (leaderboard, weekly/<id>, world/<id>).
   async function topBoard(path, n = 20) {
-    if (!fb) return [];
+    if (!fb || typeof path !== 'string' || !BOARD.test(path)) return [];
+    n = Number.isSafeInteger(n) ? Math.max(1, Math.min(50, n)) : 20;
     try {
       const { ref, query, orderByChild, limitToLast, get } = fb.dbApi;
       const q = query(ref(fb.db, path), orderByChild('xp'), limitToLast(n));
       const snap = await get(q);
       const rows = [];
-      snap.forEach((child) => { rows.push({ uid: child.key, ...child.val() }); });
+      snap.forEach((child) => {
+        const value = record(child.val());
+        rows.push({ ...publicProfile(value), xp: number(value.xp), uid: child.key });
+      });
       // RTDB devolve em ordem crescente de xp; invertemos para o maior primeiro.
       return rows.reverse();
     } catch (e) { console.warn('[cloud] topBoard', path, e); return []; }

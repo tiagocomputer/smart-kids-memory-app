@@ -1,10 +1,13 @@
 # Ativar login + ranking mundial (Firebase)
 
-O jogo funciona 100% offline sem nenhuma configuração. Estes passos são
+O modo solo pode funcionar offline após carregar os recursos. Estes passos são
 **opcionais** e ativam: login com Google/e-mail, salvar o progresso em qualquer
 aparelho e o **ranking mundial** com todos os jogadores.
 
 > Enquanto `FIREBASE_CONFIG` (em `js/cloud.js`) estiver vazio, nada muda no jogo.
+
+> A cópia atual do repositório já tem uma configuração preenchida. Alterar
+> `database.rules.json` localmente não publica as regras no projeto Firebase.
 
 ## 1. Criar o projeto
 
@@ -38,7 +41,8 @@ Em **Authentication → Sign-in method**, ative:
 - **E-mail/senha**.
 
 Em **Authentication → Settings → Authorized domains**, adicione o domínio do seu
-site (ex.: `memoria-magica.vercel.app`). O `localhost` já vem liberado para testes.
+site (ex.: `memoria-magica.vercel.app`). Confira e adicione `localhost` para testes
+se necessário; não presuma que esteja autorizado no projeto.
 
 ## 4. Criar o banco (Realtime Database) e aplicar as regras
 
@@ -52,17 +56,26 @@ gratuito **Spark sem precisar cadastrar cartão de crédito**.
    `FIREBASE_CONFIG.databaseURL` no topo de **`js/cloud.js`**.
 4. Vá na aba **Regras**, apague tudo e cole o conteúdo de
    **`database.rules.json`** (neste repositório). Elas deixam o ranking ser lido
-   por todos, mas cada jogador só escreve no próprio registro — e validam os
-   pontos (anti-cheat básico). Clique em **Publicar**.
+   por consultas ordenadas por XP e limitadas a até 50 resultados. Cada jogador
+   autenticado escreve apenas no próprio registro; campos, tipos, limites e
+   timestamp do servidor são validados. Essas regras **não provam que uma
+   partida aconteceu**. Clique em **Publicar** após testar no emulador.
 
 ## 5. Pronto
 
 Faça o deploy normalmente. Na tela **Recordes** vão aparecer o cartão de conta
 ("Entrar com Google / e-mail") e o **Ranking Mundial**. Ao entrar, o progresso do
-convidado é fundido com a conta e passa a acompanhar o jogador em qualquer aparelho.
+local e remoto são sincronizados. Coleções são combinadas e recordes preservam
+o melhor resultado; a carteira mantém saldo, mundos e primeiras conclusões
+da mesma cópia, escolhida por `walletUpdatedAt`. Saves locais legados sem data
+recebem prioridade na primeira migração. A regra não resolve alterações
+offline concorrentes entre aparelhos. Consulte [a revisão de segurança](docs/SEGURANCA.md).
 
 ### Observações (jogo infantil — COPPA/LGPD)
 
 - O login é **opcional**: a criança joga como convidado sem cadastro.
-- Como envolve menores, o ideal é o cadastro ser feito/autorizado pelos pais.
-  Deixe isso claro na sua política de privacidade antes de divulgar o ranking.
+- Cadastro e links externos passam por portão dos responsáveis. Esse controle
+  de interface não substitui consentimento verificável quando exigido.
+- O ranking usa o apelido escolhido no jogo. Nome/e-mail de autenticação não
+  são copiados automaticamente, mas apelidos ainda precisam de moderação
+  antes de um lançamento amplo. Veja [estratégia e fontes oficiais](docs/ESTRATEGIA_PRODUTO.md).

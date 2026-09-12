@@ -37,6 +37,14 @@ No duelo: `max(2, paresDoJogador * 2 + bônusDoNívelSeVencerOuEmpatar)`. Bônus
 
 **Diamantes ainda não são moeda.** “Diamante” é um patamar do ranking. Compras reais, anúncios e direitos premium não estão implementados. A estratégia para essas versões está em [ESTRATEGIA_PRODUTO.md](docs/ESTRATEGIA_PRODUTO.md).
 
+## Nova playlist
+
+Seis composições originais substituem as sequências antigas: **Jardim de Nuvens**, **Passeio na Floresta**, **Estrelas de Papel**, **Órbita de Cristal**, **Pequena Expedição** e **Maré de Algodão**. Cada arranjo tem 16 compassos (aproximadamente 36–51 segundos), com melodia, acordes, baixo e acompanhamento. Os timbres são sintetizados com ataques suaves e harmônicos, sem arquivos ou serviços de áudio externos.
+
+O botão de música permite escolher uma faixa ou a playlist automática, que percorre as seis. A escolha vale para o menu e para a partida. No modo Tranquilo, a trilha fica mais lenta e discreta. Volume de música independente (salvo no aparelho), opção **Sem música · manter efeitos** e encerramento das notas/eco ao pausar ou desligar.
+
+Para comparar antes de jogar, abra [as amostras locais](http://127.0.0.1:8000/tests/music-preview.html) com o servidor em execução e clique em **Gerar amostras**. A página renderiza trechos WAV de 12 segundos no navegador e oferece reprodução/download; não envia áudio para terceiros.
+
 ## Salvamento, nuvem e offline
 
 Progresso local usa o armazenamento do navegador. Se ele estiver bloqueado/cheio, a partida continua com memória temporária da sessão. A configuração Firebase deste repositório está preenchida; o login é opcional e protegido por portão dos responsáveis. Consultas de rede podem ocorrer antes de autenticar, conforme [Política de Privacidade](privacidade.html).
@@ -51,6 +59,7 @@ Node.js é necessário apenas para executar a suíte:
 
 ```powershell
 node tests/game.test.cjs
+node tests/music.test.cjs
 node tests/security.test.cjs
 ```
 

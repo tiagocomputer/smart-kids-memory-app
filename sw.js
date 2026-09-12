@@ -2,12 +2,12 @@
 // Código: rede primeiro, para receber correções. Mídia: cache primeiro.
 // Firebase, autenticação, APIs e outras origens nunca entram no cache do jogo.
 const CACHE_PREFIX = 'mm-cache-';
-const CACHE = CACHE_PREFIX + 'v3';
+const CACHE = CACHE_PREFIX + 'v4';
 const ROOT = new URL('./', self.location.href);
 const CORE = [
   './', './index.html', './privacidade.html', './manifest.json',
   './css/style.css', './js/art.js', './js/characters.js', './js/avatars.js',
-  './js/cloud.js', './js/app.js', './img/pwa/icon-192.png',
+  './js/cloud.js', './js/music.js', './js/app.js', './img/pwa/icon-192.png',
 ];
 const keyFor = (pathname) => new URL(pathname, ROOT).href;
 const APP_PAGE = keyFor('index.html');

@@ -68,8 +68,9 @@ const I18N = {
     stickersOwned: 'Figurinhas', gamesWon: 'Vitórias', noRecord: '—', ppmUnit: '{n}/min',
     rankBronze: 'Bronze', rankPrata: 'Prata', rankOuro: 'Ouro', rankDiamante: 'Diamante', rankMestre: 'Mestre',
     music: 'Música', chooseMusic: 'Escolha a música',
-    musAlegre: 'Alegre 🎉', musAventura: 'Aventura 🗺️', musCalma: 'Calminha 🌙',
-    musEspacial: 'Espacial 🚀', musHeroi: 'Herói 💥',
+    musAlegre: '☁️ Jardim de Nuvens', musAventura: '🌿 Passeio na Floresta', musCalma: '🌙 Estrelas de Papel',
+    musEspacial: '🪐 Órbita de Cristal', musHeroi: '🧭 Pequena Expedição',
+    musOceano: '🌊 Maré de Algodão', musAuto: '🎶 Playlist automática', musOff: 'Sem música · manter efeitos', musicVolume: 'Volume da música', musicPlaying: 'Tocando: {name}',
     p1: 'Leão', p2: 'Sapinho', p3: 'Polvo', p4: 'Unicórnio',
     home: 'Início', language: 'Idioma', theme: 'Tema', sound: 'Som',
     sticker: {
@@ -145,8 +146,9 @@ const I18N = {
     stickersOwned: 'Stickers', gamesWon: 'Wins', noRecord: '—', ppmUnit: '{n}/min',
     rankBronze: 'Bronze', rankPrata: 'Silver', rankOuro: 'Gold', rankDiamante: 'Diamond', rankMestre: 'Master',
     music: 'Music', chooseMusic: 'Choose the music',
-    musAlegre: 'Happy 🎉', musAventura: 'Adventure 🗺️', musCalma: 'Calm 🌙',
-    musEspacial: 'Space 🚀', musHeroi: 'Hero 💥',
+    musAlegre: '☁️ Cloud Garden', musAventura: '🌿 Forest Walk', musCalma: '🌙 Paper Stars',
+    musEspacial: '🪐 Crystal Orbit', musHeroi: '🧭 Little Expedition',
+    musOceano: '🌊 Cotton Tide', musAuto: '🎶 Automatic playlist', musOff: 'No music · keep effects', musicVolume: 'Music volume', musicPlaying: 'Playing: {name}',
     p1: 'Lion', p2: 'Froggy', p3: 'Octopus', p4: 'Unicorn',
     home: 'Home', language: 'Language', theme: 'Theme', sound: 'Sound',
     sticker: {
@@ -222,8 +224,9 @@ const I18N = {
     stickersOwned: 'Autocollants', gamesWon: 'Victoires', noRecord: '—', ppmUnit: '{n}/min',
     rankBronze: 'Bronze', rankPrata: 'Argent', rankOuro: 'Or', rankDiamante: 'Diamant', rankMestre: 'Maître',
     music: 'Musique', chooseMusic: 'Choisis la musique',
-    musAlegre: 'Joyeux 🎉', musAventura: 'Aventure 🗺️', musCalma: 'Calme 🌙',
-    musEspacial: 'Espace 🚀', musHeroi: 'Héros 💥',
+    musAlegre: '☁️ Jardin de Nuages', musAventura: '🌿 Balade en Forêt', musCalma: '🌙 Étoiles de Papier',
+    musEspacial: '🪐 Orbite de Cristal', musHeroi: '🧭 Petite Expédition',
+    musOceano: '🌊 Marée de Coton', musAuto: '🎶 Playlist automatique', musOff: 'Sans musique · garder les effets', musicVolume: 'Volume de la musique', musicPlaying: 'En cours : {name}',
     p1: 'Lion', p2: 'Grenouille', p3: 'Pieuvre', p4: 'Licorne',
     home: 'Accueil', language: 'Langue', theme: 'Thème', sound: 'Son',
     sticker: {
@@ -514,8 +517,10 @@ const storage = {
   set sound(on) { localStore.setItem('mm_sound', on ? 'on' : 'off'); },
   get theme() { return localStore.getItem('mm_theme') || 'dark'; },
   set theme(v) { localStore.setItem('mm_theme', v); },
-  get menuMusic() { const m = localStore.getItem('mm_music'); return MUSIC_IDS.has(m) ? m : 'home'; },
+  get menuMusic() { const m = localStore.getItem('mm_music'); return MUSIC_IDS.has(m) ? m : 'auto'; },
   set menuMusic(v) { if (MUSIC_IDS.has(v)) localStore.setItem('mm_music', v); },
+  get musicVolume() { const raw = localStore.getItem('mm_music_volume'); const n = Number(raw); return raw !== null && Number.isFinite(n) ? Math.max(0, Math.min(1, n)) : 0.5; },
+  set musicVolume(v) { if (Number.isFinite(v)) localStore.setItem('mm_music_volume', Math.max(0, Math.min(1, v))); },
   get name() { return (localStore.getItem('mm_name') || '').slice(0, 12); },
   set name(v) { localStore.setItem('mm_name', String(v).slice(0, 12)); },
   get avatar() { const a = localStore.getItem('mm_avatar'); return AVATAR_IDS.includes(a) ? a : DEFAULT_AVATAR; },
@@ -623,7 +628,7 @@ const sound = (() => {
       case 'win':   [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * 0.13, 0.18)); break;
     }
   }
-  return { play, tone, resume, unlock, state };
+  return { play, tone, resume, unlock, state, context: ensureCtx };
 })();
 
 // Destrava/religa o áudio no 1º gesto e em QUALQUER toque/tecla depois (cobre o
@@ -633,56 +638,29 @@ const sound = (() => {
 
 // ---------- Música de fundo ----------
 
-const music = (() => {
-  const C4=261.6, D4=293.7, E4=329.6, F4=349.2, G4=392, A4=440, B4=493.9,
-        C5=523.3, D5=587.3, E5=659.3, F5=698.5, G5=784, A5=880, _=0;
-  const SONGS = {
-    // Músicas de menu (escolhíveis pelo botão 🎵)
-    home:     { tempo: 200, type: 'triangle', vol: 0.05,
-                notes: [C5,_,G4,A4, B4,C5,D5,_, E5,D5,C5,B4, C5,_,G4,_] },
-    aventura: { tempo: 190, type: 'triangle', vol: 0.05,
-                notes: [E4,A4,B4,C5, D5,_,C5,B4, A4,B4,C5,A4, E5,_,_,_] },
-    calma:    { tempo: 320, type: 'sine', vol: 0.06,
-                notes: [C5,E5,G4,_, A4,C5,E5,_, F4,A4,C5,_, G4,B4,D5,_] },
-    espacial: { tempo: 240, type: 'sine', vol: 0.05,
-                notes: [A4,_,E5,_, D5,_,A4,_, F5,_,E5,_, C5,_,A4,_] },
-    heroi:    { tempo: 175, type: 'square', vol: 0.03,
-                notes: [G4,G4,G4,C5, _,C5,_,G4, A4,B4,C5,D5, E5,_,C5,_] },
-    // Músicas de partida (por nível)
-    facil:    { tempo: 300, type: 'triangle', vol: 0.045,
-                notes: [C4,E4,G4,E4, F4,A4,C5,A4, G4,B4,D5,B4, C5,_,G4,_] },
-    medio:    { tempo: 230, type: 'triangle', vol: 0.045,
-                notes: [E4,G4,A4,_, A4,C5,B4,_, G4,A4,B4,D5, C5,B4,A4,G4] },
-    dificil:  { tempo: 175, type: 'square', vol: 0.028,
-                notes: [A4,A4,C5,A4, E5,_,D5,C5, A4,A4,C5,E5, G5,_,E5,_] },
-  };
-  let gen = 0, timer = null, current = null;
-  function play(name) {
-    if (current === name && timer) return;
-    stop();
-    current = name;
-    if (!storage.sound || !SONGS[name]) return;
-    const song = SONGS[name];
-    const myGen = ++gen;
-    const step = song.tempo / 1000;
-    const loop = () => {
-      if (myGen !== gen || !storage.sound) return;
-      song.notes.forEach((f, i) => { if (f) sound.tone(f, i * step, step * 0.85, song.type, song.vol); });
-      timer = setTimeout(loop, song.notes.length * song.tempo);
-    };
-    loop();
-  }
-  function playMenu() { play(storage.menuMusic); }
-  function stop() { gen++; current = null; if (timer) { clearTimeout(timer); timer = null; } }
-  return { play, playMenu, stop };
-})();
-
 const MUSIC_CHOICES = [
+  { id: 'auto', key: 'musAuto' },
   { id: 'home', key: 'musAlegre' }, { id: 'aventura', key: 'musAventura' },
   { id: 'calma', key: 'musCalma' }, { id: 'espacial', key: 'musEspacial' },
-  { id: 'heroi', key: 'musHeroi' },
+  { id: 'heroi', key: 'musHeroi' }, { id: 'oceano', key: 'musOceano' },
+  { id: 'off', key: 'musOff' },
 ];
 const MUSIC_IDS = new Set(MUSIC_CHOICES.map((m) => m.id));
+let nowPlaying = null;
+const music = window.MM_MUSIC.create({
+  getContext: sound.context,
+  enabled: () => storage.sound && !document.hidden,
+  selection: () => storage.menuMusic,
+  volume: () => storage.musicVolume,
+  onTrack: (id) => { nowPlaying = id; updateNowPlaying(); },
+});
+function playGameMusic() { music.play(game.relaxed ? 'relaxed' : 'game'); }
+function updateNowPlaying() {
+  const el = $('#music-now-playing');
+  const choice = MUSIC_CHOICES.find(m => m.id === nowPlaying);
+  if (el) el.textContent = storage.menuMusic === 'off' ? t('musOff')
+    : !storage.sound ? t('soundOff') : choice ? t('musicPlaying', { name: t(choice.key) }) : t('chooseMusic');
+}
 
 // ---------- Voz da coruja: escolhe a melhor voz FEMININA e NATURAL do aparelho ----------
 const owlVoice = (() => {
@@ -1635,7 +1613,7 @@ function startGame(opts = {}) {
   if (game.online || game.relaxed) { timeLeft = 0; stopTimer(); }
   else startTimer(level.time + (config.players - 1) * EXTRA_TIME_PER_PLAYER);
 
-  music.play(config.level);
+  playGameMusic();
   requestAnimationFrame(() => requestAnimationFrame(fitBoard));
 }
 
@@ -1782,7 +1760,7 @@ function resumeGame() {
   $('#board').classList.remove('paused');
   $('#pause-modal').hidden = true;
   if (!game.online && !game.relaxed && timeLeft > 0 && !game.over && !timerInt) timerInt = setInterval(timerTick, 1000);
-  if (storage.sound) music.play(config.level);
+  if (storage.sound) playGameMusic();
 }
 function clearPause() {
   game.paused = false;
@@ -1797,7 +1775,7 @@ document.addEventListener('visibilitychange', () => {
     if (cur === 'game' && !game.online) pauseGame();
   } else if (sound.resume(), cur === 'game' && !game.over && !game.paused) {
     if (!game.online && !game.relaxed && timeLeft > 0 && !timerInt) timerInt = setInterval(timerTick, 1000);
-    music.play(config.level);
+    playGameMusic();
   } else if (MENU_SCREENS.has(cur)) {
     music.playMenu();
   }
@@ -2887,9 +2865,12 @@ function leaveGame() {
 
 function renderMusicMenu() {
   const menu = $('#music-menu');
-  menu.innerHTML = MUSIC_CHOICES.map((m) =>
-    `<button data-music="${m.id}" class="${m.id === storage.menuMusic ? 'active' : ''}">${t(m.key)}</button>`
-  ).join('');
+  menu.innerHTML = `<p class="music-heading">${t('chooseMusic')}</p>
+    <p id="music-now-playing" role="status" aria-live="polite"></p>` + MUSIC_CHOICES.map((m) =>
+    `<button data-music="${m.id}" aria-pressed="${m.id === storage.menuMusic}" class="${m.id === storage.menuMusic ? 'active' : ''}">${t(m.key)}</button>`
+  ).join('') + `<label class="music-volume" for="music-volume">${t('musicVolume')} <output id="music-volume-value">${Math.round(storage.musicVolume * 100)}%</output>
+    <input id="music-volume" type="range" min="0" max="100" step="5" value="${Math.round(storage.musicVolume * 100)}"></label>`;
+  updateNowPlaying();
 }
 
 // ---------- Navegação ----------
@@ -2976,7 +2957,7 @@ $('#btn-sound').addEventListener('click', () => {
     sound.play('reveal');
     const st = sound.state();
     showToast(st === 'running' ? `${t('soundOn')} 🔊` : `🔇 ${t('soundBlocked')} (${st})`);
-    if (cur === 'game' && !game.over) music.play(config.level);
+    if (cur === 'game' && !game.over && !game.paused) playGameMusic();
     else if (MENU_SCREENS.has(cur)) music.playMenu();
   } else {
     showToast(`${t('soundOff')} 🔇`);
@@ -2997,13 +2978,26 @@ langMenu.addEventListener('click', (e) => {
 });
 $('#btn-music').addEventListener('click', (e) => { e.stopPropagation(); langMenu.hidden = true; musicMenu.hidden = !musicMenu.hidden; });
 musicMenu.addEventListener('click', (e) => {
+  e.stopPropagation();
   const b = e.target.closest('button[data-music]');
   if (!b) return;
   storage.menuMusic = b.dataset.music;
   renderMusicMenu();
+  musicMenu.querySelector(`[data-music="${storage.menuMusic}"]`)?.focus();
   sound.play('click');
-  if (storage.sound && MENU_SCREENS.has(currentScreen())) { music.stop(); music.playMenu(); }
-  musicMenu.hidden = true;
+  const cur = currentScreen();
+  if (cur === 'game' && !game.over && !game.paused) playGameMusic();
+  else if (MENU_SCREENS.has(cur)) music.playMenu();
+  else music.stop();
+});
+musicMenu.addEventListener('input', (e) => {
+  if (e.target.id !== 'music-volume') return;
+  storage.musicVolume = Number(e.target.value) / 100;
+  $('#music-volume-value').textContent = `${Math.round(storage.musicVolume * 100)}%`;
+  music.setVolume();
+});
+musicMenu.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') { musicMenu.hidden = true; $('#btn-music').focus(); }
 });
 document.addEventListener('click', () => { langMenu.hidden = true; musicMenu.hidden = true; });
 

@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Amostras da nova playlist — Memória Mágica</title>
+<style>body{font:16px system-ui;background:#f4f0ff;color:#312050;max-width:760px;margin:32px auto;padding:20px}button,a{color:#5220a5}button{font:inherit;padding:12px 18px;border:1px solid #bca3e8;border-radius:12px;background:white;cursor:pointer}article{background:white;padding:18px;margin:16px 0;border-radius:16px}audio{width:100%}small{display:block;margin-top:8px}h1{font-size:1.7rem}</style>
+<h1>Uma nova trilha para cada descoberta</h1>
+<p>Seis composições originais. Gere amostras de 12 segundos para ouvir e comparar. O jogo toca os arranjos completos, de 36 a 51 segundos, com repetição ou playlist automática.</p>
+<button id="render">Gerar amostras</button><p id="status" role="status"></p><div id="samples"></div>
+<script src="../js/music.js?v=78"></script>
+<script>
+const labels={home:'☁️ Jardim de Nuvens',aventura:'🌿 Passeio na Floresta',calma:'🌙 Estrelas de Papel',espacial:'🪐 Órbita de Cristal',heroi:'🧭 Pequena Expedição',oceano:'🌊 Maré de Algodão'};
+function wav(buffer){
+  const data=buffer.getChannelData(0), bytes=new ArrayBuffer(44+data.length*2), view=new DataView(bytes);
+  const str=(at,s)=>[...s].forEach((c,i)=>view.setUint8(at+i,c.charCodeAt(0)));
+  str(0,'RIFF');view.setUint32(4,36+data.length*2,true);str(8,'WAVE');str(12,'fmt ');view.setUint32(16,16,true);
+  view.setUint16(20,1,true);view.setUint16(22,1,true);view.setUint32(24,buffer.sampleRate,true);view.setUint32(28,buffer.sampleRate*2,true);
+  view.setUint16(32,2,true);view.setUint16(34,16,true);str(36,'data');view.setUint32(40,data.length*2,true);
+  for(let i=0;i<data.length;i++)view.setInt16(44+i*2,Math.max(-1,Math.min(1,data[i]))*32767,true);
+  return new Blob([bytes],{type:'audio/wav'});
+}
+document.querySelector('#render').onclick=async()=>{
+  const button=document.querySelector('#render');button.disabled=true;
+  try{
+    for(const [id,label] of Object.entries(labels)){
+      document.querySelector('#status').textContent='Preparando '+label+'…';
+      const c=new OfflineAudioContext(1,Math.ceil(12.5*44100),44100);
+      let clock=0,token=0;const pending=new Map();
+      const adapter={get currentTime(){return clock},state:'running',destination:c.destination};
+      for(const method of ['createGain','createOscillator','createBiquadFilter','createDelay'])adapter[method]=c[method].bind(c);
+      const engine=MM_MUSIC.create({getContext:()=>adapter,enabled:()=>true,selection:()=>id,volume:()=>0.5,
+        schedule:(fn,ms)=>{pending.set(++token,{fn,at:clock+ms/1000});return token},cancel:key=>pending.delete(key)});
+      engine.playMenu();
+      while(true){const next=[...pending].filter(([,v])=>v.at<=12).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;
+        pending.delete(next[0]);clock=next[1].at;next[1].fn();}
+      clock=12;engine.stop();
+      // Do not disconnect offline nodes before the renderer processes their envelopes.
+      const buffer=await c.startRendering(),data=buffer.getChannelData(0);
+      let peak=0,energy=0,invalid=0;for(const v of data){if(!Number.isFinite(v))invalid++;peak=Math.max(peak,Math.abs(v));energy+=v*v;}
+      const url=URL.createObjectURL(wav(buffer)),article=document.createElement('article');
+      const title=document.createElement('h2');title.textContent=label;article.append(title);
+      const audio=document.createElement('audio');audio.controls=true;audio.src=url;article.append(audio);
+      const link=document.createElement('a');link.href=url;link.download='memoria-magica-'+id+'.wav';link.textContent='Baixar amostra WAV';article.append(link);
+      const report=document.createElement('small');report.textContent=`Pico: ${peak.toFixed(3)} · RMS: ${Math.sqrt(energy/data.length).toFixed(3)} · Valores inválidos: ${invalid}`;article.append(report);
+      document.querySelector('#samples').append(article);
+    }
+    document.querySelector('#status').textContent='6 amostras prontas. Use os players para ouvir.';
+  }catch(error){document.querySelector('#status').textContent='Falha ao gerar amostras: '+error.message;button.disabled=false;}
+};
+</script></html>

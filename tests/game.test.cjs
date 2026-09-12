@@ -54,6 +54,7 @@ function harness(initial = {}, blocked = false) {
     cloud: { enabled: false, isSignedIn: () => false },
   });
   const source = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8').split('// ---------- Início ----------')[0];
+  vm.runInContext(fs.readFileSync(path.join(__dirname, '../js/music.js'), 'utf8'), context);
   vm.runInContext(source, context);
   const run = code => vm.runInContext(code, context);
   const advance = ms => {

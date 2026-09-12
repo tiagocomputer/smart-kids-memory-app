@@ -162,7 +162,7 @@ function swHarness() {
       handlers.fetch({ request, respondWith: (value) => { pending = value; } });
       return pending;
     },
-    async cached(url, value) { const cache = await caches.open('mm-cache-v3'); await cache.put(new URL(url, origin).href, value); },
+    async cached(url, value) { const cache = await caches.open('mm-cache-v4'); await cache.put(new URL(url, origin).href, value); },
   };
 }
 function response(body, status = 200, cacheControl = '') {
@@ -195,7 +195,7 @@ test('service worker keeps privacy/app pages separate and does not store invitat
   h.fetcher(async (request) => response(request.url.includes('privacidade') ? 'privacy' : 'game'));
   await h.dispatch('/?join=private-room', { mode: 'navigate' });
   await h.dispatch('/privacidade.html?lang=pt', { mode: 'navigate' });
-  const cache = h.maps.get('mm-cache-v3');
+  const cache = h.maps.get('mm-cache-v4');
   assert.equal(cache.get('https://game.test/index.html').body, 'game');
   assert.equal(cache.get('https://game.test/privacidade.html').body, 'privacy');
   assert.equal([...cache.keys()].some((url) => url.includes('?')), false);
@@ -210,7 +210,7 @@ test('service worker preserves good copies during server errors and excludes pri
   assert.equal((await h.dispatch('/', { mode: 'navigate' })).body, 'good');
   h.fetcher(async () => response('sensitive', 200, 'private, no-store'));
   await h.dispatch('/', { mode: 'navigate' });
-  assert.equal(h.maps.get('mm-cache-v3').get('https://game.test/index.html').body, 'good');
+  assert.equal(h.maps.get('mm-cache-v4').get('https://game.test/index.html').body, 'good');
 });
 
 test('service worker precaches game code and removes only its own older caches', async () => {
@@ -220,7 +220,8 @@ test('service worker precaches game code and removes only its own older caches',
   assert.equal(h.skipped(), true);
   assert.deepEqual(h.deleted, ['mm-cache-v2']);
   assert.equal(h.maps.has('other-app-cache'), true);
-  assert.equal(h.maps.get('mm-cache-v3').has('https://game.test/js/app.js'), true);
+  assert.equal(h.maps.get('mm-cache-v4').has('https://game.test/js/app.js'), true);
+  assert.equal(h.maps.get('mm-cache-v4').has('https://game.test/js/music.js'), true);
 });
 
 // Optional integration suite. Explicit loopback guard makes production inaccessible.

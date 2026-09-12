@@ -4,12 +4,12 @@ Data da análise: 12/09/2026. Base: `js/app.js`, `js/cloud.js`, `database.rules.
 
 ## 1. Diagnóstico do jogo recebido
 
-O produto já tem uma base valiosa: partidas curtas, arte variada, álbum sem figurinhas repetidas, idiomas, jogo local e duelo por convite. O problema econômico principal é a distância entre uma partida e o próximo mundo: os preços crescem muito mais que as recompensas.
+O produto já tem uma base valiosa: partidas curtas, arte variada, álbum sem figurinhas repetidas, idiomas, jogo local e duelo por convite. A distância entre uma partida e o próximo mundo cresce bastante nos mundos finais. Após experimentar uma curva mais curta, o responsável pelo produto preferiu restaurar os preços originais para prolongar o desafio; os bônus de primeira conclusão e as metas de estrelas complementam essa progressão.
 
 | Sistema | Estado encontrado antes desta revisão | Consequência |
 |---|---|---|
 | Mundos | 21; Animais, Frutas e Espaço gratuitos; 18 desbloqueáveis com moedas | O README menciona 14/16 mundos e quatro gratuitos, informação desatualizada |
-| Total de desbloqueios | 53.540 moedas | A progressão exige repetição excessiva |
+| Total de desbloqueios | 53.540 moedas | Progressão longa; observar se há repetição sem novidade nos mundos finais |
 | Fácil | 8 pares; 100 s; `16 + 5 + floor(segundosRestantes / 5)` moedas | 21 moedas de base; terminar em 50 s rende 31 |
 | Médio | 10 pares; 130 s; `20 + 10 + floor(segundosRestantes / 5)` | 30 de base; terminar em 65 s rende 43 |
 | Difícil | 12 pares; 160 s; `24 + 20 + floor(segundosRestantes / 5)` | 44 de base; terminar em 80 s rende 60 |
@@ -32,34 +32,34 @@ Nesta revisão, a estratégia definida é tratar saldo e desbloqueios como uma �
 
 Antes de vender qualquer direito, separar a carteira recreativa do direito de compra: recibo validado no servidor, transação idempotente, registro de concessão/revogação e restauração. Não aceitar `premium: true`, moedas, XP ou horário enviados pelo navegador como prova de pagamento ou de resultado competitivo. Para ranking público confiável, pontuar partidas validadas no servidor; limitar tipos e tamanhos nas regras do Firebase não prova que uma partida aconteceu.
 
-## 2. Decisões de balanceamento desta revisão
+## 2. Balanceamento vigente após o feedback
 
-Manter os três mundos iniciais e reduzir a curva para **5.700 moedas**, preservando os mundos já abertos e os saldos existentes. O objetivo inicial é permitir uma novidade nas primeiras partidas e reduzir a repetição nos mundos finais.
+Manter os três mundos iniciais e **restaurar os preços originais, somando 53.540 moedas**. A redução para 5.700 foi considerada fácil demais pelo responsável pelo produto. A progressão volta a durar mais, mantendo bônus de primeira conclusão, estrelas persistentes e indicação do próximo desbloqueio. Mundos já abertos e saldos existentes são preservados, sem cobrança retroativa.
 
-| Mundo / ID interno | Preço recebido | Preço definido nesta revisão |
+| Mundo / ID interno | Preço reduzido anterior | Preço vigente (original) |
 |---|---:|---:|
 | Animais, Frutas, Espaço | 0 | 0 |
-| Oceano / `oceano` | 140 | 60 |
-| Comida / `comida` | 260 | 90 |
-| Brinquedos / `brinquedos` | 420 | 120 |
-| Dinossauros / `dinos` | 620 | 150 |
-| Emoções / `emocoes` | 860 | 180 |
-| Flores / `flores` | 1.140 | 210 |
-| Monstrinhos / `monstrinhos` | 1.460 | 240 |
-| Heróis / `herois` | 1.820 | 270 |
-| Mundo dos Cogumelos / `mario` | 2.220 | 300 |
-| Encanadores / `encanadores` | 2.660 | 330 |
-| Robôs / `robos` | 3.140 | 360 |
-| Fantasia / `fantasia` | 3.660 | 390 |
-| Aventureiros / `aventureiros` | 4.220 | 420 |
-| Duendes / `duendes` | 4.820 | 450 |
-| Gelo / `gelo` | 5.460 | 480 |
-| Elementos / `elementos` | 6.140 | 510 |
-| Circo / `circo` | 6.860 | 540 |
-| Natal / `natal` | 7.640 | 600 |
-| **Total** | **53.540** | **5.700** |
+| Oceano / `oceano` | 60 | 140 |
+| Comida / `comida` | 90 | 260 |
+| Brinquedos / `brinquedos` | 120 | 420 |
+| Dinossauros / `dinos` | 150 | 620 |
+| Emoções / `emocoes` | 180 | 860 |
+| Flores / `flores` | 210 | 1.140 |
+| Monstrinhos / `monstrinhos` | 240 | 1.460 |
+| Heróis / `herois` | 270 | 1.820 |
+| Mundo dos Cogumelos / `mario` | 300 | 2.220 |
+| Encanadores / `encanadores` | 330 | 2.660 |
+| Robôs / `robos` | 360 | 3.140 |
+| Fantasia / `fantasia` | 390 | 3.660 |
+| Aventureiros / `aventureiros` | 420 | 4.220 |
+| Duendes / `duendes` | 450 | 4.820 |
+| Gelo / `gelo` | 480 | 5.460 |
+| Elementos / `elementos` | 510 | 6.140 |
+| Circo / `circo` | 540 | 6.860 |
+| Natal / `natal` | 600 | 7.640 |
+| **Total** | **5.700** | **53.540** |
 
-No mesmo cenário de 31 moedas por vitória, a curva nova exige 184 vitórias sem bônus do álbum ou **177 com o bônus atual**: `168 × 31 + 9 × 56 = 5.712`. Essa comparação isola a mudança de preços: ainda não desconta os novos bônus de primeira conclusão. Oceano passa a caber em duas vitórias; Natal isolado, em 20 antes do álbum. Como os desbloqueios são permanentes e não sequenciais, a criança pode poupar para o mundo preferido.
+No cenário de referência de 31 moedas por vitória fácil, são 1.032 vitórias para acumular o total, considerando +25 por vitória após completar o álbum e sem descontar os novos bônus de primeira conclusão. É uma referência de esforço, não uma meta de tempo de tela. O bônus único incentiva variar mundos e dificuldades; os níveis mais difíceis também rendem mais moedas por conclusão. A criança pode poupar para qualquer mundo bloqueado, pois não há obrigação de desbloquear na ordem.
 
 Outras decisões desta revisão:
 
@@ -69,7 +69,7 @@ Outras decisões desta revisão:
 - **Próximo mundo:** mostrar saldo, preço e quanto falta, com texto positivo e sem chamada para compra real.
 - **Diamantes:** nenhuma carteira adicionada nesta revisão. A possibilidade futura está descrita abaixo.
 
-No modo tranquilo fácil, repetir a mesma combinação rende 36 moedas na primeira conclusão e 21 nas seguintes: Oceano cabe em três partidas; experimentar dois mundos iniciais pela primeira vez rende 72 e permite abri-lo em duas. Esses exemplos mostram por que é necessário medir a progressão também no modo tranquilo, sem penalizar a escolha de jogar com calma.
+No modo tranquilo fácil, repetir a mesma combinação rende 36 moedas na primeira conclusão e 21 nas seguintes: Oceano custa seis partidas (141 moedas). Experimentar os três mundos gratuitos primeiro e repetir dois deles permite abrir Oceano em cinco partidas (150 moedas). No Desafio fácil, supondo 50 segundos restantes por vitória, explorar os três mundos e repetir um rende 169 moedas em quatro partidas. Os exemplos partem de saldo zero, sem outras compras; variar dificuldade pode acelerar a progressão. Monitorar conclusão e compreensão, sem exigir sessões mais longas.
 
 Não converter retroativamente moedas em dinheiro ou benefícios pagos. Se forem feitos futuros ajustes de compensação de preços, registrar uma migração única e idempotente; o desbloqueio que já existe precisa continuar existindo.
 
@@ -83,12 +83,12 @@ Se os testes mostrarem que uma segunda conquista é compreendida e desejada, exp
 |---|---|
 | Como ganhar | 1 diamante a cada dez partidas concluídas; contagem acumulada, sem prazo e sem sequência diária |
 | Como abrir um mundo | Preço em moedas **ou** diamantes; nunca exigir ambos |
-| Referência de preço | `ceil(preçoEmMoedas / 60)` diamantes: Oceano 1, Dinossauros 3, Circo 9 e Natal 10 |
-| Como explicar | “Abra com 150 moedas ou 3 diamantes”, mostrando os dois saldos e confirmando a escolha |
+| Referência de preço | Conversão a recalibrar e simular sobre a curva restaurada de 53.540 moedas antes de implementar |
+| Como explicar | Mostrar preço em moedas ou diamantes, os dois saldos e confirmar qual recurso será usado; valores ainda não definidos |
 | Restrições de produto | Não comprável com dinheiro, não transferível, não aleatório e sem valor fora do jogo |
 | Proteção de justiça | Não altera cartas, tempo, chances de figurinhas, pontuação, XP ou posição no ranking |
 
-Essa regra acrescentaria até seis moedas equivalentes por partida em média, antes dos arredondamentos e da escolha de gasto; portanto exigiria nova simulação, não apenas incluir um ícone de diamante na tela. Introduzir moedas e diamantes simultaneamente como duas barreiras para a mesma fase não é recomendado.
+Uma segunda fonte de desbloqueios aceleraria a curva restaurada; sua conversão exige nova simulação, não apenas incluir um ícone de diamante na tela. Introduzir moedas e diamantes simultaneamente como duas barreiras para a mesma fase não é recomendado.
 
 Manter o álbum gratuito, sem repetidas e sem compra de pacotes. Melhorias seguintes: permitir escolher uma entre três figurinhas novas; mostrar a coleção de origem; trocar a ideia de “raridade comprável” por uma coleção especial que se completa por objetivos claros. A mensagem de +25 moedas depois de completar o álbum deve dizer que é uma recompensa de coleção completa, sem aparentar que uma nova conclusão do álbum ocorreu a cada partida.
 
@@ -149,7 +149,7 @@ Começar com sessões acompanhadas de 8–12 famílias voluntárias, cobrindo ta
 |---|---|---|
 | Começar sem ajuda | Da tela inicial à primeira carta | Pelo menos 80% no piloto, após tutorial inicial |
 | Entender o objetivo | Criança demonstra um par e o adulto relata clareza | Registrar problemas; nenhum bloqueio de entendimento recorrente |
-| Primeiro desbloqueio | Partidas concluídas até ter moedas para o primeiro mundo | 2–4 partidas em percursos iniciais típicos |
+| Primeiro desbloqueio | Partidas concluídas até ter moedas para o primeiro mundo | 4–6 vitórias fáceis nos percursos exemplificados acima, variando ritmo e repetição; validar no piloto |
 | Conclusão por modo/nível | Conclusões/inícios, separando desistência de erro técnico | Detectar níveis com frustração repetida; não misturar tranquilo com cronômetro |
 | Justiça das recompensas | Recompensa recebida e explicação correta | Nenhuma duplicação/perda nos casos de teste de reabertura/sincronização |
 | Clareza da compra | Adulto descreve preço, duração e conteúdo antes de confirmar | 100% de entendimento no piloto; é critério de clareza, não taxa de vendas |

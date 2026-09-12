@@ -12,7 +12,7 @@ Abra [o jogo local](http://127.0.0.1:8000). Use servidor HTTP no desenvolvimento
 
 ## Jogabilidade atual
 
-- **21 mundos:** Animais, Frutas e Espaço abertos; 18 mundos desbloqueáveis com moedas de jogo, entre 60 e 600 cada. Total: 5.700 moedas.
+- **21 mundos:** Animais, Frutas e Espaço abertos; 18 mundos desbloqueáveis com moedas de jogo, entre 140 e 7.640 cada. Total: 53.540 moedas. Curva original restaurada para uma progressão mais longa.
 - **3 dificuldades:** Fácil com 8 pares, Médio com 10 e Difícil com 12.
 - **Solo Tranquilo:** sem limite de tempo, com moedas, figurinhas e estrelas. É a opção inicial.
 - **Solo Desafio:** cronômetro de 100/130/160 segundos, bônus pelo tempo restante e recordes de velocidade.

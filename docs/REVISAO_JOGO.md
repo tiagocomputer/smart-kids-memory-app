@@ -32,11 +32,13 @@ Não foram implementados pagamentos ou anúncios. Preços monetários no documen
 
 ## 5. Moedas, diamantes e desbloqueios
 
+Após o feedback sobre a progressão curta, os preços originais foram restaurados. O bônus de primeira conclusão, as estrelas e o painel de progresso continuam ativos. Os mundos já adquiridos e os saldos existentes são preservados, sem cobrança retroativa.
+
 | Item | Antes | Agora |
 |---|---|---|
-| Custo total dos 18 mundos | 53.540 moedas | 5.700 moedas |
-| Primeiro desbloqueio | 140 | 60 |
-| Mundo mais caro | 7.640 | 600 |
+| Custo total dos 18 mundos | 53.540 moedas | 53.540 moedas (restaurado) |
+| Primeiro desbloqueio | 140 | 140 |
+| Mundo mais caro | 7.640 | 7.640 |
 | Primeira conclusão solo de mundo/dificuldade | Sem bônus próprio | +15 moedas uma vez, compartilhado entre ritmos |
 | Próximo desbloqueio | Preço no cadeado | Painel com saldo, custo, falta e barra de progresso |
 | Estrelas | Apenas resultado | Melhor resultado salvo por mundo/dificuldade |

@@ -69,9 +69,9 @@ function harness(initial = {}, blocked = false) {
   return { run, advance, finish, values, element };
 }
 
-test('all worlds cost 5700; unknown worlds stay locked; three worlds are free', () => {
+test('all worlds cost 53540; unknown worlds stay locked; three worlds are free', () => {
   const { run } = harness();
-  assert.equal(run('THEME_LIST.reduce((n, th) => n + th.cost, 0)'), 5700);
+  assert.equal(run('THEME_LIST.reduce((n, th) => n + th.cost, 0)'), 53540);
   assert.equal(run('THEME_LIST.filter(th => th.cost === 0).length'), 3);
   assert.equal(run('isThemeUnlocked("__proto__")'), false);
 });
